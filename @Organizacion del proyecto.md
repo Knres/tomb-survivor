@@ -42,7 +42,8 @@ Antes o despuede de hacer una función, dejar su contrato junto a la etiqueta.
 - Las funciones globales terminan en `::`; las etiquetas internas usan `.`.
 - Una función llamada con `call` debe terminar con `ret` o `jp`.
 
-> [!note] Ejemplo: 
+> [!NOTE]
+> **Ejemplo:** 
 > ```asm {.javascript .numberLines}
 > ;; Comprobar si se puede desplazar hacia la donde se indica en `A`.
 > ;; 📥INPUTS
@@ -71,7 +72,8 @@ Antes o despuede de hacer una función, dejar su contrato junto a la etiqueta.
 5. Esperar VBlank.
 6. Renderizar tilemap y sprites.
 
-> [!note] Ejemplo
+> [!NOTE]
+> **Ejemplo:**
 > ```asm {.javascript .numberLines}
 > scene_game_init::
 >     call man_entity_init
@@ -100,7 +102,8 @@ gbt_bgb game.gb
 make clean
 ```
 
-> [!note] Checklist antes de hacer push:
+> [!NOTE]
+> **Checklist antes de hacer push:**
 > - [ ] `make` termina sin errores ni warnings nuevos.
 > - [ ] La ROM arranca en BGB `gbt_bgb game.gb`.
 > - [ ] La escena inicializa sus datos antes del primer update.
