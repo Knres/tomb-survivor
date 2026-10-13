@@ -27,59 +27,59 @@ DEF ESTADO_ERROR = $FF
 SECTION "Entry point", ROM0[$150]
 
 wait_VBLANK:
-   ld a, [$FF44]
-   cp 144
-   jr nz, wait_VBLANK
-   ret
+    ld a, [$FF44]
+    cp 144
+    jr nz, wait_VBLANK
+    ret
 
 main::
-   di     ;; Disable Interrupts
-   ld a, 1
-   ld hl, continuar_bucle ;; inicializo continuar_bucle
-   ld [hl], a
-   ld hl, estado_actual
-   ld a, ESTADO_INICIAL
-   ld [hl], a
-   bucle_principal:
-;      ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
-      call wait_VBLANK
-      ld a, [estado_actual]
-      
-      ; if  ESTADO_INICIAL
-      cp ESTADO_INICIAL
-      jp z, inicio
+    di     ;; Disable Interrupts
+    ld a, 1
+    ld hl, continuar_bucle ;; inicializo continuar_bucle
+    ld [hl], a
+    ld hl, estado_actual
+    ld a, ESTADO_INICIAL
+    ld [hl], a
+    bucle_principal:
+    ;      ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
+        call wait_VBLANK
+        ld a, [estado_actual]
+        
+        ; if  ESTADO_INICIAL
+        cp ESTADO_INICIAL
+        jp z, inicio
 
-      ; ELSEIF ESTADO_UNO
-      cp ESTADO_UNO
-      jp z, estado_1
-      
-      ; ELSEIF ESTADO_DOS
-      CP ESTADO_DOS
-      jp z, estado_2
-      
-      ; ELSE
-      jp fin
+        ; ELSEIF ESTADO_UNO
+        cp ESTADO_UNO
+        jp z, estado_1
+        
+        ; ELSEIF ESTADO_DOS
+        CP ESTADO_DOS
+        jp z, estado_2
+        
+        ; ELSE
+        jp fin
 
-   ;; ESTO DEBE IR EN OTROS ARCHIVOS Y HACER LUEGO UN "IMPORT"
-   inicio:
-      ld bc, 0 ; SOLO MUESTRA DE FORMA VISUAL QUE ESTADO ES, SE PUEDE QUITAR
-      ; LOGICA
-      jp bucle_principal   ;; VUELVE AL BUCLE PRINCIPAL
-;      jp fin
+    ;; ESTO DEBE IR EN OTROS ARCHIVOS Y HACER LUEGO UN "IMPORT"
+    inicio:
+        ld bc, 0 ; SOLO MUESTRA DE FORMA VISUAL QUE ESTADO ES, SE PUEDE QUITAR
+        ; LOGICA
+        jp bucle_principal   ;; VUELVE AL BUCLE PRINCIPAL
+    ;      jp fin
 
-   estado_1:
-      ld bc, 1 ; SOLO MUESTRA DE FORMA VISUAL QUE ESTADO ES, SE PUEDE QUITAR
-      ; LOGICA
-      jp bucle_principal   ;; VUELVE AL BUCLE PRINCIPAL
-;      jp fin
+    estado_1:
+        ld bc, 1 ; SOLO MUESTRA DE FORMA VISUAL QUE ESTADO ES, SE PUEDE QUITAR
+        ; LOGICA
+        jp bucle_principal   ;; VUELVE AL BUCLE PRINCIPAL
+    ;      jp fin
 
-   estado_2:
-      ld bc, 2 ; SOLO MUESTRA DE FORMA VISUAL QUE ESTADO ES, SE PUEDE QUITAR
-      ; LOGICA
-      jp bucle_principal   ;; VUELVE AL BUCLE PRINCIPAL
-;      jp fin
+    estado_2:
+        ld bc, 2 ; SOLO MUESTRA DE FORMA VISUAL QUE ESTADO ES, SE PUEDE QUITAR
+        ; LOGICA
+        jp bucle_principal   ;; VUELVE AL BUCLE PRINCIPAL
+    ;      jp fin
 
-   fin:
+    fin:
 
 
 halt   ;; Halt the CPU (stop procesing here)
