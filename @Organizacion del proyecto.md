@@ -35,7 +35,7 @@ El `Makefile` ya busca los archivos `.asm` dentro de `src`, incluidos los de sub
 
 ## Estructura para las funciones
 
-Antes o despuede de hacer una función, dejar su contrato junto a la etiqueta. 
+Antes o después de de hacer una función, dejar su contrato junto a la etiqueta. 
 
 - Indicar siempre los registros de 📥entrada, 🔙salida y modificados (incluyendo las que se modifican si se hace un `call` dentro de la función). En caso de que no haya indicar que no hay.
 - Los flags tambien forman parte del contrato: indicar, por ejemplo, `Z si la celda esta libre` o `A = 0 si no hay colision`.
@@ -50,10 +50,10 @@ Antes o despuede de hacer una función, dejar su contrato junto a la etiqueta.
 > ;;	A  = desplazamiento que se quiere hacer
 > ;; 	HL = direccion de la posicion actual
 > ;; 🔙RETURNS/OUTPUTS: 
-> ;;	Flag: Z se ha movido correctamen
+> ;;	Flag: Z se ha movido correctamente
 > ;; 		 NZ se sale del mapa (en `A` se indica por donde se sale)
 > ;;			A = 0 se la por debajo
-> ;;		  	A = 1 se la por arriva
+> ;;		  	A = 1 se la por arriba
 > ;;		  	A = 2 se la por la izquieda
 > ;;		  	A = 3 se la por la derecha
 > ;; ❌MODIFICA: AF, HL
@@ -94,7 +94,7 @@ Orden recomendado por frame:
 
 ## Compilacion y comprobación.
 
-Desde `v1_plataformero/` ejercurar intrucción a intrucción:
+Desde `v1_plataformero/` ejecutar intrucción a intrucción:
 
 ```bash
 make
