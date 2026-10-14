@@ -8,27 +8,34 @@ Este documento es el acuerdo comun para trabajar en grupo en el juego de Game Bo
 - Mantener los datos en `WRAM0`, el codigo y los recursos constantes en ROM, y escribir en VRAM solo durante VBlank.
 - Usar constantes, estructuras y contratos en lugar de direcciones y numeros magicos.
 
-## Estructura propuesta del proyecto
+## Estructura del proyecto
 
-La siguiente estructura es temporal y apliable según veamos nuevas nuecesidadese
+La estructura se puede ampliar/modificar según necesidades.
 ```text
 v1_plataformero/
 	src/
-		header.asm          ; Cabecera de la ROM. Recoradr cambiar nombre en l.53
-		main.asm            ; Punto de entrada y bucle principal
-		constants.asm       ; Constantes globales del juego
+		header.asm                 	 ; Cabecera de la ROM
+		main.asm                   	 ; Inicializacion y bucle principal
 		data/
-			entities.asm    ; Estructuras y arrays de entidades en WRAM0
-			level.asm       ; Datos del nivel y tilemaps
+			entities.asm             ; Entidades y arrays de trabajo en WRAM0
+			gfx.asm                  ; Tiles y datos graficos constantes en ROM
+			level.asm                ; Datos constantes del nivel en ROM
 		managers/
-			entity_manager.asm
-		systems/
-			input.asm
-			fisicas.asm
-			colisiones.asm
-			render.asm
+			manager_entidad.asm      ; Gestion de las entidades
+			manager_escena.asm       ; Gestion del cambio de escenas
 		scenes/
-			game.asm        ; Inicializacion y actualizacion de la escena
+			scene_game.asm           ; Escena principal de la partida
+			scene_gameover.asm       ; Escena de fin de partida
+			scene_menu.asm           ; Escena del menu principal
+			scene_pausa.asm          ; Escena de pausa
+		systems/
+			sytem_colisiones.asm     ; Deteccion y resolucion de colisiones
+			sytem_fisicas.asm        ; Gravedad, velocidad y movimiento
+			sytem_input.asm          ; Lectura del joypad e intenciones
+			sytem_prerender.asm      ; Preparacion de datos antes de renderizar
+			sytem_render.asm         ; OAM y escrituras durante VBlank
+		ui/
+			hud.asm					 ; HUD en partida
 ```
 
 El `Makefile` ya busca los archivos `.asm` dentro de `src`, incluidos los de subcarpetas. Si una carpeta nueva no se enlaza como esperamos, se comprueba primero que el archivo tenga extension `.asm` y que este dentro de `src`.
