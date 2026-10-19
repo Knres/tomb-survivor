@@ -20,10 +20,12 @@ SECTION "Sistema", WRAM0
 continuar_bucle: DS 1   ;;  tan solo sirve para mantener el bucle principal, es el true en un while true
 estado_actual: DS 1     ;;  guarda el numero de estado en el que se encuentra el bucle principal. Hay hasta 256 posibles estados, pero no vamos a usar tantos
 
-DEF ESTADO_INICIAL = 0
-DEF ESTADO_UNO = 1
-DEF ESTADO_DOS = 2
-DEF ESTADO_ERROR = $FF
+EXPORT DEF ESTADO_INICIAL = 0
+EXPORT DEF ESTADO_UNO = 1
+EXPORT DEF ESTADO_DOS = 2
+EXPORT DEF ESTADO_ERROR = $FF
+
+
 SECTION "Entry point", ROM0[$150]
 
 wait_VBLANK:
@@ -38,47 +40,13 @@ main::
     ld hl, continuar_bucle ;; inicializo continuar_bucle
     ld [hl], a
     ld hl, estado_actual
-    ld a, ESTADO_INICIAL
+    ld a,  ESTADO_UNO
     ld [hl], a
     bucle_principal:
     ;      ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
         call wait_VBLANK
-        ld a, [estado_actual]
-        
-        ; if  ESTADO_INICIAL
-        cp ESTADO_INICIAL
-        jp z, inicio
-
-        ; ELSEIF ESTADO_UNO
-        cp ESTADO_UNO
-        jp z, estado_1
-        
-        ; ELSEIF ESTADO_DOS
-        CP ESTADO_DOS
-        jp z, estado_2
-        
-        ; ELSE
-        jp fin
-
-    ;; ESTO DEBE IR EN OTROS ARCHIVOS Y HACER LUEGO UN "IMPORT"
-    inicio:
-        ld bc, 0 ; SOLO MUESTRA DE FORMA VISUAL QUE ESTADO ES, SE PUEDE QUITAR
-        ; LOGICA
-        jp bucle_principal   ;; VUELVE AL BUCLE PRINCIPAL
-    ;      jp fin
-
-    estado_1:
-        ld bc, 1 ; SOLO MUESTRA DE FORMA VISUAL QUE ESTADO ES, SE PUEDE QUITAR
-        ; LOGICA
-        jp bucle_principal   ;; VUELVE AL BUCLE PRINCIPAL
-    ;      jp fin
-
-    estado_2:
-        ld bc, 2 ; SOLO MUESTRA DE FORMA VISUAL QUE ESTADO ES, SE PUEDE QUITAR
-        ; LOGICA
-        jp bucle_principal   ;; VUELVE AL BUCLE PRINCIPAL
-    ;      jp fin
-
+        call scene_manager
+        jr bucle_principal
     fin:
 
 
