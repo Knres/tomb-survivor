@@ -20,6 +20,12 @@ SECTION "Sistema", WRAM0
 continuar_bucle: DS 1   ;;  tan solo sirve para mantener el bucle principal, es el true en un while true
 estado_actual: DS 1     ;;  guarda el numero de estado en el que se encuentra el bucle principal. Hay hasta 256 posibles estados, pero no vamos a usar tantos
 
+
+; 0  0    0     0    0 0 0      0
+; 0 = false, 1 = true (logica invertida a como funciona la lectura por joypad, me parece mas intuitiva)
+; up down right left a b start  select
+joypad_pressed: DS 1    ;; almacena qué botones acaban de ser pulsados en este frame
+
 EXPORT DEF ESTADO_INICIAL = 0
 EXPORT DEF ESTADO_UNO = 1
 EXPORT DEF ESTADO_DOS = 2
@@ -42,10 +48,14 @@ main::
     ld hl, estado_actual
     ld a,  ESTADO_UNO
     ld [hl], a
+    
+    ld d, 0
     bucle_principal:
     ;      ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
         call wait_VBLANK
-        call scene_manager
+;        call scene_manager
+        call press_update
+
         jr bucle_principal
     fin:
 
