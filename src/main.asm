@@ -19,6 +19,7 @@
 SECTION "Sistema", WRAM0
 continuar_bucle: DS 1   ;;  tan solo sirve para mantener el bucle principal, es el true en un while true
 estado_actual: DS 1     ;;  guarda el numero de estado en el que se encuentra el bucle principal. Hay hasta 256 posibles estados, pero no vamos a usar tantos
+nivel_actual:: DS 1
 
 
 ; 0  0    0     0    0 0 0      0
@@ -48,13 +49,22 @@ main::
     ld hl, estado_actual
     ld a,  ESTADO_UNO
     ld [hl], a
-    
+
+    ;; iniciar el nivel 1
+    ;; cuando se tenga la seleccion de mapa cambiar
+    ld a, 1
+    ld [nivel_actual], a
+    call system_render_load_tiles
+    call system_render_load_map
+
+
     ld d, 0
     bucle_principal:
-    ;      ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
-        call wait_VBLANK
-;        call scene_manager
+        ;ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
+        ;call scene_manager
         call press_update
+
+
 
         jr bucle_principal
     fin:

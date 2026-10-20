@@ -4,16 +4,16 @@ scene_manager::
     ld a, [estado_actual]
         
     ; if  ESTADO_INICIAL
-    cp ESTADO_INICIAL
-    jp z, inicio
+    ;;cp ESTADO_INICIAL
+    ;;jp z, inicio
 
     ; ELSEIF ESTADO_UNO
     cp ESTADO_UNO
-    jp z, estado_1
+    ;;jp z, estado_1
     
     ; ELSEIF ESTADO_DOS
     cp ESTADO_DOS
-    jp z, estado_2
+    ;;jp z, estado_2
     
     ; ELSE
     jp fin
