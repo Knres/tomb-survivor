@@ -19,7 +19,6 @@
 SECTION "Sistema", WRAM0
 continuar_bucle: DS 1   ;;  tan solo sirve para mantener el bucle principal, es el true en un while true
 estado_actual: DS 1     ;;  guarda el numero de estado en el que se encuentra el bucle principal. Hay hasta 256 posibles estados, pero no vamos a usar tantos
-nivel_actual:: DS 1
 
 
 ; 0  0    0     0    0 0 0      0
@@ -54,8 +53,13 @@ main::
     ;; cuando se tenga la seleccion de mapa cambiar
     ld a, 1
     ld [nivel_actual], a
-    call system_render_load_tiles
-    call system_render_load_map
+
+    ;; inicializacion de cosas
+    call system_render_load_tiles       ;; dejarlo en el futuro dentro de init_game
+    call system_render_load_map         ;; dejarlo en el futuro dentro de init_nivel
+    call habilitar_objetos              ;; dejarlo en el futuro dentro de init_game
+    call system_prerender_init_entities ;; dejarlo en el futoro dentro de init_nivel
+    call system_prerender_init_jugador  ;; jugador se inicializara en la primera entidad del array de entidades
 
 
     ld d, 0
@@ -63,7 +67,8 @@ main::
         ;ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
         ;call scene_manager
         call press_update
-
+		call system_prerender_update
+		call system_render_update
 
 
         jr bucle_principal

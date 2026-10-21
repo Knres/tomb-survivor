@@ -71,7 +71,7 @@ EXPORT DEF TILE_DATA_START   = $8000
 EXPORT DEF TILE_MAP_START    = $9800
 EXPORT DEF TILEMAP_BG_START  = $9800
 EXPORT DEF TILEMAP_HUD_START = $9C00
-EXPORT DEF INITIAL_TILE_BYTES = 48      ;; Temporal: 16*3 (cada tiles es de 16 bytes, y hay 3 definidos -> gfx.asm) 
+;; EXPORT DEF INITIAL_TILE_BYTES = tile_data_end - tile_data ;; definida en "./data/gfx.asm"
 
 EXPORT DEF TILEMAP_WIDTH     = 32   ;; / 32x32
 EXPORT DEF TILEMAP_HEIGHT    = 32   ;; \
@@ -80,6 +80,8 @@ EXPORT DEF TILEMAP_HEIGHT    = 32   ;; \
 EXPORT DEF OAM_START = $FE00
 EXPORT DEF OAM_SIZE  = 160      ;; 40 sprites * 4 bytes cada uno.
 EXPORT DEF OAM_END   = $FE9E
+EXPORT DEF OAM_X_OFFSET = 8 
+EXPORT DEF OAM_Y_OFFSET = 16
 
 ;; WRAM
 EXPORT DEF WRAM_START = $C000
@@ -92,14 +94,14 @@ EXPORT DEF VBLANK_START = $90   ;; 144 en decimal
 
 
 ;; TILES
-EXPORT DEF TILE_FONDO = $00 ;; fondo
-EXPORT DEF TILE_SUELO = $01 ;; suelo -> pisble, colisiona y no muere se mantiene al jugador encima
-EXPORT DEF TILE_PARED = $02 ;; pared -> al colisionar con ellas muere el jugador
-EXPORT DEF TOLE_JUGADOR = $03	;; jugador
+EXPORT DEF TILE_FONDO = $00     ;; fondo
+EXPORT DEF TILE_SUELO = $01     ;; suelo -> pisble, colisiona y no muere se mantiene al jugador encima
+EXPORT DEF TILE_PARED = $02     ;; pared -> al colisionar con ellas muere el jugador
+EXPORT DEF TILE_JUGADOR = $03	;; jugador
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; INFO. DE NIVELES
+;; Info. de niveles
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 EXPORT DEF LEVEL_MAP_WIDTH  = 20
 EXPORT DEF LEVEL_MAP_HEIGHT = 16
@@ -110,15 +112,88 @@ EXPORT DEF LEVEL_HUD_HEIGHT = 2
 EXPORT DEF LEVEL_FLOOR_Y = 16
 EXPORT DEF TAM_VRAM = 32
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Info. entidades/jugador
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;; definidas en "wram.asm"
+    ;; EXPORT DEF MAX_ENTITIES = 2 ;; MODIFICAR NUMERO DE ENTIDADES MAXIMAS
+    ;;
+    ;; EXPORT DEF OAM_ENTRY_SIZE = 4
+    ;; EXPORT DEF SHADOW_OAM_SIZE = MAX_ENTITIES * OAM_ENTRY_SIZE
+    ;;
+    ;; EXPORT DEF ENTITY_SIZE = 8
+    ;; EXPORT DEF ENTITY_ARRAY_SIZE = MAX_ENTITIES * ENTITY_SIZE
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+EXPORT DEF E_CMP    = 0
+EXPORT DEF E_Y      = 1
+EXPORT DEF E_SPRITE = E_Y
+EXPORT DEF E_X      = 2
+EXPORT DEF E_TILE   = 3
+EXPORT DEF E_ATTR   = 4
+EXPORT DEF E_VY     = 5
+EXPORT DEF E_VX     = 6
+EXPORT DEF E_KIND   = 7
+
+;;   bit  7 6 5 4 3 2 1 0                bit   7 6 5 4 3 2 1 0
+;;   CMP |1|x|x|1|x|1|1|1|               KIND |x|x|x|x|x|x|x|x|
+;; ALIVE ─┘ │ │ │ │ │ │ └─ SPRITE           x ─┘ │ │ │ │ │ │ └─ JUGADOR
+;;       x ─┘ │ │ │ │ └─ PHYSICS              x ─┘ │ │ │ │ └─ ENEMIGO
+;;         x ─┘ │ │ └─ COLLIDER                 x ─┘ │ │ └─ x
+;;       INPUT ─┘ └─ x                            x ─┘ └─ x
+
+EXPORT DEF CMP_SPRITE_BIT       = 0
+EXPORT DEF CMP_PHYSICS_BIT      = 1
+EXPORT DEF CMP_COLLIDER_BIT     = 2
+;; EXPORT DEF CMP_              = 3
+EXPORT DEF CMP_INPUT_BIT        = 4
+;; EXPORT DEF CMP_              = 5
+;; EXPORT DEF CMP_              = 6
+EXPORT DEF CMP_ALIVE_BIT        = 7
+
+EXPORT DEF CMP_SPRITE           = 1 << CMP_SPRITE_BIT
+EXPORT DEF CMP_PHYSICS          = 1 << CMP_PHYSICS_BIT
+EXPORT DEF CMP_COLLIDER         = 1 << CMP_COLLIDER_BIT
+;; EXPORT DEF CMP_              = 1 << CMP_
+EXPORT DEF CMP_INPUT            = 1 << CMP_INPUT_BIT ;; Controlled by the player. It has no data
+;; EXPORT DEF CMP_              = 1 << CMP_5
+;; EXPORT DEF CMP_              = 1 << CMP_6
+EXPORT DEF CMP_ALIVE            = 1 << CMP_ALIVE_BIT
+
+EXPORT DEF KIND_JUGADOR_BIT     = 0
+EXPORT DEF KIND_ENEMIGO_BIT     = 1
+;; EXPORT DEF CMP_              = 2
+;; EXPORT DEF CMP_              = 3
+;; EXPORT DEF CMP_              = 4
+;; EXPORT DEF CMP_              = 5
+;; EXPORT DEF CMP_              = 6
+;; EXPORT DEF CMP_              = 7
+
+EXPORT DEF KIND_JUGADOR         = 1 << KIND_JUGADOR_BIT
+EXPORT DEF KIND_ENEMIGO         = 1 << KIND_ENEMIGO_BIT
+;; EXPORT DEF CMP_              = 1 << CMP_2
+;; EXPORT DEF CMP_              = 1 << CMP_3
+;; EXPORT DEF CMP_              = 1 << CMP_4
+;; EXPORT DEF CMP_              = 1 << CMP_5
+;; EXPORT DEF CMP_              = 1 << CMP_6
+;; EXPORT DEF CMP_              = 1 << CMP_7
 ;; Tipo de enemigo
     ;; TODO: definir tipos de enemigos tras tener una base funcional
+
+
 
 ;; Tipo de movimiento (por el momento solo habra 2: horizontal y vertical)
 EXPORT DEF E_DIR_HORIZONTAL = 0
 EXPORT DEF E_DIR_VERTICAL   = 1
 
 ;; Dirección a la que se mueve
-EXPORT DEF E_MOVE_LEFT      = 0
-EXPORT DEF E_MOVE_RIGHT     = 1
-EXPORT DEF E_MOVE_DOWN      = 2
+EXPORT DEF E_MOVE_NONE      = 0
+EXPORT DEF E_MOVE_LEFT      = 1
+EXPORT DEF E_MOVE_RIGHT     = 2
+EXPORT DEF E_MOVE_DOWN      = 3
+EXPORT DEF E_MOVE_UP        = 4
 
+EXPORT DEF VX_JUGADOR       = 5 ;; en px
+EXPORT DEF VY_JUGADOR       = 5 ;; en px

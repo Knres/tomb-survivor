@@ -1,6 +1,7 @@
 
 
 SECTION "Mapa", ROM0
+
 mapa_nivel_1::
 	;; $00 vacio, 
 	;; $01 suelo -> pisble, colisiona y no muere se mantiene al jugador encima
@@ -22,15 +23,17 @@ mapa_nivel_1::
 	DB $02,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$02 ;; Y=14
 	DB $02,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$02 ;; Y=15 suelo
 
-mapa_nivel_1_jugador_inicio::
+
+mapa_nivel_1_posicion_inicial_jugador::
 	;; las posiciones no pueden ser mayores que el mapa (quedarian fuera)
-	;; X, Y
-	DB 8, 14
+	;; X, Y (estan en px, pixeles = tiles * 8 )
+	DB 8*8, 14*8
 
 mapa_nivel_1_enemigos::
 	;; ENTIDADES
+	;; (X, Y estan en px, pixeles = tiles * 8 )
 	;;	TIPOMOVIMIENTO,  X,  Y,  DIRECCIONMOVIMIENTO
-	DB E_DIR_HORIZONTAL, 0,  12, E_MOVE_RIGHT
-	DB E_DIR_HORIZONTAL, 16, 10, E_MOVE_LEFT
-	DB E_DIR_VERTICAL,   8,  0,  E_MOVE_DOWN
+	DB E_DIR_HORIZONTAL, 0 *8, 12*8, E_MOVE_RIGHT
+	DB E_DIR_HORIZONTAL, 16*8, 10*8, E_MOVE_LEFT
+	DB E_DIR_VERTICAL,   8 *8, 0 *8, E_MOVE_DOWN
 mapa_nivel_1_enemigos_fin::

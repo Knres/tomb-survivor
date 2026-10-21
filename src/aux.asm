@@ -53,3 +53,22 @@ memcpy8_bc::
         or c        ;; (a == 0 || c == 0) ?
     jr nz, .do_while
 ret
+
+memset8::
+    ;; hl = a <-- con contador b
+    ;; I: HL = destino; A = valor a poner; B = cantidad de bytes.
+    ;; O: -
+    ;; M: B, HL
+    .do_while
+        ld [hl+], a
+
+        dec b
+    jr nz, .do_while
+ret
+
+call_hl::
+    ;; salta a dir. indicada en hl, hace return
+    ;; I: HL = direccion de la rutina.
+    ;; O: -
+    ;; M: PC
+jp hl

@@ -53,3 +53,15 @@ system_render_load_tiles::
 	ld de, TILE_DATA_START
 	ld b, INITIAL_TILE_BYTES
 jp memcpy8
+
+system_render_update::
+	;; Copia shadow_oam(WRAM) -> OAM real.
+	;; I: -
+	;; O: -
+	;; M: A, B, DE, HL.
+	call wait_vblank
+
+	ld hl, shadow_oam
+	ld de, OAM_START
+	ld b, SHADOW_OAM_SIZE
+jp memcpy8
