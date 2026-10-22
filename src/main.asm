@@ -57,6 +57,7 @@ main::
     ;; inicializacion de cosas
     call system_render_load_tiles       ;; dejarlo en el futuro dentro de init_game
     call system_render_load_map         ;; dejarlo en el futuro dentro de init_nivel
+    call init_oam                       ;; ocultar sprites OAM no utilizados
     call habilitar_objetos              ;; dejarlo en el futuro dentro de init_game
     call system_prerender_init_entities ;; dejarlo en el futoro dentro de init_nivel
     call system_prerender_init_jugador  ;; jugador se inicializara en la primera entidad del array de entidades

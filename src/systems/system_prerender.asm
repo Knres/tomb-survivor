@@ -1,5 +1,7 @@
 SECTION "System prerender", ROM0
 
+
+
 system_prerender_init_entities::
 	;; inicializa a cero todas las entidades.
 	;; I: -

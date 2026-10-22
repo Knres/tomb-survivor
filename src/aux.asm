@@ -9,6 +9,18 @@ habilitar_objetos::
     set 1, [hl]
 ret
 
+init_oam::
+    ;; inicializar OAM (40 sprites)
+    ;; I: -
+    ;; O: -
+    ;; M: A, B, HL.
+    call wait_vblank
+    
+    ld hl, OAM_START
+    xor a
+    ld b, OAM_SIZE
+jp memset8
+
 wait_vblank::
     ;; espera el inicio de vblank
     ;; I: -
