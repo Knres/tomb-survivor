@@ -55,14 +55,28 @@ main::
     ld [nivel_actual], a
 
     ;; inicializacion de cosas
-    call system_render_load_tiles       ;; dejarlo en el futuro dentro de init_game
+    call init_game  ;; llamar solo una vez por arranque de juego (¡¡ no arranque de nivel !!)
     call system_render_load_map         ;; dejarlo en el futuro dentro de init_nivel
-    call init_oam                       ;; ocultar sprites OAM no utilizados
-    call habilitar_objetos              ;; dejarlo en el futuro dentro de init_game
     call system_prerender_init_entities ;; dejarlo en el futoro dentro de init_nivel
     call system_prerender_init_jugador  ;; jugador se inicializara en la primera entidad del array de entidades
-
-
+    call init_hud ;; dejarlo en el futuro dentro de init_nivel
+                  ;;<-- Se deberia llamar dentro al cargar un nivel por que sino se pone encima de la portada del juego
+                  ;; y tras salir de un nivel haria falta un "call desactivar_lcd_window"
+                  ;; "call desactivar_lcd_window" se podria dejar dentro de init_menu
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; PRUEBA de impresion en hud
+        ;; si se va ha hacer otra escena, recordar quitar
+            call wait_vblank
+            ld hl, TILEMAP_HUD_START + 1
+            ld a, TILE_JUGADOR
+            ld [hl+], a
+            ld [hl+], a
+            ld [hl+], a
+            ld [hl+], a
+        ;; cuando se tenga "call init_hud" activar_lcd_window 
+        ;; si se quiere cambiar de escena recordar hacer "call desactivar_lcd_window"
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        
     ld d, 0
     bucle_principal:
         ;ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF

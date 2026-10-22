@@ -28,9 +28,9 @@ EXPORT DEF rJOYP = $FF00 ;; Lectura de JoyPad
     DEF P_COLOR_LIGHT_GRAY = 1    ;; %01
     DEF P_COLOR_DARK_GRAY  = 2    ;; %10
     DEF P_COLOR_BLACK      = 3    ;; %11
-    DEF BGP_STANDARD   = (P_COLOR_BLACK << 6) | (P_COLOR_DARK_GRAY << 4) | (P_COLOR_LIGHT_GRAY << 2) | P_COLOR_WHITE
-    DEF OBJ0P_STANDARD = (P_COLOR_BLACK << 6) | (P_COLOR_DARK_GRAY << 4) | (P_COLOR_LIGHT_GRAY << 2) | P_COLOR_WHITE
-    DEF OBJ1P_STANDARD = (P_COLOR_BLACK << 6) | (P_COLOR_DARK_GRAY << 4) | (P_COLOR_LIGHT_GRAY << 2) | P_COLOR_WHITE
+    EXPORT DEF BGP_CONFIG   = (P_COLOR_BLACK << 6) | (P_COLOR_DARK_GRAY << 4) | (P_COLOR_LIGHT_GRAY << 2) | P_COLOR_WHITE
+    EXPORT DEF OBJ0P_CONFIG = (P_COLOR_BLACK << 6) | (P_COLOR_DARK_GRAY << 4) | (P_COLOR_LIGHT_GRAY << 2) | P_COLOR_WHITE
+    EXPORT DEF OBJ1P_CONFIG = (P_COLOR_BLACK << 6) | (P_COLOR_DARK_GRAY << 4) | (P_COLOR_LIGHT_GRAY << 2) | P_COLOR_WHITE
 
     ;; rLCDC ($FF40)
     DEF LCD_BG_DISPLAY_OFF    = %00000000   ;; Desactiva fondo (se vuelve blanco)
@@ -43,13 +43,13 @@ EXPORT DEF rJOYP = $FF00 ;; Lectura de JoyPad
     DEF LCD_BG_TILEMAP_9C00   = %00001000   ;; Fondo usa el mapa $9C00
     DEF LCD_TILE_DATA_8800    = %00000000   ;; Graficos usando bloque $8800 (con signo)
     DEF LCD_TILE_DATA_8000    = %00010000   ;; Graficos usando bloque $8000 (sin signo)
-    DEF LCD_WINDOW_OFF        = %00000000   ;; Desactiva la capa Ventana (HUD)
-    DEF LCD_WINDOW_ON         = %00100000   ;; Activa la capa Ventana (HUD)
+    EXPORT DEF LCD_WINDOW_OFF = %00000000   ;; Desactiva la capa Ventana (HUD)
+    EXPORT DEF LCD_WINDOW_ON  = %00100000   ;; Activa la capa Ventana (HUD)
     DEF LCD_WIN_TILEMAP_9800  = %00000000   ;; Ventana usa el mapa $9800
     DEF LCD_WIN_TILEMAP_9C00  = %01000000   ;; Ventana usa el mapa $9C00
     DEF LCD_POWER_OFF         = %00000000   ;; Apaga la pantalla
     DEF LCD_POWER_ON          = %10000000   ;; Enciende la pantalla
-    DEF LCD_CONFIG = LCD_POWER_ON | LCD_BG_DISPLAY_ON | LCD_OBJ_ON | LCD_OBJ_SIZE_8X8 | LCD_TILE_DATA_8000 | LCD_BG_TILEMAP_9800
+    EXPORT DEF LCD_CONFIG = LCD_BG_DISPLAY_ON | LCD_OBJ_ON | LCD_OBJ_SIZE_8X8 | LCD_BG_TILEMAP_9800 | LCD_TILE_DATA_8000 | LCD_WINDOW_OFF | LCD_WIN_TILEMAP_9C00 |LCD_POWER_ON
 
     ;; rIE ($FFFF)
     DEF IE_VBLANK  = %00000001 ; Interrupción al terminar de dibujar pantalla (60Hz)
@@ -106,10 +106,20 @@ EXPORT DEF TILE_JUGADOR = $03	;; jugador
 EXPORT DEF LEVEL_MAP_WIDTH  = 20
 EXPORT DEF LEVEL_MAP_HEIGHT = 16
 
-EXPORT DEF LEVEL_HUD_ORIGIN_Y = 16
-EXPORT DEF LEVEL_HUD_HEIGHT = 2
+EXPORT DEF LEVEL_HUD_ORIGIN_X = 0   ;; en tiles
+EXPORT DEF LEVEL_HUD_ORIGIN_Y = 16  ;; en tiles
+EXPORT DEF LEVEL_HUD_HEIGHT = 2     ;; en tiles
 
-EXPORT DEF LEVEL_FLOOR_Y = 16
+EXPORT DEF LEVEL_FLOOR_Y = 16       ;; en tiles
+
+EXPORT DEF WINDOW_X_OFFSET = 7              ;; en px
+EXPORT DEF WINDOW_START_X = LEVEL_HUD_ORIGIN_X *8 + WINDOW_X_OFFSET ;; en px
+EXPORT DEF WINDOW_START_Y = LEVEL_HUD_ORIGIN_Y *8                   ;; en px
+                                            ;; *8 por que el 1 tiles = 8px
+
+EXPORT DEF HUD_START_POS_X = WINDOW_START_X ;; en px
+EXPORT DEF HUD_START_POS_Y = WINDOW_START_Y ;; en px
+
 EXPORT DEF TAM_VRAM = 32
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

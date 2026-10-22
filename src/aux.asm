@@ -1,24 +1,104 @@
 SECTION "Aux", ROM0
 
-habilitar_objetos::
-    ;; habilidatar objetos
+init_game::
+    ;; hace la inicializacion para cuando arranque el juego, 
+    ;; prepara todo el entorno para empezar el jugo 
+    ;; (¡¡no es inicializar una partida en un nivel!!)
     ;; I: -
     ;; O: -
-    ;; M: hl
-    ld hl, rLCDC
-    set 1, [hl]
+    ;; M: A, B, DE, HL
+    call init_scroll
+    call init_palet
+    call init_lcd
+
+    call init_oam
+    call system_render_load_tiles
+ret
+
+init_scroll::
+    ;; pone el fondo en pos (0,0)
+    ;; I: -
+    ;; O: -
+    ;; M: A, HL
+    xor a           ;; a = 0
+    ld [rSCX], a
+    ld [rSCY], a
+ret
+
+init_hud::
+    ;; inicializar ventana el la posicion que hay definida
+    ;; I: -
+    ;; O: -
+    ;; M: A
+
+    call init_window
+ret
+
+init_window::
+    ;; inicializar ventana el la posicion que hay definida
+    ;; I: -
+    ;; O: -
+    ;; M: A
+    ld a, WINDOW_START_X
+    ld [rWX], a
+    ld a, WINDOW_START_Y
+    ld [rWY], a
+
+    call activar_lcd_window
+ret
+
+activar_lcd_window::
+    ;; activar window en LCDC
+    ;; I: -
+    ;; O: -
+    ;; M: A
+    ld a, [rLCDC]
+    or LCD_WINDOW_ON
+    ld [rLCDC], a
+ret
+
+desactivar_lcd_window::
+    ;; desactivar window en LCDC
+    ;; I: -
+    ;; O: -
+    ;; M: A
+    ld a, [rLCDC]
+    and ~LCD_WINDOW_ON ;;~LCD_WINDOW_ON invierte sus bits, modificando solo el bit que hay a 1 en la mascara LCD_WINDOW_ON
+    ld [rLCDC], a
+ret
+
+init_palet::
+    ;; establecer los config de las paletas
+    ;; I: -
+    ;; O: -
+    ;; M: A
+    ld a, BGP_CONFIG
+    ld [rBGP], a
+    ld a, OBJ0P_CONFIG
+    ld [rOBJ0P], a
+    ld a, OBJ1P_CONFIG
+    ld [rOBJ1P], a
+ret
+
+init_lcd::
+    ;; establece config de lcd
+    ;; I: -
+    ;; O: -
+    ;; M: A
+    ld a, LCD_CONFIG
+    ld [rLCDC], a
 ret
 
 init_oam::
     ;; inicializar OAM (40 sprites)
     ;; I: -
     ;; O: -
-    ;; M: A, B, HL.
+    ;; M: A, B, HL
     call wait_vblank
-    
-    ld hl, OAM_START
-    xor a
-    ld b, OAM_SIZE
+
+    ld hl, OAM_START    ;; dir por la que comienza
+    xor a               ;; a = 0
+    ld b, OAM_SIZE      ;; contador
 jp memset8
 
 wait_vblank::
