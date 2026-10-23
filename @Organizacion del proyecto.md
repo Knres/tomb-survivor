@@ -14,26 +14,32 @@ La estructura se puede ampliar/modificar según necesidades.
 ```text
 v1_plataformero/
 	src/
-		header.asm                 	 ; Cabecera de la ROM
-		main.asm                   	 ; Inicializacion y bucle principal
+		aux.asm                    ; Inicializacion del hardware y rutinas comunes
+		defs.asm                   ; Registros, constantes y offsets de entidades
+		header.asm                 ; Cabecera de la ROM
+		main.asm                   ; Inicializacion y bucle principal
+		input_update.asm           ; Lectura del joypad
+		scene_manager.asm          ; Entrada del gestor de escenas
+		wram.asm                   ; Variables y buffers de trabajo en WRAM0
+		funciones.md               ; Referencia de rutinas comunes
 		data/
-			entities.asm             ; Entidades y arrays de trabajo en WRAM0
 			gfx.asm                  ; Tiles y datos graficos constantes en ROM
-			level.asm                ; Datos constantes del nivel en ROM
+			niveles.asm              ; Mapas, spawn y apariciones de enemigos en ROM
 		managers/
 			manager_entidad.asm      ; Gestion de las entidades
 			manager_escena.asm       ; Gestion del cambio de escenas
+			manager_nivel.asm        ; Seleccion de datos del nivel actual
 		scenes/
-			scene_game.asm           ; Escena principal de la partida
+			scene_ingame.asm         ; Escena de partida
 			scene_gameover.asm       ; Escena de fin de partida
 			scene_menu.asm           ; Escena del menu principal
 			scene_pausa.asm          ; Escena de pausa
 		systems/
-			sytem_colisiones.asm     ; Deteccion y resolucion de colisiones
-			sytem_fisicas.asm        ; Gravedad, velocidad y movimiento
-			sytem_input.asm          ; Lectura del joypad e intenciones
-			sytem_prerender.asm      ; Preparacion de datos antes de renderizar
-			sytem_render.asm         ; OAM y escrituras durante VBlank
+			system_colisiones.asm   ; Deteccion y resolucion de colisiones
+			system_fisicas.asm      ; Gravedad, velocidad y movimiento
+			system_input.asm        ; Entrada e intenciones
+			system_prerender.asm    ; Preparacion de sprites en shadow_oam
+			system_render.asm       ; Copias a VRAM/OAM durante VBlank
 		ui/
 			hud.asm					 ; HUD en partida
 ```
@@ -42,60 +48,57 @@ El `Makefile` ya busca los archivos `.asm` dentro de `src`, incluidos los de sub
 
 ## Estructura para las funciones
 
-Antes o después de de hacer una función, dejar su contrato junto a la etiqueta. 
+Dejar el contrato junto a cada etiqueta global, siguiendo este orden: descripcion breve, `I`, `O` y `M`.
 
-- Indicar siempre los registros de 📥entrada, 🔙salida y modificados (incluyendo las que se modifican si se hace un `call` dentro de la función). En caso de que no haya indicar que no hay.
-- Los flags tambien forman parte del contrato: indicar, por ejemplo, `Z si la celda esta libre` o `A = 0 si no hay colision`.
+- En `I:` (INPUT) indicar solo los registros y flags que recibe la funcion.
+- En `O:` (OUTPUT), solo los registros y flags que devuelve. 
+	- Si no hay INPUT/OUTPUT relevantes o no hay, escribir `-`.
+- En `M:` (MODIFY) indicar los registros que pueden quedar modificados, incluyendo los que cambien las rutinas llamadas.
+- No indicar lo que hace la funcion en `I:`/`O:`, dejarlo en la descripción.
 - Las funciones globales terminan en `::`; las etiquetas internas usan `.`.
 - Una función llamada con `call` debe terminar con `ret` o `jp`.
 
 > [!NOTE]
 > **Ejemplo:** 
 > ```asm {.javascript .numberLines}
-> ;; Comprobar si se puede desplazar hacia la donde se indica en `A`.
-> ;; 📥INPUTS
-> ;;	A  = desplazamiento que se quiere hacer
-> ;; 	HL = direccion de la posicion actual
-> ;; 🔙RETURNS/OUTPUTS: 
-> ;;	Flag: Z se ha movido correctamente
-> ;; 		 NZ se sale del mapa (en `A` se indica por donde se sale)
-> ;;			A = 0 se la por debajo
-> ;;		  	A = 1 se la por arriba
-> ;;		  	A = 2 se la por la izquieda
-> ;;		  	A = 3 se la por la derecha
-> ;; ❌MODIFICA: AF, HL
-> sys_funcion_nombre::
-> 	  ;; <codigo de la funcion>
-> 	  ;; ...
+> nombre_funcion::
+> 	  ;; Describe el comportamiento y los efectos en memoria
+> 	  ;; I: HL = origen; Z = condicion de entrada
+> 	  ;; O: A = resultado; C = indica si hubo desbordamiento
+> 	  ;; M: A, HL
+> 
+> 	  ;; <<<codigo>>>
 > ret
 > ```
 
-## Orden de actualizacion de una escena
+## Orden previsto de actualizacion de una escena
 
 1. Leer input.
 2. Actualizar intenciones y movimiento.
 3. Resolver colisiones.
 4. Actualizar animaciones y estados.
-5. Esperar VBlank.
-6. Renderizar tilemap y sprites.
+5. Preparar los sprites en `shadow_oam` fuera de VBlank.
+6. Esperar VBlank dentro del render y copiar `shadow_oam` a OAM.
+
+El mapa y los tiles son estaticos: se cargan al inicializar el juego/nivel, no cada fotograma. El render se encarga de copiar cada fotograma de OAM, que solo se modifica el tilemap durante un cambio o carga de nivel.
 
 > [!NOTE]
-> **Ejemplo:**
+> **Ejemplo posible:**
 > ```asm {.javascript .numberLines}
-> scene_game_init::
->     call man_entity_init
->     call sys_render_init
+> scene_ingame_init::
+>     call system_prerender_init_entities
+>     call system_prerender_init_jugador
 > ret
 > 
-> scene_game_update::
->     call sys_input_update
->     call sys_fisicas_update
->     call sys_colisiones_update
->     call sys_render_update
+> scene_ingame_update::
+>     call system_input_update
+>     call system_fisicas_update
+>     call system_colisiones_update
+>     call system_prerender_update
+>     call system_render_update
 > ret
 > ```
 
-Orden recomendado por frame:
 
 
 
@@ -116,6 +119,6 @@ make clean
 > - [ ] La escena inicializa sus datos antes del primer update.
 > - [ ] No se escribe en VRAM fuera de VBlank.
 > - [ ] No hay bucles infinitos.
-> - [ ] Las entidades inactivas no son procesadas (E_ACTIVE = 0).
+> - [ ] Las entidades inactivas no son procesadas (`CMP = 0` o `ALIVE` desactivado).
 > - [ ] Las funciones a las que se llamadas con `call` tienen `ret` o `jp`.
 > - [ ] Hacer pruebas directamente en el juego de lo que se ha implementado.
