@@ -16,7 +16,7 @@ scene_manager::
     ;;jp z, estado_2
     
     ; ELSE
-    jp fin
+    ret
 
 ;; ESTO DEBE IR EN OTROS ARCHIVOS Y HACER LUEGO UN "IMPORT"
 ;inicio::

@@ -12,8 +12,8 @@ Las memorias reservadas se ubicaran dentro del archcivo **`wram.asm`**, en casos
 
 | Etiqueta | Tamaño | ¿Para qué es? |
 | -------- | ------ | ------------- |
-| `entity_array` | `ENTITY_ARRAY_SIZE` (16 bytes) | Array de 2 entidades de 8 bytes (`CMP`, `Y`, `X`, `TILE`, `ATTR`, `VY`, `VX`, `KIND`). |
-| `shadow_oam` | `SHADOW_OAM_SIZE` (8 bytes) | Copia de los datos `Y`, `X`, `TILE`, `ATTR` de hasta 2 sprites, preparada antes de VBlank. |
+| `entity_array` | `ENTITY_ARRAY_SIZE` (32 bytes) | Array de 4 entidades de 8 bytes (`CMP`, `Y`, `X`, `TILE`, `ATTR`, `VY`, `VX`, `KIND`). |
+| `shadow_oam` | `SHADOW_OAM_SIZE` (16 bytes) | Copia de los datos `Y`, `X`, `TILE`, `ATTR` de hasta 2 sprites, preparada antes de VBlank. |
 | `shadow_cursor` | 2 bytes | Puntero al siguiente slot disponible en `shadow_oam`. |
 | `jugador_x` | 1 byte | Posicion horizontal del jugador en pixeles. |
 | `jugador_y` | 1 byte | Posicion vertical del jugador en pixeles. |
@@ -112,7 +112,7 @@ Las constantes permaneceran en el archivo **`defs.asm`** en casos necesarios se 
 | `E_MOVE_UP` | 4 | Movimiento hacia arriba. |
 | `VX_JUGADOR` | 5 px | Velocidad horizontal configurada del jugador. |
 | `VY_JUGADOR` | 5 px | Velocidad vertical configurada del jugador. |
-| `MAX_ENTITIES` | 2 | Capacidad actual del array de entidades. |
+| `MAX_ENTITIES` | 4 | Capacidad actual del array de entidades. |
 | `OAM_ENTRY_SIZE` | 4 | Bytes por sprite en OAM. |
 | `SHADOW_OAM_SIZE` | `MAX_ENTITIES * OAM_ENTRY_SIZE` | Bytes reservados para OAM sombra. |
 | `ENTITY_SIZE` | 8 | Bytes por entidad en `entity_array`. |

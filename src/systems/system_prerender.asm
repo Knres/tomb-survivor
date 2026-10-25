@@ -48,10 +48,10 @@ system_prerender_init_jugador::
 	xor a
 	ld [hl+], a         ;; ATTR = 0 ; HL -> VY
 
-    ld a, VX_JUGADOR
+    ld a, VY_JUGADOR
 	ld [hl+], a         ;; guardar VY ; HL -> VX
 
-    ld a, VY_JUGADOR
+    ld a, VX_JUGADOR
 	ld [hl+], a         ;; guardar VX ; HL -> KIND
 
 	ld a, KIND_JUGADOR

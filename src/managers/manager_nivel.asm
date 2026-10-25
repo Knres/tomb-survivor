@@ -19,7 +19,7 @@ get_mapa_nivel_actual::
 
 	;; por defecto el nivel 1
 	ld a, 1
-	ld [hl], a
+	ld [nivel_actual], a
 
 	.nivel_1
 		ld hl, mapa_nivel_1
@@ -48,7 +48,7 @@ get_pos_inicial_jugador_nivel_actual::
 
 	;; por defecto el nivel 1
 	ld a, 1
-	ld [hl], a
+	ld [nivel_actual], a
 
 	.nivel_1
 		ld hl, mapa_nivel_1_posicion_inicial_jugador
