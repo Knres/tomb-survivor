@@ -2,6 +2,14 @@
 ;; Registros 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Sonidos
+EXPORT DEF rNR10 = $FF10   ;; CH1 barrido
+EXPORT DEF rNR21 = $FF16   ;; CH2 onda/duración
+EXPORT DEF rNR41 = $FF20   ;; CH4 longitud
+EXPORT DEF rNR50 = $FF24   ;; Volumen maestro
+EXPORT DEF rNR51 = $FF25   ;; Canales -> altavoz izq/der
+EXPORT DEF rNR52 = $FF26   ;; Encendido del APU
+
 ;; Pantalla y Graficos
 EXPORT DEF rLCDC = $FF40 ;; Control de LCD
 EXPORT DEF rSCY  = $FF42 ;; Scroll Vertidal   (Y) del fondo

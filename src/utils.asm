@@ -10,6 +10,7 @@ init_game::
     call init_scroll
     call init_palet
     call init_lcd
+    call sys_sound_init
 
     call init_oam
     call system_render_load_tiles

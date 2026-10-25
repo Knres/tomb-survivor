@@ -13,7 +13,7 @@ Las memorias reservadas se ubicaran dentro del archcivo **`wram.asm`**, en casos
 | Etiqueta | Tamaño | ¿Para qué es? |
 | -------- | ------ | ------------- |
 | `entity_array` | `ENTITY_ARRAY_SIZE` (32 bytes) | Array de 4 entidades de 8 bytes (`CMP`, `Y`, `X`, `TILE`, `ATTR`, `VY`, `VX`, `KIND`). |
-| `shadow_oam` | `SHADOW_OAM_SIZE` (16 bytes) | Copia de los datos `Y`, `X`, `TILE`, `ATTR` de hasta 2 sprites, preparada antes de VBlank. |
+| `shadow_oam` | `SHADOW_OAM_SIZE` (16 bytes) | Copia de los datos `Y`, `X`, `TILE`, `ATTR` de hasta 4 sprites, preparada antes de VBlank. |
 | `shadow_cursor` | 2 bytes | Puntero al siguiente slot disponible en `shadow_oam`. |
 | `jugador_x` | 1 byte | Posicion horizontal del jugador en pixeles. |
 | `jugador_y` | 1 byte | Posicion vertical del jugador en pixeles. |
@@ -42,6 +42,12 @@ Las constantes permaneceran en el archivo **`defs.asm`** en casos necesarios se 
 | `rIE` | `$FFFF` | Habilitacion de interrupciones. |
 | `rDIV` | `$FF04` | Divisor del temporizador. |
 | `rJOYP` | `$FF00` | Registro de lectura del joypad. |
+| `rNR10` | `$FF10` | Primer registro del canal 1 de sonido (barrido). |
+| `rNR21` | `$FF16` | Primer registro del canal 2 de sonido (onda/duracion). |
+| `rNR41` | `$FF20` | Primer registro del canal 4 de sonido (ruido, duracion). |
+| `rNR50` | `$FF24` | Volumen maestro del sonido. |
+| `rNR51` | `$FF25` | Salida de cada canal de sonido a altavoz izquierdo/derecho. |
+| `rNR52` | `$FF26` | Encendido/apagado del chip de sonido (APU). |
 | `BGP_CONFIG` | — | Configuracion inicial de tonos para fondo/ventana. |
 | `OBJ0P_CONFIG` | — | Configuracion inicial de la paleta de sprites 0. |
 | `OBJ1P_CONFIG` | — | Configuracion inicial de la paleta de sprites 1. |
@@ -162,20 +168,20 @@ Utilizar " <br> " para salto de linea en la tabla
 | Ubicación | Nombre | Descripcion | Input | Output | Modifica |
 | --- | --- | ----------- | --- | --- | --- |
 | NO MOD. | NO QUITAR | ESTO_ES_PARA_ALARGAR_LA_DESCRIPCION_PARA_QUE_SEA_MÁS_LEGIBLE | ALARGAR_UN_POCO_ESTA_SECCION | ALARGAR_UN_POCO_ESTA_SECCION | ALARGAR_ESTA_SECCION |
-| aux.asm | init_game | Inicializa el arranque del juego: scroll, paletas, LCD, OAM y carga de tiles del mapa base. | - | - | A, B, DE, HL |
-| aux.asm | init_scroll | Pone el fondo en la posicion inicial del scroll (0,0). | - | - | A, HL |
-| aux.asm | init_hud | Inicializa la ventana/HUD en la posicion definida por el proyecto. | - | - | A |
-| aux.asm | init_window | Configura `rWX` y `rWY` y activa la ventana del LCD. | - | - | A |
-| aux.asm | activar_lcd_window | Activa el bit de ventana del registro `rLCDC`. | - | - | A |
-| aux.asm | desactivar_lcd_window | Desactiva el bit de ventana del registro `rLCDC` sin tocar el resto de bits. | - | - | A |
-| aux.asm | init_palet | Carga la configuracion inicial de las paletas de fondo y sprites. | - | - | A |
-| aux.asm | init_lcd | Escribe la configuracion completa del registro `rLCDC`. | - | - | A |
-| aux.asm | init_oam | Limpia OAM con la rutina de espera a VBlank. | - | - | A, B, HL |
-| aux.asm | wait_vblank | Espera a que la linea LCD alcance `VBLANK_START`. | - | - | A, HL |
-| aux.asm | memcpy8 | Copia `B` bytes desde `HL` a `DE` usando incremento de punteros. | HL = origen, DE = destino, B = n | - | A, B, DE, HL |
-| aux.asm | memcpy8_bc | Copia `BC` bytes desde `HL` a `DE` usando `BC` como contador. | HL = origen, DE = destino, BC = n | - | A, BC, DE, HL |
-| aux.asm | memset8 | Rellena la zona apuntada por `HL` con el valor de `A` durante `B` bytes. | HL = destino, A = valor, B = n | - | A, B, HL |
-| aux.asm | call_hl | Salta a la direccion apuntada por `HL` y vuelve con `ret` al salir de la subrutina. | HL = direccion | - | PC |
+| utils.asm | init_game | Inicializa el arranque del juego: scroll, paletas, LCD, sonido, OAM y carga de tiles del mapa base. | - | - | A, B, DE, HL |
+| utils.asm | init_scroll | Pone el fondo en la posicion inicial del scroll (0,0). | - | - | A, HL |
+| utils.asm | init_hud | Inicializa la ventana/HUD en la posicion definida por el proyecto. | - | - | A |
+| utils.asm | init_window | Configura `rWX` y `rWY` y activa la ventana del LCD. | - | - | A |
+| utils.asm | activar_lcd_window | Activa el bit de ventana del registro `rLCDC`. | - | - | A |
+| utils.asm | desactivar_lcd_window | Desactiva el bit de ventana del registro `rLCDC` sin tocar el resto de bits. | - | - | A |
+| utils.asm | init_palet | Carga la configuracion inicial de las paletas de fondo y sprites. | - | - | A |
+| utils.asm | init_lcd | Escribe la configuracion completa del registro `rLCDC`. | - | - | A |
+| utils.asm | init_oam | Limpia OAM con la rutina de espera a VBlank. | - | - | A, B, HL |
+| utils.asm | wait_vblank | Espera a que la linea LCD alcance `VBLANK_START`. | - | - | A, HL |
+| utils.asm | memcpy8 | Copia `B` bytes desde `HL` a `DE` usando incremento de punteros. | HL = origen, DE = destino, B = n | - | A, B, DE, HL |
+| utils.asm | memcpy8_bc | Copia `BC` bytes desde `HL` a `DE` usando `BC` como contador. | HL = origen, DE = destino, BC = n | - | A, BC, DE, HL |
+| utils.asm | memset8 | Rellena la zona apuntada por `HL` con el valor de `A` durante `B` bytes. | HL = destino, A = valor, B = n | - | A, B, HL |
+| utils.asm | call_hl | Salta a la direccion apuntada por `HL` y vuelve con `ret` al salir de la subrutina. | HL = direccion | - | PC |
 | manager_nivel.asm | get_mapa_nivel_actual | Devuelve en `HL` la direccion del mapa del nivel actual seleccionado por `nivel_actual`. | - | HL = direccion del mapa | A, HL |
 | manager_nivel.asm | get_pos_inicial_jugador_nivel_actual | Devuelve en `HL` la direccion de la posicion inicial del jugador para el nivel actual. | - | HL = direccion de spawn | A, HL |
 | system_prerender.asm | system_prerender_init_entities | Inicializa el array `entity_array` a cero para preparar entidades vivas. | - | - | A, B, HL |
@@ -185,4 +191,8 @@ Utilizar " <br> " para salto de linea en la tabla
 | system_render.asm | system_render_load_map | Copia el tilemap del nivel actual desde ROM a VRAM, fila a fila, con espera de VBlank. | - | - | A, BC, DE, HL |
 | system_render.asm | system_render_load_tiles | Copia los tiles graficos desde ROM a la zona de VRAM de tiles. | - | - | A, B, DE, HL |
 | system_render.asm | system_render_update | Copia `shadow_oam` a OAM real al final del frame. | - | - | A, B, DE, HL |
+| system_sonido.asm | sys_sound_init | Enciende el APU con volumen maximo y los 4 canales en los dos altavoces. Se llama una vez en `init_game`. | - | - | A |
+| system_sonido.asm | sys_sound_play_sfx | Reproduce un efecto de `data/sfx.asm`: copia sus valores a los registros del canal. | HL = efecto (`SfxSalto`, ...) | - | A, B, DE, HL |
+| system_sonido_test.asm | sys_sound_test_init | PRUEBA: inicializa la herramienta de prueba de sonido. | - | - | A |
+| system_sonido_test.asm | sys_sound_test_update | PRUEBA: cada boton recien pulsado reproduce un efecto (tabla en la cabecera del archivo). Llamar una vez por frame. | - | - | A, BC, DE, HL |
 |  |   |  |  |  |  | <!-- NO MODIFICAR ESTA FILA, USAR PARA COPIAR Y PEGAR ARRIBA-->

@@ -50,6 +50,8 @@ main::
 
     ;; inicializacion de cosas
     call init_game  ;; llamar solo una vez por arranque de juego (¡¡ no arranque de nivel !!)
+    call sys_sound_test_init    ;; PRUEBA de sonido: quitar junto a system_sonido_test.asm
+
     call system_render_load_map         ;; dejarlo en el futuro dentro de init_nivel
     call system_prerender_init_entities ;; dejarlo en el futoro dentro de init_nivel
     call system_prerender_init_jugador  ;; jugador se inicializara en la primera entidad del array de entidades
@@ -76,6 +78,7 @@ main::
         ;ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
         ;call scene_manager
         call press_update
+        call sys_sound_test_update  ;; PRUEBA de sonido: quitar junto a system_sonido_test.asm
 		call system_prerender_update
 		call system_render_update
 

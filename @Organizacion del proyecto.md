@@ -14,7 +14,7 @@ La estructura se puede ampliar/modificar según necesidades.
 ```text
 v1_plataformero/
 	src/
-		aux.asm                    ; Inicializacion del hardware y rutinas comunes
+		utils.asm                  ; Inicializacion del hardware y rutinas comunes
 		defs.asm                   ; Registros, constantes y offsets de entidades
 		header.asm                 ; Cabecera de la ROM
 		main.asm                   ; Inicializacion y bucle principal
@@ -25,6 +25,7 @@ v1_plataformero/
 		data/
 			gfx.asm                  ; Tiles y datos graficos constantes en ROM
 			niveles.asm              ; Mapas, spawn y apariciones de enemigos en ROM
+			sfx.asm                  ; Efectos de sonido en ROM
 		managers/
 			manager_entidad.asm      ; Gestion de las entidades
 			manager_escena.asm       ; Gestion del cambio de escenas
@@ -40,6 +41,8 @@ v1_plataformero/
 			system_input.asm        ; Entrada e intenciones
 			system_prerender.asm    ; Preparacion de sprites en shadow_oam
 			system_render.asm       ; Copias a VRAM/OAM durante VBlank
+			system_sonido.asm       ; Encendido del APU y reproduccion de efectos
+			system_sonido_test.asm  ; PRUEBA: cada boton reproduce un efecto (quitar antes de entregar)
 		ui/
 			hud.asm					 ; HUD en partida
 ```
