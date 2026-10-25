@@ -34,12 +34,6 @@ EXPORT DEF ESTADO_ERROR = $FF
 
 SECTION "Entry point", ROM0[$150]
 
-wait_VBLANK:
-    ld a, [$FF44]
-    cp 144
-    jr nz, wait_VBLANK
-    ret
-
 main::
     di     ;; Disable Interrupts
     ld a, 1

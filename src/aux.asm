@@ -21,8 +21,8 @@ init_scroll::
     ;; O: -
     ;; M: A, HL
     xor a           ;; a = 0
-    ld [rSCX], a
-    ld [rSCY], a
+    ldh [rSCX], a
+    ldh [rSCY], a
 ret
 
 init_hud::
@@ -40,9 +40,9 @@ init_window::
     ;; O: -
     ;; M: A
     ld a, WINDOW_START_X
-    ld [rWX], a
+    ldh [rWX], a
     ld a, WINDOW_START_Y
-    ld [rWY], a
+    ldh [rWY], a
 
     call activar_lcd_window
 ret
@@ -54,7 +54,7 @@ activar_lcd_window::
     ;; M: A
     ld a, [rLCDC]
     or LCD_WINDOW_ON
-    ld [rLCDC], a
+    ldh [rLCDC], a
 ret
 
 desactivar_lcd_window::
@@ -64,7 +64,7 @@ desactivar_lcd_window::
     ;; M: A
     ld a, [rLCDC]
     and ~LCD_WINDOW_ON ;;~LCD_WINDOW_ON invierte sus bits, modificando solo el bit que hay a 1 en la mascara LCD_WINDOW_ON
-    ld [rLCDC], a
+    ldh [rLCDC], a
 ret
 
 init_palet::
@@ -73,11 +73,11 @@ init_palet::
     ;; O: -
     ;; M: A
     ld a, BGP_CONFIG
-    ld [rBGP], a
+    ldh [rBGP], a
     ld a, OBJ0P_CONFIG
-    ld [rOBJ0P], a
+    ldh [rOBJ0P], a
     ld a, OBJ1P_CONFIG
-    ld [rOBJ1P], a
+    ldh [rOBJ1P], a
 ret
 
 init_lcd::
@@ -86,7 +86,7 @@ init_lcd::
     ;; O: -
     ;; M: A
     ld a, LCD_CONFIG
-    ld [rLCDC], a
+    ldh [rLCDC], a
 ret
 
 init_oam::
