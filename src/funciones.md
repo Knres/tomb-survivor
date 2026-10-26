@@ -20,6 +20,8 @@ Las memorias reservadas se ubicaran dentro del archcivo **`wram.asm`**, en casos
 | `jugador_direccion_movimiento` | 1 byte | Direccion/intencion de movimiento del jugador. |
 | `nivel_actual` | 1 byte | Numero del nivel seleccionado. |
 | `escena_update` | 2 bytes | Direccion del update de la escena actual (byte bajo, byte alto). La escribe `manager_escena_cambiar`. |
+| `escena_contador` | 1 byte | Frames que quedan en una pantalla temporizada (game over, nivel, victoria). |
+| `escena_siguiente` | 2 bytes | Escena a la que se pasa cuando `escena_contador` llega a 0 (byte bajo, byte alto). |
 |  |  | <!-- NO MODIFICAR ESTA FILA, USAR PARA COPIAR Y PEGAR ARRIBA-->
 
 
@@ -134,6 +136,9 @@ Las constantes permaneceran en el archivo **`defs.asm`** en casos necesarios se 
 | `TILE_NUM_0` | `(numeros_data - tile_data) / 16` | Tile del 0; el numero n es `TILE_NUM_0 + n` (del 0 al 6). |
 | `PANTALLA_ANCHO` | 20 | Tiles visibles en horizontal (una fila de pantalla). |
 | `PANTALLA_ALTO` | 18 | Tiles visibles en vertical (filas de pantalla). |
+| `DURACION_PANTALLA` | 180 | Frames que dura una pantalla temporizada (3 s a 60 fps). |
+| `NUM_NIVELES` | 1 | Cuantos niveles tiene el juego. Al pasar el ultimo se va a la victoria. |
+| `POS_NUMERO_NIVEL` | `$9800 + 8*32 + 12` | Direccion del tilemap donde se escribe el numero en la pantalla de nivel completado (definida en `data/pantallas.asm`). |
 |  |  | <!-- NO MODIFICAR ESTA FILA, USAR PARA COPIAR Y PEGAR ARRIBA-->
 
 
@@ -220,4 +225,9 @@ Utilizar " <br> " para salto de linea en la tabla
 | scene_menu.asm | scene_menu_update | Titulo, cada frame. Pendiente: con START recien pulsado, ir a `scene_ingame` (falta el input). | - | - | - |
 | scene_ingame.asm | scene_ingame_init | Partida: `nivel_actual` = 1, carga el mapa, crea jugador y escorpion y enciende el HUD. | - | - | A, BC, DE, HL |
 | scene_ingame.asm | scene_ingame_update | Partida, cada frame: prepara los sprites (`system_prerender_update`). Aqui iran fisicas, colisiones... | - | - | A, B, DE, HL |
+| manager_escena.asm | manager_escena_temporizada_init | Init comun de las pantallas que salen solas: vacia la OAM sombra, guarda la escena siguiente, pone `escena_contador` = `DURACION_PANTALLA` y dibuja la pantalla. | HL = pantalla en ROM, DE = escena siguiente | - | A, BC, DE, HL |
+| manager_escena.asm | manager_escena_temporizada_update | Update comun de las pantallas que salen solas: resta 1 a `escena_contador` y al llegar a 0 cambia a `escena_siguiente`. | - | - | Todos (al acabar ejecuta el init de la siguiente) |
+| scene_gameover.asm | scene_gameover_init | Game over: pantalla GAME OVER durante `DURACION_PANTALLA` frames, despues al titulo. Para usarla: `ld hl, scene_gameover` / `call manager_escena_cambiar`. | - | - | A, BC, DE, HL |
+| scene_nivel.asm | scene_nivel_init | Nivel completado: si era el ultimo nivel va a la victoria; si no, muestra GREAT + numero, suena `SfxNivel`, incrementa `nivel_actual` y despues va a la partida. Para usarla: `ld hl, scene_nivel` / `call manager_escena_cambiar`. | `nivel_actual` = nivel superado | - | A, BC, DE, HL |
+| scene_victoria.asm | scene_victoria_init | Victoria: pantalla SURVIVED y `SfxNivel`, despues al titulo. | - | - | A, BC, DE, HL |
 |  |   |  |  |  |  | <!-- NO MODIFICAR ESTA FILA, USAR PARA COPIAR Y PEGAR ARRIBA-->

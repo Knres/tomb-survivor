@@ -48,6 +48,9 @@ main::
     call init_game  ;; llamar solo una vez por arranque de juego (¡¡ no arranque de nivel !!)
     call sys_sound_test_init    ;; PRUEBA de sonido: quitar junto a system_sonido_test.asm
 
+    ld   a, 1                   ;; TEMPORAL: partida nueva -> nivel 1
+    ld   [nivel_actual], a      ;; (cuando START funcione, lo hara scene_menu_update)
+
     ;; ld   hl, scene_menu Poner este cuando START ya funcione con el joypad
     ld   hl, scene_ingame 
     call manager_escena_cambiar

@@ -20,3 +20,8 @@ nivel_actual:: DS 1
 
 SECTION "Escena actual", WRAM0
 escena_update:: DS 2
+
+
+SECTION "Escena temporizada", WRAM0
+escena_contador::  DS 1
+escena_siguiente:: DS 2

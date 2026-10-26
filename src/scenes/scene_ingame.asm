@@ -11,8 +11,8 @@ scene_ingame::
 ;; O: -
 ;; M: A, BC, DE, HL
 scene_ingame_init::
-    ld   a, 1
-    ld   [nivel_actual], a
+;; Entra en la partida: carga el mapa de nivel_actual, crea entidades y enciende el HUD.
+;; nivel_actual lo pone quien empieza la partida (1 = partida nueva).
 
     call system_render_load_map
     call system_prerender_init_entities
