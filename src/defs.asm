@@ -107,6 +107,10 @@ EXPORT DEF TILE_SUELO = $01     ;; suelo -> pisble, colisiona y no muere se mant
 EXPORT DEF TILE_PARED = $02     ;; pared -> al colisionar con ellas muere el jugador
 EXPORT DEF TILE_JUGADOR = $03	;; jugador
 EXPORT DEF TILE_ESCORPION = $04   ;; escorpion
+EXPORT DEF TILE_PLAT_DERECHA = $05   ;; plataforma derecha
+EXPORT DEF TILE_PLAT_IZQUIERDA = $06   ;; plataforma izquierda
+EXPORT DEF TILE_PARED_NUEVA = $07   ;; pared nueva
+EXPORT DEF TILE_CORAZON = $08   ;; corazon
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
