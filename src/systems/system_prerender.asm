@@ -133,3 +133,58 @@ system_prerender_update::
 
 	ld hl, system_prerender_one
 jp manager_entity_for_each
+
+system_prerender_pos_jugador::
+	call get_pos_inicial_jugador_nivel_actual
+
+	ld hl, entity_array ;; hl -> CMP de primera entidad (jugador)
+	inc hl ;; HL --> Y 
+
+	ld a, [jugador_y]   ;; recuperar Y
+	add a, OAM_Y_OFFSET ;; coordenada de OAM
+	ld [hl+], a         ;; guardar Y ; HL -> X
+
+	ld a, [jugador_x]   ;; recuperar X
+	add a, OAM_X_OFFSET ;; coordenada de OAM
+	ld [hl], a          ;; guardar X ; HL -> TILE 
+ret
+
+system_jugador_update:
+	.izquierda:
+		ld a, [joypad_pressed]
+		bit LEFT_BIT, a
+		jr z, .derecha	;; si no he pulsado left pruebo con right
+		ld a, E_MOVE_LEFT
+		ld [jugador_direccion_movimiento], a
+		jr .continua
+
+	.derecha:
+		ld a, [joypad_pressed]
+		bit RIGHT_BIT, a
+		jr z, .continua ;; si no he presionado nada continuo sin cambios en la direccion
+		ld a, E_MOVE_RIGHT
+		ld [jugador_direccion_movimiento], a
+
+	.continua:
+		call system_jugador_pos_update
+ret
+
+system_jugador_pos_update::
+	ld a, [jugador_direccion_movimiento]
+	cp E_MOVE_LEFT
+	jr z, .izquierda
+	
+	.derecha:
+		ld a, [jugador_x]
+		inc a
+		ld [jugador_x], a
+		jr .tras_direccion
+
+	.izquierda:
+		ld a, [jugador_x]
+		dec a
+		ld [jugador_x], a
+		
+	.tras_direccion:
+	call system_prerender_pos_jugador
+ret
