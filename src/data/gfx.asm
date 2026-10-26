@@ -43,16 +43,22 @@ tile_data::
 	DB %00100100, %00100100 ;; fila 6
 	DB %11100111, %11100111 ;; fila 7
 
-	;; Tile 4 ($04): escorpion 
-	DB %00000000, %00000000 ;; fila 0
-	DB %00011100, %00111100 ;; fila 1 
-	DB %00100110, %01100110 ;; fila 2
-	DB %11100011, %11100011 ;; fila 3
-	DB %00000001, %00000001 ;; fila 4 
-	DB %01100001, %00111101 ;; fila 5 
-	DB %11111001, %11111111 ;; fila 6 
-	DB %01010101, %01010101 ;; fila 7
+	;; Tile 4 ($04): escorpion
+    INCBIN "src/data/gfx/escorpion1.2bpp" 
 
+	;; Tile 5 ($05): plataforma_derecha
+    INCBIN "src/data/gfx/plataforma_derecha.2bpp"
+
+	;; Tile 6 ($06): plataforma_izquierda
+    INCBIN "src/data/gfx/plataforma_izquierda.2bpp"
+
+	;; Tile 7 ($07): pared nueva
+    INCBIN "src/data/gfx/suelo.2bpp"
+
+	;; Tile 8 ($08): corazon
+    INCBIN "src/data/gfx/corazon.2bpp"
+
+	;; ---------- FUENTE ----------
 ;; Dibujo en los comentarios: # negro (color 3), + gris (color 1), . blanco (color 0)
 
 fuente_data::
