@@ -30,6 +30,9 @@ system_prerender_init_jugador::
 	ld a, E_MOVE_NONE                   ;; / al comenzar la partida no tendra definida direccion de movimiento
 	ld [jugador_direccion_movimiento], a;; \ para evitar que se emieza a mover antes de tiempo 
 
+	ld a, E_MOVE_NONE
+	ld [jugador_tiempo_salto], a
+
 	ld hl, entity_array ;; hl -> CMP de primera entidad (jugador)
 	ld a, CMP_ALIVE | CMP_INPUT | CMP_COLLIDER | CMP_PHYSICS | CMP_SPRITE
     ld [hl+], a ;; guardar CMP ; HL -> Y
@@ -133,3 +136,90 @@ system_prerender_update::
 
 	ld hl, system_prerender_one
 jp manager_entity_for_each
+
+system_prerender_pos_jugador::
+	call get_pos_inicial_jugador_nivel_actual
+
+	ld hl, entity_array ;; hl -> CMP de primera entidad (jugador)
+	inc hl ;; HL --> Y 
+
+	ld a, [jugador_y]   ;; recuperar Y
+	add a, OAM_Y_OFFSET ;; coordenada de OAM
+	ld [hl+], a         ;; guardar Y ; HL -> X
+
+	ld a, [jugador_x]   ;; recuperar X
+	add a, OAM_X_OFFSET ;; coordenada de OAM
+	ld [hl], a          ;; guardar X ; HL -> TILE 
+ret
+
+system_jugador_update:
+	;; cambio de direccion
+	.izquierda:
+		ld a, [joypad_pressed]
+		bit LEFT_BIT, a
+		jr z, .derecha	;; si no he pulsado left pruebo con right
+		ld a, E_MOVE_LEFT
+		ld [jugador_direccion_movimiento], a
+		jr .salto
+
+	.derecha:
+		ld a, [joypad_pressed]
+		bit RIGHT_BIT, a
+		jr z, .salto ;; si no he presionado nada continuo sin cambios en la direccion
+		ld a, E_MOVE_RIGHT
+		ld [jugador_direccion_movimiento], a
+
+	;; salto
+	.salto:
+		ld a, [joypad_pressed]
+		bit A_BIT, a
+		jr z, .continua_salto
+		
+		ld a, [jugador_tiempo_salto]
+		cp 0
+		jr nz, .continua_salto	;; compruebo si ya esta saltando, no puede saltar mientras esta saltando. Si jugador_tiempo_salto vale distinto de 0 prosigue
+
+		;; si no esta saltando, hago que comience a saltar
+		ld a, VY_JUGADOR ;; inicializo el valor a 5 frames de salto
+		ld [jugador_tiempo_salto], a
+		jr .continua
+
+		.continua_salto:
+		ld a, [jugador_tiempo_salto]
+		cp 0
+		jr z, .continua
+		dec a ;; actualizo tiempo de salto
+		ld [jugador_tiempo_salto], a
+
+	.continua:
+		call system_jugador_pos_update
+ret
+
+system_jugador_pos_update::
+	ld a, [jugador_direccion_movimiento]
+	cp E_MOVE_LEFT
+	jr z, .izquierda
+	
+	.derecha:
+		ld a, [jugador_x]
+		inc a
+		ld [jugador_x], a
+		jr .salto
+
+	.izquierda:
+		ld a, [jugador_x]
+		dec a
+		ld [jugador_x], a
+		
+	.salto:
+		ld a, [jugador_tiempo_salto] ;; recupero [jugador_tiempo_salto] y si es distinto de 0 hago que el jugador vaya arriba
+		cp 0
+		jr z, .continua
+		ld a, [jugador_y]
+		dec a
+		ld [jugador_y], a
+
+	.continua:
+
+	call system_prerender_pos_jugador
+ret
