@@ -42,6 +42,16 @@ tile_data::
 	DB %00100101, %00100101 ;; fila 5
 	DB %00100100, %00100100 ;; fila 6
 	DB %11100111, %11100111 ;; fila 7
+
+	;; Tile 4 ($04): escorpion 
+	DB %00000000, %00000000 ;; fila 0
+	DB %00011100, %00111100 ;; fila 1 
+	DB %00100110, %01100110 ;; fila 2
+	DB %11100011, %11100011 ;; fila 3
+	DB %00000001, %00000001 ;; fila 4 
+	DB %01100001, %00111101 ;; fila 5 
+	DB %11111001, %11111111 ;; fila 6 
+	DB %01010101, %01010101 ;; fila 7 
 tile_data_end::
 
 EXPORT DEF INITIAL_TILE_BYTES = tile_data_end - tile_data

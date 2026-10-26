@@ -55,6 +55,7 @@ main::
     call system_render_load_map         ;; dejarlo en el futuro dentro de init_nivel
     call system_prerender_init_entities ;; dejarlo en el futoro dentro de init_nivel
     call system_prerender_init_jugador  ;; jugador se inicializara en la primera entidad del array de entidades
+    call system_prerender_init_escorpion ;; el enemigo escorpion se inicializa en la segunda entidad del array de entidades
     call init_hud ;; dejarlo en el futuro dentro de init_nivel
                   ;;<-- Se deberia llamar dentro al cargar un nivel por que sino se pone encima de la portada del juego
                   ;; y tras salir de un nivel haria falta un "call desactivar_lcd_window"
