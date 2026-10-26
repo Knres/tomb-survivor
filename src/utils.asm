@@ -6,7 +6,7 @@ init_game::
     ;; (¡¡no es inicializar una partida en un nivel!!)
     ;; I: -
     ;; O: -
-    ;; M: A, B, DE, HL
+    ;; M: A, BC, DE, HL
     call init_scroll
     call init_palet
     call init_lcd

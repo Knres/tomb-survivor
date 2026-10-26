@@ -128,6 +128,9 @@ Las constantes permaneceran en el archivo **`defs.asm`** en casos necesarios se 
 | `ESTADO_UNO` | 1 | Estado uno. |
 | `ESTADO_DOS` | 2 | Estado dos. |
 | `ESTADO_ERROR` | `$FF` | Estado de error. |
+| `TILE_FUENTE` | `(fuente_data - tile_data) / 16` | Primer tile de la fuente (en `data/gfx.asm`). |
+| `TILE_LETRA_A` ... `TILE_LETRA_V` | `TILE_FUENTE + n` | Tile de cada letra: A D E G I M O P R S T U V. |
+| `TILE_NUM_0` | `(numeros_data - tile_data) / 16` | Tile del 0; el numero n es `TILE_NUM_0 + n` (del 0 al 6). |
 |  |  | <!-- NO MODIFICAR ESTA FILA, USAR PARA COPIAR Y PEGAR ARRIBA-->
 
 
@@ -180,7 +183,7 @@ Utilizar " <br> " para salto de linea en la tabla
 | Ubicación | Nombre | Descripcion | Input | Output | Modifica |
 | --- | --- | ----------- | --- | --- | --- |
 | NO MOD. | NO QUITAR | ESTO_ES_PARA_ALARGAR_LA_DESCRIPCION_PARA_QUE_SEA_MÁS_LEGIBLE | ALARGAR_UN_POCO_ESTA_SECCION | ALARGAR_UN_POCO_ESTA_SECCION | ALARGAR_ESTA_SECCION |
-| utils.asm | init_game | Inicializa el arranque del juego: scroll, paletas, LCD, sonido, OAM y carga de tiles del mapa base. | - | - | A, B, DE, HL |
+| utils.asm | init_game | Inicializa el arranque del juego: scroll, paletas, LCD, sonido, OAM y carga de tiles del mapa base. | - | - | A, BC, DE, HL |
 | utils.asm | init_scroll | Pone el fondo en la posicion inicial del scroll (0,0). | - | - | A, HL |
 | utils.asm | init_hud | Inicializa la ventana/HUD en la posicion definida por el proyecto. | - | - | A |
 | utils.asm | init_window | Configura `rWX` y `rWY` y activa la ventana del LCD. | - | - | A |
@@ -201,7 +204,7 @@ Utilizar " <br> " para salto de linea en la tabla
 | system_prerender.asm | system_prerender_one | Si una entidad tiene el componente sprite activo, copia 4 bytes de su sprite a `shadow_oam` y avanza el cursor. | DE = entidad a procesar | - | A, B, DE, HL |
 | system_prerender.asm | system_prerender_update | Reinicia `shadow_oam` y recorre todas las entidades vivas para preparar el dibujado del frame. | - | - | A, B, DE, HL |
 | system_render.asm | system_render_load_map | Copia el tilemap del nivel actual desde ROM a VRAM, fila a fila, con espera de VBlank. | - | - | A, BC, DE, HL |
-| system_render.asm | system_render_load_tiles | Copia los tiles graficos desde ROM a la zona de VRAM de tiles. | - | - | A, B, DE, HL |
+| system_render.asm | system_render_load_tiles | Copia los tiles graficos desde ROM a la zona de VRAM de tiles. | - | - | A, BC, DE, HL |
 | system_render.asm | system_render_update | Copia `shadow_oam` a OAM real al final del frame. | - | - | A, B, DE, HL |
 | system_sonido.asm | sys_sound_init | Enciende el APU con volumen maximo y los 4 canales en los dos altavoces. Se llama una vez en `init_game`. | - | - | A |
 | system_sonido.asm | sys_sound_play_sfx | Reproduce un efecto de `data/sfx.asm`: copia sus valores a los registros del canal. | HL = efecto (`SfxSalto`, ...) | - | A, B, DE, HL |

@@ -46,13 +46,19 @@ system_render_load_tiles::
 	;; Copia Tiles ROM --> VRAM.
 	;; I: -
 	;; O: -
-	;; M: A, B, DE, HL.
+	;; M: A, BC, DE, HL.
 	call wait_vblank
+	xor a
+	ldh[rLCDC],a
 
 	ld hl, tile_data
 	ld de, TILE_DATA_START
-	ld b, INITIAL_TILE_BYTES
-jp memcpy8
+	ld bc, INITIAL_TILE_BYTES
+	call memcpy8_bc
+
+	ld a, LCD_CONFIG
+	ldh [rLCDC], a 
+	ret
 
 system_render_update::
 	;; Copia shadow_oam(WRAM) -> OAM real.
