@@ -6,14 +6,12 @@ scene_ingame::
     DW scene_ingame_update
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Entra en la partida: nivel 1, carga el mapa, crea entidades y enciende el HUD.
+;; Entra en la partida: carga el mapa de nivel_actual, crea entidades y enciende el HUD.
+;; nivel_actual lo pone quien empieza la partida (1 = partida nueva).
 ;; I: -
 ;; O: -
 ;; M: A, BC, DE, HL
 scene_ingame_init::
-;; Entra en la partida: carga el mapa de nivel_actual, crea entidades y enciende el HUD.
-;; nivel_actual lo pone quien empieza la partida (1 = partida nueva).
-
     call system_render_load_map
     call system_prerender_init_entities
     call system_prerender_init_jugador
@@ -21,9 +19,11 @@ scene_ingame_init::
     jp   init_hud
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Cada frame en la partida. Aqui iran fisicas, colisiones...
+;; Cada frame en la partida: mueve al jugador y prepara los sprites.
+;; Aqui iran fisicas, colisiones...
 ;; I: -
 ;; O: -
-;; M: A, B, DE, HL
+;; M: A, BC, DE, HL
 scene_ingame_update::
-    jp   system_prerender_update
+    call system_jugador_update      ;; input del jugador: direccion y salto
+    jp   system_prerender_update    ;; preparar los sprites de como ha quedado todo

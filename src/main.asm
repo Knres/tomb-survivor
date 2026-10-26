@@ -22,8 +22,8 @@ estado_actual: DS 1     ;;  guarda el numero de estado en el que se encuentra el
 
 
 ; 0  0    0     0    0 0 0      0
-; 0 = false, 1 = true (logica invertida a como funciona la lectura por joypad, me parece mas intuitiva)
 ; up down right left a b start  select
+; 0 = false, 1 = true (logica invertida a como funciona la lectura por joypad, me parece mas intuitiva)
 joypad_pressed: DS 1    ;; almacena qué botones acaban de ser pulsados en este frame
 joypad_held: DS 1    ;; almacena qué botones acaban de ser pulsados en este frame
 
@@ -58,9 +58,17 @@ main::
     bucle_principal:
         ;ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
         call sys_input_update
+        
+;        .bucle:
+;        ld a, [joypad_pressed]
+;        cp 0
+;        jr z, .sigue
+;        jr .bucle
+
+        .sigue:
         call sys_sound_test_update  ;; PRUEBA de sonido: quitar junto a system_sonido_test.asm
-        call manager_escena_update 
-        call system_render_update
+        call manager_escena_update      ;; la escena actual hace lo suyo (jugador, prerender... van en scene_ingame_update)
+        call system_render_update       ;; comun: copiar sprites a la OAM en VBLANK
 
 
         jr bucle_principal

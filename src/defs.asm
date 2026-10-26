@@ -30,7 +30,15 @@ EXPORT DEF rDIV  = $FF04 ;; Registro divisor, aumento constante
 
 ;; Joypad
 EXPORT DEF rJOYP = $FF00 ;; Lectura de JoyPad
-
+;; mascaras de lectura de joypad_pressed y joypad_held
+EXPORT DEF UP_BIT = 0   
+EXPORT DEF DOWN_BIT = 1
+EXPORT DEF LEFT_BIT = 2
+EXPORT DEF RIGHT_BIT = 3
+EXPORT DEF START_BIT = 4
+EXPORT DEF SELECT_BIT = 5
+EXPORT DEF A_BIT = 6
+EXPORT DEF B_BIT = 7
     ;; rBGP($FF47), rOBJ0P($FF48), rOBJ1P($FF49). Tonos de grises
     DEF P_COLOR_WHITE      = 0    ;; %00
     DEF P_COLOR_LIGHT_GRAY = 1    ;; %01
@@ -222,7 +230,7 @@ EXPORT DEF E_MOVE_DOWN      = 3
 EXPORT DEF E_MOVE_UP        = 4
 
 EXPORT DEF VX_JUGADOR       = 5 ;; en px
-EXPORT DEF VY_JUGADOR       = 5 ;; en px
+EXPORT DEF VY_JUGADOR       = 20 ;; en frames de salto (tras 5 frames empieza a caer)
 
 
 EXPORT DEF DURACION_PANTALLA = 180
