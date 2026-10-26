@@ -78,7 +78,7 @@ main::
     ld d, 0
     bucle_principal:
         ;ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
-        ;call scene_manager
+        ;call manager_escena
         call sys_input_update
         call sys_sound_test_update  ;; PRUEBA de sonido: quitar junto a system_sonido_test.asm
 		call system_prerender_update
