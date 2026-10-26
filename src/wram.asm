@@ -17,3 +17,6 @@ jugador_direccion_movimiento:: DS 1
     
 SECTION "Nivel actual", WRAM0
 nivel_actual:: DS 1
+
+SECTION "Escena actual", WRAM0
+escena_update:: DS 2

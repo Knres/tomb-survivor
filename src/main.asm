@@ -25,7 +25,6 @@ estado_actual: DS 1     ;;  guarda el numero de estado en el que se encuentra el
 ; 0 = false, 1 = true (logica invertida a como funciona la lectura por joypad, me parece mas intuitiva)
 ; up down right left a b start  select
 joypad_pressed: DS 1    ;; almacena qué botones acaban de ser pulsados en este frame
-joypad_held: DS 1    ;; almacena qué botones acaban de ser pulsados en este frame
 
 EXPORT DEF ESTADO_INICIAL = 0
 EXPORT DEF ESTADO_UNO = 1
@@ -56,7 +55,6 @@ main::
     call system_render_load_map         ;; dejarlo en el futuro dentro de init_nivel
     call system_prerender_init_entities ;; dejarlo en el futoro dentro de init_nivel
     call system_prerender_init_jugador  ;; jugador se inicializara en la primera entidad del array de entidades
-    call system_prerender_init_escorpion ;; el enemigo escorpion se inicializa en la segunda entidad del array de entidades
     call init_hud ;; dejarlo en el futuro dentro de init_nivel
                   ;;<-- Se deberia llamar dentro al cargar un nivel por que sino se pone encima de la portada del juego
                   ;; y tras salir de un nivel haria falta un "call desactivar_lcd_window"
@@ -78,8 +76,8 @@ main::
     ld d, 0
     bucle_principal:
         ;ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
-        ;call manager_escena
-        call sys_input_update
+        ;call scene_manager
+        call press_update
         call sys_sound_test_update  ;; PRUEBA de sonido: quitar junto a system_sonido_test.asm
 		call system_prerender_update
 		call system_render_update

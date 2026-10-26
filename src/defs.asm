@@ -116,6 +116,9 @@ EXPORT DEF TILE_CORAZON = $08   ;; corazon
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Info. de niveles
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+EXPORT DEF PANTALLA_ANCHO = 20
+EXPORT DEF PANTALLA_ALTO  = 18
+
 EXPORT DEF LEVEL_MAP_WIDTH  = 20
 EXPORT DEF LEVEL_MAP_HEIGHT = 16
 
