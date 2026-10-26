@@ -25,6 +25,7 @@ estado_actual: DS 1     ;;  guarda el numero de estado en el que se encuentra el
 ; 0 = false, 1 = true (logica invertida a como funciona la lectura por joypad, me parece mas intuitiva)
 ; up down right left a b start  select
 joypad_pressed: DS 1    ;; almacena qué botones acaban de ser pulsados en este frame
+joypad_held: DS 1    ;; almacena qué botones acaban de ser pulsados en este frame
 
 EXPORT DEF ESTADO_INICIAL = 0
 EXPORT DEF ESTADO_UNO = 1
@@ -43,48 +44,20 @@ main::
     ld a,  ESTADO_UNO
     ld [hl], a
 
-    ;; iniciar el nivel 1
-    ;; cuando se tenga la seleccion de mapa cambiar
-    ld a, 1
-    ld [nivel_actual], a
-
     ;; inicializacion de cosas
     call init_game  ;; llamar solo una vez por arranque de juego (¡¡ no arranque de nivel !!)
     call sys_sound_test_init    ;; PRUEBA de sonido: quitar junto a system_sonido_test.asm
 
-    call system_render_load_map         ;; dejarlo en el futuro dentro de init_nivel
-    call system_prerender_init_entities ;; dejarlo en el futoro dentro de init_nivel
-    call system_prerender_init_jugador  ;; jugador se inicializara en la primera entidad del array de entidades
-    call init_hud ;; dejarlo en el futuro dentro de init_nivel
-                  ;;<-- Se deberia llamar dentro al cargar un nivel por que sino se pone encima de la portada del juego
-                  ;; y tras salir de un nivel haria falta un "call desactivar_lcd_window"
-                  ;; "call desactivar_lcd_window" se podria dejar dentro de init_menu
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; PRUEBA de impresion en hud
-        ;; si se va ha hacer otra escena, recordar quitar
-            call wait_vblank
-            ld hl, TILEMAP_HUD_START + 1
-            ld a, TILE_JUGADOR
-            ld [hl+], a
-            ld [hl+], a
-            ld [hl+], a
-            ld [hl+], a
-        ;; cuando se tenga "call init_hud" activar_lcd_window 
-        ;; si se quiere cambiar de escena recordar hacer "call desactivar_lcd_window"
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        
-    ld d, 0
+    ;; ld   hl, scene_menu Poner este cuando START ya funcione con el joypad
+    ld   hl, scene_ingame 
+    call manager_escena_cambiar
+
     bucle_principal:
         ;ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
-        ;call scene_manager
-        call press_update
+        call sys_input_update
         call sys_sound_test_update  ;; PRUEBA de sonido: quitar junto a system_sonido_test.asm
-		call system_prerender_update
-		call system_render_update
+        call manager_escena_update 
+        call system_render_update
 
 
         jr bucle_principal
-    fin:
-
-
-halt   ;; Halt the CPU (stop procesing here)

@@ -19,6 +19,7 @@ Las memorias reservadas se ubicaran dentro del archcivo **`wram.asm`**, en casos
 | `jugador_y` | 1 byte | Posicion vertical del jugador en pixeles. |
 | `jugador_direccion_movimiento` | 1 byte | Direccion/intencion de movimiento del jugador. |
 | `nivel_actual` | 1 byte | Numero del nivel seleccionado. |
+| `escena_update` | 2 bytes | Direccion del update de la escena actual (byte bajo, byte alto). La escribe `manager_escena_cambiar`. |
 |  |  | <!-- NO MODIFICAR ESTA FILA, USAR PARA COPIAR Y PEGAR ARRIBA-->
 
 
@@ -131,6 +132,8 @@ Las constantes permaneceran en el archivo **`defs.asm`** en casos necesarios se 
 | `TILE_FUENTE` | `(fuente_data - tile_data) / 16` | Primer tile de la fuente (en `data/gfx.asm`). |
 | `TILE_LETRA_A` ... `TILE_LETRA_V` | `TILE_FUENTE + n` | Tile de cada letra: A D E G I M O P R S T U V. |
 | `TILE_NUM_0` | `(numeros_data - tile_data) / 16` | Tile del 0; el numero n es `TILE_NUM_0 + n` (del 0 al 6). |
+| `PANTALLA_ANCHO` | 20 | Tiles visibles en horizontal (una fila de pantalla). |
+| `PANTALLA_ALTO` | 18 | Tiles visibles en vertical (filas de pantalla). |
 |  |  | <!-- NO MODIFICAR ESTA FILA, USAR PARA COPIAR Y PEGAR ARRIBA-->
 
 
@@ -210,4 +213,11 @@ Utilizar " <br> " para salto de linea en la tabla
 | system_sonido.asm | sys_sound_play_sfx | Reproduce un efecto de `data/sfx.asm`: copia sus valores a los registros del canal. | HL = efecto (`SfxSalto`, ...) | - | A, B, DE, HL |
 | system_sonido_test.asm | sys_sound_test_init | PRUEBA: inicializa la herramienta de prueba de sonido. | - | - | A |
 | system_sonido_test.asm | sys_sound_test_update | PRUEBA: cada boton recien pulsado reproduce un efecto (tabla en la cabecera del archivo). Llamar una vez por frame. | - | - | A, BC, DE, HL |
+| system_pantalla.asm | sys_pantalla_dibujar | Dibuja una pantalla completa de 20x18 tiles desde la ROM al tilemap (`$9800`), con la pantalla apagada. Al encender, la ventana (HUD) queda apagada. | HL = pantalla en ROM (20x18 bytes, fila a fila) | - | A, BC, DE, HL |
+| manager_escena.asm | manager_escena_cambiar | Cambia de escena: guarda su update en `escena_update` y ejecuta su init. Una escena es un bloque `DW init` / `DW update`. | HL = escena (`scene_menu`, `scene_ingame`, ...) | - | Todos (ejecuta el init) |
+| manager_escena.asm | manager_escena_update | Ejecuta el update de la escena actual. Se llama una vez por frame desde el bucle principal. | - | - | Todos (ejecuta el update) |
+| scene_menu.asm | scene_menu_init | Titulo: vacia la OAM sombra (sin sprites) y dibuja `pantalla_titulo`. | - | - | A, BC, DE, HL |
+| scene_menu.asm | scene_menu_update | Titulo, cada frame. Pendiente: con START recien pulsado, ir a `scene_ingame` (falta el input). | - | - | - |
+| scene_ingame.asm | scene_ingame_init | Partida: `nivel_actual` = 1, carga el mapa, crea jugador y escorpion y enciende el HUD. | - | - | A, BC, DE, HL |
+| scene_ingame.asm | scene_ingame_update | Partida, cada frame: prepara los sprites (`system_prerender_update`). Aqui iran fisicas, colisiones... | - | - | A, B, DE, HL |
 |  |   |  |  |  |  | <!-- NO MODIFICAR ESTA FILA, USAR PARA COPIAR Y PEGAR ARRIBA-->
