@@ -1,3 +1,31 @@
+pressed_update:
+    modifica: a, b, hl, joypad_pressed (valor), flags
+
+sys_input_update:
+    usa: pressed update
+    modifica: a, b, c, hl, joypad_pressed (valor), joypad_held (valor), flags
+
+scene_manager:
+    modifica: a, flags
+
+
+wait_vblank:
+    modifica: a, flags
+    
+wait_vblank::
+    ;; I:
+    ;; o:
+    ;; M: HL, A
+
+habilitar_objetos::
+    ;; I: nada
+    ;; O: nada
+    ;; M: hl
+
+memcpy8::
+    ;; I: HL origen
+    ;; I: DE destino
+    ;; I: B contador
 <!-- Renderizar en VSCODE: Ctrl + Shift + V -->
 # Documento funciones
 
@@ -156,6 +184,8 @@ ejermplo::      ;; indicar ubicacion gracias (archivo.asm en el que esta)
     ;; la descripcion
     ;; I: -
     ;; O: -
+    ;; M: HL, DE, B, A
+    
     ;; M: A
     ;; ...
 ret

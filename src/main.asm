@@ -25,6 +25,7 @@ estado_actual: DS 1     ;;  guarda el numero de estado en el que se encuentra el
 ; 0 = false, 1 = true (logica invertida a como funciona la lectura por joypad, me parece mas intuitiva)
 ; up down right left a b start  select
 joypad_pressed: DS 1    ;; almacena qué botones acaban de ser pulsados en este frame
+joypad_held: DS 1    ;; almacena qué botones acaban de ser pulsados en este frame
 
 EXPORT DEF ESTADO_INICIAL = 0
 EXPORT DEF ESTADO_UNO = 1
@@ -78,7 +79,7 @@ main::
     bucle_principal:
         ;ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
         ;call scene_manager
-        call press_update
+        call sys_input_update
         call sys_sound_test_update  ;; PRUEBA de sonido: quitar junto a system_sonido_test.asm
 		call system_prerender_update
 		call system_render_update

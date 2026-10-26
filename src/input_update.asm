@@ -4,7 +4,7 @@ DEF DOWN_BIT = 3
 DEF LEFT_BIT = 1
 DEF RIGHT_BIT = 0
 
-press_update:
+press_update::
     ; 0  0    0     0    0 0 0      0
     ; 0 = false, 1 = true (logica invertida a como funciona la lectura por joypad, me parece mas intuitiva)
     ; up down right left a b start  select
@@ -34,4 +34,17 @@ press_update:
         ld [joypad_pressed], a
     ret
 
+sys_input_update::
+    ld a, [joypad_pressed] ; recojo lo que hay originalmente en joypad_pressed para comparar una vez actualizado y modificar [joypad_held]
+    ld c, a                ; lo guardo en c, ya que a es modificado durante press_update
+    call press_update
+    
+    ld a, [joypad_pressed]
+    
+    and c                  ; solo conservo los bits que llevan dos iteraciones siendo pulsados
 
+    ld a, c
+
+    ld [joypad_held], a
+
+    ret
