@@ -1,6 +1,6 @@
 SECTION "Escenas", ROM0
 
-scene_manager::
+manager_escena::
     ld a, [estado_actual]
         
     ; if  ESTADO_INICIAL
