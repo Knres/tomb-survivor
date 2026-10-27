@@ -220,12 +220,12 @@ system_jugador_pos_update::
 		ld [jugador_x], a
 
 	.salto:
-		ld a, [jugador_tiempo_salto] ;; recupero [jugador_tiempo_salto] y si es distinto de 0 hago que el jugador vaya arriba
-		cp 0
-		jr z, .continua
-		ld a, [jugador_y]
-		dec a
-		ld [jugador_y], a
+;;		ld a, [jugador_tiempo_salto] ;; recupero [jugador_tiempo_salto] y si es distinto de 0 hago que el jugador vaya arriba
+;;		cp 0
+;;		jr z, .continua
+;;		ld a, [jugador_y]
+;;		dec a
+;;		ld [jugador_y], a
 
 	.continua:
 

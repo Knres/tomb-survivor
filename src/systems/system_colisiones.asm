@@ -40,8 +40,8 @@ system_colisiones_update::
     ret
 
 check_platform:
-;; INPUT:  A = tile
-;; OUTPUT: Z = 1 if it's a platform; Z = 0 if not
+;; Entrada:  A = tile
+;; Salida: Z = 1 si es una platforma; Z = 0 si no
     cp TILE_SUELO
     ret z
 
@@ -55,11 +55,74 @@ check_platform:
     ret
 
 check_wall:
-;; INPUT:  A = tile
-;; OUTPUT: Z = 1 if it's a wall Z = 0 if not
+;; Entrada A = tile, Salida Z=1 pared
     cp TILE_PARED_NUEVA
     ret z
-
-    ;; No es pared
     or 1
+    ret
+
+;; Comprueba si hay una pared a la derecha.
+;; Salida: Z = 1 si hay pared; Z = 0 si no hay pared.
+check_right_wall::
+    ld a, [jugador_x]
+    add 8
+    srl a
+    srl a
+    srl a
+    ld b, a                  ;; B = columna del mapa
+
+    ld a, [jugador_y]
+    add 4
+    srl a
+    srl a
+    srl a
+    ld c, a                  ;; C = fila del mapa
+
+    call get_tile_at_bc
+    ret
+
+
+;; Comprueba si hay una pared a la izquierda.
+;; Salida: Z = 1 si hay pared; Z = 0 si no hay pared.
+check_left_wall::
+    ld a, [jugador_x]
+    and a
+    ret z                    ;; En el borde izquierdo, bloquear
+
+    dec a
+    srl a
+    srl a
+    srl a
+    ld b, a                  ;; B = columna del mapa
+
+    ld a, [jugador_y]
+    srl a
+    srl a
+    srl a
+    ld c, a                  ;; C = fila del mapa
+
+    call get_tile_at_bc
+    ret
+
+;; Entrada: B = columna, C = fila.
+;; Salida: Z = 1 si el tile es una pared.
+get_tile_at_bc::
+    call get_mapa_nivel_actual
+
+    ld a, c
+    .fila:    ;; Avanzar hasta la fila solicitada: 20 bytes por fila.
+        and a
+        jr z, .columna
+        ld de, LEVEL_MAP_WIDTH
+        add hl, de
+        dec a
+        jr .fila
+
+    .columna:    ;; Avanzar hasta la columna solicitada.
+        ld e, b
+        ld d, 0
+        add hl, de
+
+    ld a, [hl]   ;; Leer el tile y comprobar si es una pared.
+    call check_wall
     ret
