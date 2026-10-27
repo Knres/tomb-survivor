@@ -21,17 +21,17 @@ system_prerender_init_jugador::
 
 	call get_pos_inicial_jugador_nivel_actual
     ;;  hl -> X
-	ld a, [hl+]         ;; / a = pos x del jugador; 
+	ld a, [hl+]         ;; / a = pos x del jugador;
     ld [jugador_x], a   ;; | hl -> Y
 	ld a, [hl]          ;; | a = pos y del jugador
-	ld [jugador_y], a   ;; \ 
+	ld [jugador_y], a   ;; \
 	ld [jugador_y_anterior], a
 
 	ld a, VIDAS_JUGADOR		;; inicializar las vidas
     ld [jugador_vidas], a	;; que tiene el jugador
 
 	ld a, E_MOVE_NONE                   ;; / al comenzar la partida no tendra definida direccion de movimiento
-	ld [jugador_direccion_movimiento], a;; \ para evitar que se emieza a mover antes de tiempo 
+	ld [jugador_direccion_movimiento], a;; \ para evitar que se emieza a mover antes de tiempo
 
 	xor a
 	ld [jugador_solicita_salto], a
@@ -48,11 +48,11 @@ system_prerender_init_jugador::
 
 	ld a, [jugador_x]   ;; recuperar X
 	add a, OAM_X_OFFSET ;; coordenada de OAM
-	ld [hl+], a         ;; guardar X ; HL -> TILE 
+	ld [hl+], a         ;; guardar X ; HL -> TILE
 
-	ld a, TILE_JUGADOR  
+	ld a, TILE_JUGADOR
 	ld [hl+], a         ;; a = tile jugador ; HL -> ATTR
-    
+
 	xor a
 	ld [hl+], a         ;; ATTR = 0 ; HL -> VY
 
@@ -76,11 +76,11 @@ system_prerender_init_escorpion::
 	ld [hl+], a         ;; guardar Y ; HL -> X
 
 	ld a, 32
-	ld [hl+], a         ;; guardar X ; HL -> TILE 
+	ld [hl+], a         ;; guardar X ; HL -> TILE
 
-	ld a, TILE_ESCORPION  
+	ld a, TILE_ESCORPION
 	ld [hl+], a         ;; a = tile enemigo ; HL -> ATTR
-    
+
 	xor a
 	ld [hl+], a         ;; ATTR = 0 ; HL -> VY
 
@@ -100,11 +100,11 @@ system_prerender_one::
 	;; I: DE = entidad
 	;; O: -
 	;; M: A, B, HL.
-    ld a, [de]      
+    ld a, [de]
     and CMP_SPRITE      ;; comprobar si esta CMP_SPRITE
     ret z               ;; no esta activo CMP_SPRITE -> ret
 
-    ld hl, E_SPRITE     ;; 
+    ld hl, E_SPRITE     ;;
     add hl, de          ;; HL = &entity.SPRITE
 
     ld a, [shadow_cursor]   ;; / recuperar cursor
@@ -118,7 +118,7 @@ system_prerender_one::
 
     ;; memcpy8 de 4 pos
     ld a, e                 ;; / guardar cursor
-    ld [shadow_cursor], a   ;; | 
+    ld [shadow_cursor], a   ;; |
     ld a, d                 ;; | e = byte bajo
     ld [shadow_cursor+1], a ;; \ d = byte alto
 ret
@@ -129,7 +129,7 @@ system_prerender_update::
 	;; I: -
 	;; O: -
 	;; M: A, B, DE, HL.
-	ld hl, shadow_oam       
+	ld hl, shadow_oam
     ld a, 0
     ld b, SHADOW_OAM_SIZE   ;; b = contador
     call memset8
@@ -146,7 +146,7 @@ system_prerender_pos_jugador::
 	;; call get_pos_inicial_jugador_nivel_actual
 
 	ld hl, entity_array ;; hl -> CMP de primera entidad (jugador)
-	inc hl ;; HL --> Y 
+	inc hl ;; HL --> Y
 
 	ld a, [jugador_y]   ;; recuperar Y
 	add a, OAM_Y_OFFSET ;; coordenada de OAM
@@ -154,7 +154,7 @@ system_prerender_pos_jugador::
 
 	ld a, [jugador_x]   ;; recuperar X
 	add a, OAM_X_OFFSET ;; coordenada de OAM
-	ld [hl], a          ;; guardar X ; HL -> TILE 
+	ld [hl], a          ;; guardar X ; HL -> TILE
 ret
 
 system_jugador_update::
@@ -201,31 +201,33 @@ system_jugador_update::
 		ld [jugador_solicita_salto], a ;; si A acaba de ser pulsado, se solicita salto
 ret
 
-;;system_jugador_pos_update::
-;;	ld a, [jugador_direccion_movimiento]
-;;	cp E_MOVE_LEFT
-;;	jr z, .izquierda
-;;	
-;;	.derecha:
-;;		ld a, [jugador_x]
-;;		inc a
-;;		ld [jugador_x], a
-;;		jr .salto
-;;
-;;	.izquierda:
-;;		ld a, [jugador_x]
-;;		dec a
-;;		ld [jugador_x], a
-;;		
-;;	.salto:
-;;		ld a, [jugador_tiempo_salto] ;; recupero [jugador_tiempo_salto] y si es distinto de 0 hago que el jugador vaya arriba
-;;		cp 0
-;;		jr z, .continua
-;;		ld a, [jugador_y]
-;;		dec a
-;;		ld [jugador_y], a
-;;
-;;	.continua:
-;;
-;;	call system_prerender_pos_jugador
-;;ret
+system_jugador_pos_update::
+	ld a, [jugador_direccion_movimiento]
+	cp E_MOVE_LEFT
+	jr z, .izquierda
+
+	.derecha:
+		call check_right_wall
+		ld a, [jugador_x]
+		inc a
+		ld [jugador_x], a
+		jr .salto
+
+	.izquierda:
+		call check_left_wall
+		ld a, [jugador_x]
+		dec a
+		ld [jugador_x], a
+
+	.salto:
+		ld a, [jugador_tiempo_salto] ;; recupero [jugador_tiempo_salto] y si es distinto de 0 hago que el jugador vaya arriba
+		cp 0
+		jr z, .continua
+		ld a, [jugador_y]
+		dec a
+		ld [jugador_y], a
+
+	.continua:
+
+	call system_prerender_pos_jugador
+ret
