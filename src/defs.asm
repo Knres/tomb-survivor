@@ -148,8 +148,17 @@ EXPORT DEF WINDOW_START_X = LEVEL_HUD_ORIGIN_X *8 + WINDOW_X_OFFSET ;; en px
 EXPORT DEF WINDOW_START_Y = LEVEL_HUD_ORIGIN_Y *8                   ;; en px
                                             ;; *8 por que el 1 tiles = 8px
 
+EXPORT DEF HUD_WINDOW_X = WINDOW_START_X
+EXPORT DEF HUD_WINDOW_Y = WINDOW_START_Y
+EXPORT DEF HUD_TEXTO_NIVEL   = TILEMAP_HUD_START + 1
+EXPORT DEF HUD_VIDAS_JUGADOR = TILEMAP_HUD_START + 15
+
 EXPORT DEF HUD_START_POS_X = WINDOW_START_X ;; en px
 EXPORT DEF HUD_START_POS_Y = WINDOW_START_Y ;; en px
+
+
+EXPORT DEF CAMERA_MAX_X = 0    ;; es 0 porque no se mueve el scroll
+EXPORT DEF CAMERA_MAX_Y = 0    ;; es 0 porque no se mueve el scroll
 
 EXPORT DEF TAM_VRAM = 32
 
@@ -238,10 +247,11 @@ EXPORT DEF E_MOVE_DOWN      = 3
 EXPORT DEF E_MOVE_UP        = 4
 
 EXPORT DEF VX_JUGADOR           = 1  ;; px por frame
-EXPORT DEF IMPULSO_SALTO        = 5  ;; velocidad inicial de salto
+;; EXPORT DEF VY_JUGADOR        = 20 ;; en frames de salto (tras 5 frames empieza a caer)
+EXPORT DEF IMPULSO_SALTO        = 10 ;; velocidad inicial de salto
 EXPORT DEF GRAVEDAD             = 1  ;; incremento de VY por frame
 EXPORT DEF VELOCIDAD_MAX_CAIDA  = 4  ;; px por frame
-;; EXPORT DEF VY_JUGADOR           = 20 ;; en frames de salto (tras 5 frames empieza a caer)
+EXPORT DEF VIDAS_JUGADOR        = 3  ;; vidas maximas e iniciales que tiene el jugador   
 
 
 EXPORT DEF DURACION_PANTALLA = 180

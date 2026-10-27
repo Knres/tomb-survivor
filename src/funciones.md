@@ -190,7 +190,7 @@ Utilizar " <br> " para salto de linea en la tabla
 -->
 | Ubicación | Nombre | Descripcion | Input | Output | Modifica |
 | --- | --- | ----------- | --- | --- | --- |
-| NO MOD. | NO QUITAR | ESTO_ES_PARA_ALARGAR_LA_DESCRIPCION_PARA_QUE_SEA_MÁS_LEGIBLE | ALARGAR_UN_POCO_ESTA_SECCION | ALARGAR_UN_POCO_ESTA_SECCION | ALARGAR_ESTA_SECCION |
+| NO MOD. | NO QUITAR | ESTO_ES_PARA_ALARGAR_LA_DESCRIPCION_PARA_QUE_SEA_MÁS_LEGIBLE | ALARGAR_UN_POCO_ESTA_SECCION | ALARGAR_UN_POCO_ESTA_SECCION | ALARGAR_ESTA_SECCION | <!-- NO MODIFICAR ESTA FILA, USAR PARA AJUSTAR LA DISTANCIA DE LA TABLA-->
 | utils.asm | init_game | Inicializa el arranque del juego: scroll, paletas, LCD, sonido, OAM y carga de tiles del mapa base. | - | - | A, BC, DE, HL |
 | utils.asm | init_scroll | Pone el fondo en la posicion inicial del scroll (0,0). | - | - | A, HL |
 | utils.asm | init_hud | Inicializa la ventana/HUD en la posicion definida por el proyecto. | - | - | A |

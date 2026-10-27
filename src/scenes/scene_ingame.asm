@@ -16,7 +16,7 @@ scene_ingame_init::
     call system_prerender_init_entities
     call system_prerender_init_jugador
     call system_prerender_init_escorpion
-    jp   init_hud
+jp   init_hud
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cada frame en la partida: mueve al jugador y prepara los sprites.
@@ -27,6 +27,7 @@ scene_ingame_init::
 scene_ingame_update::
     call system_jugador_update        ;; input del jugador: direccion y salto
     call system_fisicas_update        ;; fisicas: aplica velocidad y gravedad
+    call system_render_scroll         ;; el scroll, pero como max_x_y van ha ser 0 no modifica
     call system_colisiones_update     ;; deteccion de colisiones
     call system_prerender_pos_jugador ;; actualiza la posicion del jugador en memoria y las prepara para el OAM
-    jp   system_prerender_update      ;; preparar los sprites de como ha quedado todo
+jp   system_prerender_update      ;; preparar los sprites de como ha quedado todo

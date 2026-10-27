@@ -18,6 +18,7 @@ jugador_solicita_salto:: DS 1
 jugador_en_suelo::       DS 1
 jugador_y_anterior::     DS 1
 jugador_a_anterior::     DS 1
+jugador_vidas::          DS 1
 
 SECTION "Nivel actual", WRAM0
 nivel_actual:: DS 1

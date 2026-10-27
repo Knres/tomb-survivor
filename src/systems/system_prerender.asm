@@ -27,6 +27,8 @@ system_prerender_init_jugador::
 	ld [jugador_y], a   ;; \ 
 	ld [jugador_y_anterior], a
 
+	ld a, VIDAS_JUGADOR		;; inicializar las vidas
+    ld [jugador_vidas], a	;; que tiene el jugador
 
 	ld a, E_MOVE_NONE                   ;; / al comenzar la partida no tendra definida direccion de movimiento
 	ld [jugador_direccion_movimiento], a;; \ para evitar que se emieza a mover antes de tiempo 

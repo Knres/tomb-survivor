@@ -26,14 +26,6 @@ init_scroll::
     ldh [rSCY], a
 ret
 
-init_hud::
-    ;; inicializar ventana el la posicion que hay definida
-    ;; I: -
-    ;; O: -
-    ;; M: A
-
-    call init_window
-ret
 
 init_window::
     ;; inicializar ventana el la posicion que hay definida
@@ -165,3 +157,11 @@ call_hl::
     ;; O: -
     ;; M: PC
 jp hl
+
+digit2tile::
+    ;; Convierte un digito a su indice de tile numerico.
+    ;; I: A = digito (depende de las que hay hechas en gfx.asm)
+    ;; O: A = indice del tile
+    ;; M: A, flags
+    add a, TILE_NUM_0
+ret
