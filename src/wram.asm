@@ -14,7 +14,10 @@ shadow_cursor:: DS 2
 jugador_x:: DS 1    ;; recordar que es en px 
 jugador_y:: DS 1    ;; recordar que es en px
 jugador_direccion_movimiento:: DS 1
-jugador_tiempo_salto:: DS 1     ;; 0 -> no esta subiendo, 1, 2, 3, 4, 5 esta subiendo
+jugador_solicita_salto:: DS 1
+jugador_en_suelo::       DS 1
+jugador_y_anterior::     DS 1
+jugador_a_anterior::     DS 1
 
 SECTION "Nivel actual", WRAM0
 nivel_actual:: DS 1

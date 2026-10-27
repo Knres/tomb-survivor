@@ -25,5 +25,8 @@ scene_ingame_init::
 ;; O: -
 ;; M: A, BC, DE, HL
 scene_ingame_update::
-    call system_jugador_update      ;; input del jugador: direccion y salto
-    jp   system_prerender_update    ;; preparar los sprites de como ha quedado todo
+    call system_jugador_update        ;; input del jugador: direccion y salto
+    call system_fisicas_update        ;; fisicas: aplica velocidad y gravedad
+    call system_colisiones_update     ;; deteccion de colisiones
+    call system_prerender_pos_jugador ;; actualiza la posicion del jugador en memoria y las prepara para el OAM
+    jp   system_prerender_update      ;; preparar los sprites de como ha quedado todo
