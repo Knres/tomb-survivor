@@ -25,13 +25,18 @@ system_prerender_init_jugador::
     ld [jugador_x], a   ;; | hl -> Y
 	ld a, [hl]          ;; | a = pos y del jugador
 	ld [jugador_y], a   ;; \ 
+	ld [jugador_y_anterior], a
 
+	ld a, VIDAS_JUGADOR		;; inicializar las vidas
+    ld [jugador_vidas], a	;; que tiene el jugador
 
 	ld a, E_MOVE_NONE                   ;; / al comenzar la partida no tendra definida direccion de movimiento
 	ld [jugador_direccion_movimiento], a;; \ para evitar que se emieza a mover antes de tiempo 
 
-	ld a, E_MOVE_NONE
-	ld [jugador_tiempo_salto], a
+	xor a
+	ld [jugador_solicita_salto], a
+	ld [jugador_en_suelo], a
+	ld [jugador_a_anterior], a
 
 	ld hl, entity_array ;; hl -> CMP de primera entidad (jugador)
 	ld a, CMP_ALIVE | CMP_INPUT | CMP_COLLIDER | CMP_PHYSICS | CMP_SPRITE
@@ -51,8 +56,8 @@ system_prerender_init_jugador::
 	xor a
 	ld [hl+], a         ;; ATTR = 0 ; HL -> VY
 
-    ld a, VY_JUGADOR
-	ld [hl+], a         ;; guardar VY ; HL -> VX
+    xor a
+	ld [hl+], a         ;; VY = 0 ; HL -> VX
 
     ld a, VX_JUGADOR
 	ld [hl+], a         ;; guardar VX ; HL -> KIND
@@ -138,7 +143,7 @@ system_prerender_update::
 jp manager_entity_for_each
 
 system_prerender_pos_jugador::
-	call get_pos_inicial_jugador_nivel_actual
+	;; call get_pos_inicial_jugador_nivel_actual
 
 	ld hl, entity_array ;; hl -> CMP de primera entidad (jugador)
 	inc hl ;; HL --> Y 
@@ -152,8 +157,8 @@ system_prerender_pos_jugador::
 	ld [hl], a          ;; guardar X ; HL -> TILE 
 ret
 
-system_jugador_update:
-	;; cambio de direccion
+system_jugador_update::
+	;; cambio de direccion, pero sin modificar la posicion del jugador. La modifico en system_fisicas.
 	.izquierda:
 		ld a, [joypad_pressed]
 		bit LEFT_BIT, a
@@ -171,55 +176,56 @@ system_jugador_update:
 
 	;; salto
 	.salto:
+		;; por defecto no hay peticion de salto
+		xor a
+		ld [jugador_solicita_salto], a
+
 		ld a, [joypad_pressed]
-		bit A_BIT, a
-		jr z, .continua_salto
-		
-		ld a, [jugador_tiempo_salto]
-		cp 0
-		jr nz, .continua_salto	;; compruebo si ya esta saltando, no puede saltar mientras esta saltando. Si jugador_tiempo_salto vale distinto de 0 prosigue
+		and 1 << A_BIT ;; lo mismo que 'and %01000000'
+		ld b, a ;; guardo el resultado en b para no perderlo
 
-		;; si no esta saltando, hago que comience a saltar
-		ld a, VY_JUGADOR ;; inicializo el valor a 5 frames de salto
-		ld [jugador_tiempo_salto], a
-		jr .continua
+		ld a, [jugador_a_anterior] ;; recupero el estado de A del frame anterior
+		ld c, a
 
-		.continua_salto:
-		ld a, [jugador_tiempo_salto]
-		cp 0
-		jr z, .continua
-		dec a ;; actualizo tiempo de salto
-		ld [jugador_tiempo_salto], a
+		ld a, b ;; recupero el estado de A del frame actual
+		ld [jugador_a_anterior], a ;; guardo el estado de A del frame actual para el siguiente frame
 
-	.continua:
-		call system_jugador_pos_update
+		and a
+		ret z ;; si no se ha pulsdado A, no hago nada
+
+		ld a, c
+		and a
+		ret nz ;; si A estaba pulsado en el frame anterior, no hago nada
+
+		ld a, 1
+		ld [jugador_solicita_salto], a ;; si A acaba de ser pulsado, se solicita salto
 ret
 
-system_jugador_pos_update::
-	ld a, [jugador_direccion_movimiento]
-	cp E_MOVE_LEFT
-	jr z, .izquierda
-	
-	.derecha:
-		ld a, [jugador_x]
-		inc a
-		ld [jugador_x], a
-		jr .salto
-
-	.izquierda:
-		ld a, [jugador_x]
-		dec a
-		ld [jugador_x], a
-		
-	.salto:
-		ld a, [jugador_tiempo_salto] ;; recupero [jugador_tiempo_salto] y si es distinto de 0 hago que el jugador vaya arriba
-		cp 0
-		jr z, .continua
-		ld a, [jugador_y]
-		dec a
-		ld [jugador_y], a
-
-	.continua:
-
-	call system_prerender_pos_jugador
-ret
+;;system_jugador_pos_update::
+;;	ld a, [jugador_direccion_movimiento]
+;;	cp E_MOVE_LEFT
+;;	jr z, .izquierda
+;;	
+;;	.derecha:
+;;		ld a, [jugador_x]
+;;		inc a
+;;		ld [jugador_x], a
+;;		jr .salto
+;;
+;;	.izquierda:
+;;		ld a, [jugador_x]
+;;		dec a
+;;		ld [jugador_x], a
+;;		
+;;	.salto:
+;;		ld a, [jugador_tiempo_salto] ;; recupero [jugador_tiempo_salto] y si es distinto de 0 hago que el jugador vaya arriba
+;;		cp 0
+;;		jr z, .continua
+;;		ld a, [jugador_y]
+;;		dec a
+;;		ld [jugador_y], a
+;;
+;;	.continua:
+;;
+;;	call system_prerender_pos_jugador
+;;ret

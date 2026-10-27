@@ -120,6 +120,12 @@ EXPORT DEF TILE_PLAT_IZQUIERDA = $06   ;; plataforma izquierda
 EXPORT DEF TILE_PARED_NUEVA = $07   ;; pared nueva
 EXPORT DEF TILE_CORAZON = $08   ;; corazon
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Info. tam. entidades/jugador
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+EXPORT DEF TILE_SIZE      = 8
+EXPORT DEF JUGADOR_ALTO   = TILE_SIZE
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Info. de niveles
@@ -134,17 +140,28 @@ EXPORT DEF LEVEL_HUD_ORIGIN_X = 0   ;; en tiles
 EXPORT DEF LEVEL_HUD_ORIGIN_Y = 16  ;; en tiles
 EXPORT DEF LEVEL_HUD_HEIGHT = 2     ;; en tiles
 
-EXPORT DEF LEVEL_FLOOR_Y = 16       ;; en tiles
+EXPORT DEF LEVEL_FLOOR_Y = 15       ;; en tiles
+EXPORT DEF LEVEL_FLOOR_PX = LEVEL_FLOOR_Y * TILE_SIZE
 
 EXPORT DEF WINDOW_X_OFFSET = 7              ;; en px
 EXPORT DEF WINDOW_START_X = LEVEL_HUD_ORIGIN_X *8 + WINDOW_X_OFFSET ;; en px
 EXPORT DEF WINDOW_START_Y = LEVEL_HUD_ORIGIN_Y *8                   ;; en px
                                             ;; *8 por que el 1 tiles = 8px
 
+EXPORT DEF HUD_WINDOW_X = WINDOW_START_X
+EXPORT DEF HUD_WINDOW_Y = WINDOW_START_Y
+EXPORT DEF HUD_TEXTO_NIVEL   = TILEMAP_HUD_START + 1
+EXPORT DEF HUD_VIDAS_JUGADOR = TILEMAP_HUD_START + 15
+
 EXPORT DEF HUD_START_POS_X = WINDOW_START_X ;; en px
 EXPORT DEF HUD_START_POS_Y = WINDOW_START_Y ;; en px
 
+
+EXPORT DEF CAMERA_MAX_X = 0    ;; es 0 porque no se mueve el scroll
+EXPORT DEF CAMERA_MAX_Y = 0    ;; es 0 porque no se mueve el scroll
+
 EXPORT DEF TAM_VRAM = 32
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Info. entidades/jugador
@@ -229,5 +246,13 @@ EXPORT DEF E_MOVE_RIGHT     = 2
 EXPORT DEF E_MOVE_DOWN      = 3
 EXPORT DEF E_MOVE_UP        = 4
 
-EXPORT DEF VX_JUGADOR       = 5 ;; en px
-EXPORT DEF VY_JUGADOR       = 20 ;; en frames de salto (tras 5 frames empieza a caer)
+EXPORT DEF VX_JUGADOR           = 1  ;; px por frame
+;; EXPORT DEF VY_JUGADOR        = 20 ;; en frames de salto (tras 5 frames empieza a caer)
+EXPORT DEF IMPULSO_SALTO        = 10 ;; velocidad inicial de salto
+EXPORT DEF GRAVEDAD             = 1  ;; incremento de VY por frame
+EXPORT DEF VELOCIDAD_MAX_CAIDA  = 4  ;; px por frame
+EXPORT DEF VIDAS_JUGADOR        = 3  ;; vidas maximas e iniciales que tiene el jugador   
+
+
+EXPORT DEF DURACION_PANTALLA = 180
+EXPORT DEF NUM_NIVELES = 1

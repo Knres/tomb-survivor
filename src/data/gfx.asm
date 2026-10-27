@@ -193,6 +193,16 @@ fuente_data::
 	DB %00110110, %00100100 ;; fila 6   ..#+.#+.
 	DB %00011100, %00011000 ;; fila 7   ...##+..
 
+	;; Letra L
+	DB %00000000, %00000000 ;; fila 0   ........
+	DB %00110000, %00100000 ;; fila 1   ..#+....
+	DB %00110000, %00100000 ;; fila 2   ..#+....
+	DB %00110000, %00100000 ;; fila 3   ..#+....
+	DB %00110000, %00100000 ;; fila 4   ..#+....
+	DB %00110000, %00100000 ;; fila 5   ..#+....
+	DB %00110000, %00100000 ;; fila 6   ..####+.
+	DB %00111110, %00111100 ;; fila 7   ..####+.
+
 numeros_data::
 
 	;; Numero 0
@@ -286,5 +296,6 @@ EXPORT DEF TILE_LETRA_S = TILE_FUENTE + 9
 EXPORT DEF TILE_LETRA_T = TILE_FUENTE + 10
 EXPORT DEF TILE_LETRA_U = TILE_FUENTE + 11
 EXPORT DEF TILE_LETRA_V = TILE_FUENTE + 12
+EXPORT DEF TILE_LETRA_L = TILE_FUENTE + 13
 
 EXPORT DEF TILE_NUM_0 = (numeros_data - tile_data) / 16

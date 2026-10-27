@@ -7,20 +7,19 @@ SECTION "Manager escena", ROM0
 ;; O: -
 ;; M: todos (ejecuta el init de la escena)
 manager_escena_cambiar::
-    ld   a, [hl+]               ;; \ DE = direccion del init (bytes 0-1 de la escena)
-    ld   e, a                   ;; |   byte bajo
-    ld   a, [hl+]               ;; |
-    ld   d, a                   ;; /   byte alto  (HL -> update)
+    ld   a, [hl+]
+    ld   e, a
+    ld   a, [hl+]
+    ld   d, a
 
-    ld   a, [hl+]               ;; \ escena_update = direccion del update (bytes 2-3)
-    ld   [escena_update], a     ;; |   byte bajo
-    ld   a, [hl]                ;; |
-    ld   [escena_update + 1], a ;; /   byte alto
+    ld   a, [hl+]
+    ld   [escena_update], a
+    ld   a, [hl]
+    ld   [escena_update + 1], a
 
-    ld   h, d                   ;; \ HL = direccion del init
-    ld   l, e                   ;; /
-    jp   hl                     ;; Saltar al init: como es un salto y no un call,
-                                ;; su ret vuelve directamente a quien llamo a cambiar
+    ld   h, d
+    ld   l, e
+    jp   hl
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Ejecuta el update de la escena actual. Llamar una vez por frame.
@@ -28,8 +27,50 @@ manager_escena_cambiar::
 ;; O: -
 ;; M: todos (ejecuta el update de la escena)
 manager_escena_update::
-    ld   a, [escena_update]     ;; \ HL = *(escena_update)
-    ld   l, a                   ;; |   = direccion del update de la escena actual
-    ld   a, [escena_update + 1] ;; |
-    ld   h, a                   ;; /
-    jp   hl                     ;; Saltar al update: su ret vuelve al bucle principal
+    ld   a, [escena_update]
+    ld   l, a
+    ld   a, [escena_update + 1]
+    ld   h, a
+    jp   hl
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Init comun de las pantallas temporizadas (game over, nivel, victoria):
+;; quita los sprites, dibuja la pantalla y arranca el contador.
+;; I: HL = pantalla en ROM, DE = escena siguiente
+;; O: -
+;; M: A, BC, DE, HL
+manager_escena_temporizada_init::
+    ld   a, e
+    ld   [escena_siguiente], a
+    ld   a, d
+    ld   [escena_siguiente + 1], a
+
+    ld   a, DURACION_PANTALLA
+    ld   [escena_contador], a
+
+    push hl
+    ld   hl, shadow_oam
+    xor  a
+    ld   b, SHADOW_OAM_SIZE
+    call memset8
+    pop  hl
+
+    jp   sys_pantalla_dibujar
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Update comun de las pantallas temporizadas: cuenta frames y,
+;; al llegar a 0, pasa a escena_siguiente.
+;; I: -
+;; O: -
+;; M: todos (al acabar, ejecuta el init de la escena siguiente)
+manager_escena_temporizada_update::
+    ld   hl, escena_contador
+    dec  [hl]
+    ret  nz
+
+    ld   a, [escena_siguiente]
+    ld   l, a
+    ld   a, [escena_siguiente + 1]
+    ld   h, a
+    jp   manager_escena_cambiar
