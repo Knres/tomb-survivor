@@ -125,6 +125,7 @@ EXPORT DEF TILE_CORAZON = $08   ;; corazon
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 EXPORT DEF TILE_SIZE      = 8
 EXPORT DEF JUGADOR_ALTO   = TILE_SIZE
+EXPORT DEF TAM_COLISION   = 6
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

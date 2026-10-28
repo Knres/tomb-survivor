@@ -126,3 +126,28 @@ get_tile_at_bc::
     ld a, [hl]   ;; Leer el tile y comprobar si es una pared.
     call check_wall
     ret
+
+;; 📥 Entrada: DE: entidad 1, HL: entidad 2
+;; ⫷▬ Salida (el carry): C, se solapan. NC, no se solapan
+;; ❌ Puede modificar A, DE, HL
+sys_collision_overlaps::
+inc de ;; Y1
+inc hl ;; Y2
+ld a, [de] ;; A = Y1 - Y2
+sub [hl]
+jr nc, .y_positive ;; \ Positivo: ya es |dY|
+cpl ;; | Negativo: |dY| = -dY
+inc a ;; / (cpl + inc: complemento a dos)
+.y_positive
+cp TAM_COLISION ;; Carry si |dY| < TAM_COLISION
+ret nc ;; No hay solape
+inc de ;; X1
+inc hl ;; X2
+ld a, [de] ;; A = X1 - X2
+sub [hl]
+jr nc, .x_positive ;; Positivo: ya es |dX|
+cpl ;; Negativo: |dX| = -dX
+inc a ;; (cpl + inc: complemento a dos)
+.x_positive
+cp TAM_COLISION ;; Carry si |dX| < TAM_COLISION:
+ret ;; C = se solapan, NC = no se solapan
