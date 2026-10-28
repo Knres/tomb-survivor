@@ -66,34 +66,6 @@ system_prerender_init_jugador::
 	ld [hl], a          ;; guardar KIND
 ret
 
-system_prerender_init_escorpion::
-	ld hl, entity_array + ENTITY_SIZE	;; el enemigo escsorpion es la segunda entidad del array de entidades
-
-	ld a, CMP_ALIVE | CMP_SPRITE
-	ld [hl+], a ;; guardar CMP ; HL -> Y
-
-	ld a, 64
-	ld [hl+], a         ;; guardar Y ; HL -> X
-
-	ld a, 32
-	ld [hl+], a         ;; guardar X ; HL -> TILE
-
-	ld a, TILE_ESCORPION
-	ld [hl+], a         ;; a = tile enemigo ; HL -> ATTR
-
-	xor a
-	ld [hl+], a         ;; ATTR = 0 ; HL -> VY
-
-    xor a
-	ld [hl+], a         ;; VY = 0
-
-	xor a
-	ld [hl+], a         ;; VX = 0
-
-	ld a, KIND_ENEMIGO
-	ld [hl], a          ;; guardar KIND
-ret
-
 system_prerender_one::
 	;; si la entidad en de tiene CMP, copia 4 bytes del sprite a shadow_cursor
     ;; deja shadow_cursor +4 pos. para el siguiente

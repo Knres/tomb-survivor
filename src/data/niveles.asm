@@ -26,14 +26,21 @@ mapa_nivel_1::
 
 mapa_nivel_1_posicion_inicial_jugador::
 	;; las posiciones no pueden ser mayores que el mapa (quedarian fuera)
-	;; X, Y (estan en px, pixeles = tiles * 8 )
+	;; se cargara en la entidad 1 siempre
+	
+	;; X  , Y (estan en px, pixeles = tiles * 8 )
 	DB 8*8, 14*8
 
 mapa_nivel_1_enemigos::
-	;; ENTIDADES
-	;; (X, Y estan en px, pixeles = tiles * 8 )
-	;;	TIPOMOVIMIENTO,  X,  Y,  DIRECCIONMOVIMIENTO
-	DB E_DIR_HORIZONTAL, 0 *8, 12*8, E_MOVE_RIGHT
-	DB E_DIR_HORIZONTAL, 16*8, 10*8, E_MOVE_LEFT
-	DB E_DIR_VERTICAL,   8 *8, 0 *8, E_MOVE_DOWN
+	;; Las orientaciones de los sprites se tendran que cambiar segun la direccion (vx o vy)
+	;; por lo que hay que aplicarle un ATTR_FLIP_X o ATTR_FLIP_Y (0 si no tiene).
+	;;   	p.e. el sprite de escorpion esta orientado hacia la izquierda, 
+	;;   	si vx < 0 --> ATTR_FLIP = 0
+	;;   	si vx > 0 --> ATTR_FLIP_X
+	;; tanto x, y, vx, xy estan en px.
+	
+	;; TIPO_ENEMIGO,        X,    Y,  VX, VY, ATTR_FLIP
+	DB KIND_ESCORPION,   16*8, 14*8,  -2,  0, 0
+	DB KIND_MURCIELAGO,  16*8, 10*8,   2,  0, ATTR_FLIP_X
+	DB KIND_FIN_ENEMIGOS
 mapa_nivel_1_enemigos_fin::

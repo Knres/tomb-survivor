@@ -59,3 +59,31 @@ get_pos_inicial_jugador_nivel_actual::
 	;;		ld hl, mapa_nivel_2_posicion_inicial_jugador
 	;;	ret
 ret
+
+get_enemigos_nivel_actual::
+	;; Devuelve el inicio de la tabla de enemigos del nivel actual.
+	;; I: -
+	;; O: HL = direccion del primer registro KIND, X, Y, VX, VY, ATTR.
+	;; M: A, HL
+	ld a, [nivel_actual]
+
+	cp 1
+	jr z, .nivel_1
+
+	;; TODO: añadir los otros niveles
+	;; cp 2
+	;; jr z, .nivel_2
+
+	;; por defecto el nivel 1
+	ld a, 1
+	ld [nivel_actual], a
+
+	.nivel_1
+		ld hl, mapa_nivel_1_enemigos
+	ret
+
+	;; TODO: añadir los otros niveles
+	;;	.nivel_2
+	;;		ld hl, mapa_nivel_1_enemigos
+	;;	ret
+ret

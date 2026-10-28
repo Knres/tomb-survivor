@@ -190,12 +190,12 @@ EXPORT DEF E_VY     = 5
 EXPORT DEF E_VX     = 6
 EXPORT DEF E_KIND   = 7
 
-;;   bit  7 6 5 4 3 2 1 0                bit   7 6 5 4 3 2 1 0
-;;   CMP |1|x|x|1|x|1|1|1|               KIND |x|x|x|x|x|x|x|x|
-;; ALIVE ─┘ │ │ │ │ │ │ └─ SPRITE           x ─┘ │ │ │ │ │ │ └─ JUGADOR
-;;       x ─┘ │ │ │ │ └─ PHYSICS              x ─┘ │ │ │ │ └─ ENEMIGO
-;;         x ─┘ │ │ └─ COLLIDER                 x ─┘ │ │ └─ x
-;;       INPUT ─┘ └─ x                            x ─┘ └─ x
+;;   bit  7 6 5 4 3 2 1 0                  bit   7 6 5 4 3 2 1 0
+;;   CMP |1|x|x|1|x|1|1|1|                 KIND |x|x|x|x|x|x|x|x|
+;; ALIVE ─┘ │ │ │ │ │ │ └─ SPRITE             x ─┘ │ │ │ │ │ │ └─ JUGADOR
+;;       x ─┘ │ │ │ │ └─ PHYSICS                x ─┘ │ │ │ │ └─ ESCORPION
+;;         x ─┘ │ │ └─ COLLIDER        ESTALACTITAS ─┘ │ │ └─ MURCIELAGO
+;;       INPUT ─┘ └─ x                        PINCHOS ─┘ └─ MOMIA
 
 EXPORT DEF CMP_SPRITE_BIT       = 0
 EXPORT DEF CMP_PHYSICS_BIT      = 1
@@ -205,36 +205,43 @@ EXPORT DEF CMP_INPUT_BIT        = 4
 ;; EXPORT DEF CMP_              = 5
 ;; EXPORT DEF CMP_              = 6
 EXPORT DEF CMP_ALIVE_BIT        = 7
-
-EXPORT DEF CMP_SPRITE           = 1 << CMP_SPRITE_BIT
-EXPORT DEF CMP_PHYSICS          = 1 << CMP_PHYSICS_BIT
-EXPORT DEF CMP_COLLIDER         = 1 << CMP_COLLIDER_BIT
-;; EXPORT DEF CMP_              = 1 << CMP_
-EXPORT DEF CMP_INPUT            = 1 << CMP_INPUT_BIT ;; Controlled by the player. It has no data
-;; EXPORT DEF CMP_              = 1 << CMP_5
-;; EXPORT DEF CMP_              = 1 << CMP_6
-EXPORT DEF CMP_ALIVE            = 1 << CMP_ALIVE_BIT
+        EXPORT DEF CMP_SPRITE           = 1 << CMP_SPRITE_BIT
+        EXPORT DEF CMP_PHYSICS          = 1 << CMP_PHYSICS_BIT
+        EXPORT DEF CMP_COLLIDER         = 1 << CMP_COLLIDER_BIT
+        ;; EXPORT DEF CMP_              = 1 << CMP_
+        EXPORT DEF CMP_INPUT            = 1 << CMP_INPUT_BIT ;; Controlled by the player. It has no data
+        ;; EXPORT DEF CMP_              = 1 << CMP_5
+        ;; EXPORT DEF CMP_              = 1 << CMP_6
+        EXPORT DEF CMP_ALIVE            = 1 << CMP_ALIVE_BIT
 
 EXPORT DEF KIND_JUGADOR_BIT     = 0
-EXPORT DEF KIND_ENEMIGO_BIT     = 1
-;; EXPORT DEF CMP_              = 2
-;; EXPORT DEF CMP_              = 3
-;; EXPORT DEF CMP_              = 4
-;; EXPORT DEF CMP_              = 5
-;; EXPORT DEF CMP_              = 6
-;; EXPORT DEF CMP_              = 7
+EXPORT DEF KIND_ESCORPION_BIT   = 1
+EXPORT DEF KIND_MURCIELAGO_BIT  = 2
+EXPORT DEF KIND_MOMIA_BIT       = 3
+EXPORT DEF KIND_PINCHOS_BIT     = 4
+EXPORT DEF KIND_ESTALACTITA_BIT = 5
+;; EXPORT DEF KIND_             = 6
+;; EXPORT DEF KIND_             = 7
+        EXPORT DEF KIND_FIN_ENEMIGOS    = 0 ;; estilo centinela
+        EXPORT DEF KIND_JUGADOR         = 1 << KIND_JUGADOR_BIT
+        EXPORT DEF KIND_ESCORPION       = 1 << KIND_ESCORPION_BIT
+        EXPORT DEF KIND_MURCIELAGO      = 1 << KIND_MURCIELAGO_BIT
+        EXPORT DEF KIND_MOMIA           = 1 << KIND_MOMIA_BIT
+        EXPORT DEF KIND_PINCHOS         = 1 << KIND_PINCHOS_BIT
+        EXPORT DEF KIND_ESTALACTITA     = 1 << KIND_ESTALACTITA_BIT
+        ;; EXPORT DEF KIND_             = 1 << CMP_6
+        ;; EXPORT DEF KIND_             = 1 << CMP_7
+;; TODO: definir tipos de enemigos tras tener una base funcional
 
-EXPORT DEF KIND_JUGADOR         = 1 << KIND_JUGADOR_BIT
-EXPORT DEF KIND_ENEMIGO         = 1 << KIND_ENEMIGO_BIT
-;; EXPORT DEF CMP_              = 1 << CMP_2
-;; EXPORT DEF CMP_              = 1 << CMP_3
-;; EXPORT DEF CMP_              = 1 << CMP_4
-;; EXPORT DEF CMP_              = 1 << CMP_5
-;; EXPORT DEF CMP_              = 1 << CMP_6
-;; EXPORT DEF CMP_              = 1 << CMP_7
-;; Tipo de enemigo
-    ;; TODO: definir tipos de enemigos tras tener una base funcional
 
+EXPORT DEF ATTR_BIT_PRIORIDAD = 7 ;;(Prioridad OBJ-BG)
+EXPORT DEF ATTR_BIT_FLIP_Y    = 6 ;; Volvar (espejo) el sprite en Y
+EXPORT DEF ATTR_BIT_FLIP_X    = 5 ;; Volvar (espejo) el sprite en X
+EXPORT DEF ATTR_BIT_PALET     = 4 ;; Selector paleta 0 --> OBJP0; 1 --> OBJP1 
+        EXPORT DEF ATTR_PRIORIDAD   = 1 << ATTR_BIT_PRIORIDAD
+        EXPORT DEF ATTR_FLIP_Y      = 1 << ATTR_BIT_FLIP_Y
+        EXPORT DEF ATTR_FLIP_X      = 1 << ATTR_BIT_FLIP_X
+        EXPORT DEF ATTR_PALET       = 1 << ATTR_BIT_PALET
 
 
 ;; Tipo de movimiento (por el momento solo habra 2: horizontal y vertical)

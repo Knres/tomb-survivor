@@ -31,3 +31,276 @@ manager_entity_for_each::
 	    dec b
 	jr nz, .next
 ret
+
+manager_entity_init_enemies::
+	;; Crea las entidades descritas por la tabla del nivel actual
+	;; KIND_FIN_ENEMIGOS --> fin de enemigos en mapa nivel
+	;; I: -
+	;; O: -
+	;; M: A, B, DE, HL
+	call get_enemigos_nivel_actual		;; hl = dir. definicion de enemigos
+	ld de, entity_array + ENTITY_SIZE	;; de = dir. array de entidades
+	ld b, MAX_ENTITIES - 1				;; (el jugador ocupa 1)
+
+	.next_enemy
+		;; hl --> dir. KIND en datos nivel
+		ld a, [hl]				;; a = KIND en datos nivel
+		cp KIND_FIN_ENEMIGOS	;; comprobar si quedan más enemigos por cargar
+		ret z
+
+		push bc					;; guardar contador b
+		push hl					;; hl --> dir. KIND en datos nivel
+		
+		;; CMP
+		ld a, CMP_ALIVE | CMP_SPRITE;; / a = enemigo vivo y con sprite 
+		ld hl, E_CMP				;; |
+		add hl, de					;; | hl --> &entidad.cmp
+		ld [hl], a					;; \
+		
+		;; KIND y TILE
+		pop hl					;; hl --> dir. KIND en datos nivel
+		
+		ld a, [hl+]				;; a = KIND en datos nivel
+								;; hl --> dir. X en datos nivel
+		push hl					;; push 
+
+		ld hl, E_KIND			;; / 
+		add hl, de				;; | hl = &entidad.kind
+		ld [hl], a				;; \ 
+
+
+		;; asignacion de tile segun KIND
+		;; TODO: añadir la asignacion de los sprites correspondientes
+
+		cp KIND_ESCORPION
+		jr z, .tile_escorpion
+
+		cp KIND_MURCIELAGO
+		jr z, .tile_murcielago
+
+		cp KIND_MOMIA
+		jr z, .tile_momia
+
+		cp KIND_PINCHOS
+		jr z, .tile_pinchos
+
+		cp KIND_ESTALACTITA
+		jr z, .tile_estalactita
+		
+		jr .aplicar
+
+		.tile_escorpion
+			ld a, TILE_ESCORPION
+		jr .aplicar
+
+		.tile_murcielago
+			ld a, TILE_ESCORPION
+		jr .aplicar
+
+		.tile_momia
+			ld a, TILE_ESCORPION
+		jr .aplicar
+
+		.tile_pinchos
+			ld a, TILE_ESCORPION
+		jr .aplicar
+
+		.tile_estalactita
+			ld a, TILE_ESCORPION
+		;; jr .aplicar
+		
+		.aplicar
+
+		ld hl, E_TILE		;; / 
+		add hl, de			;; | hl = &entidad.tile
+		ld [hl], a			;; \ asignar tile correspondiente
+		
+		
+		;; X
+		pop hl				;; hl --> dir. X en datos nivel
+		ld a, [hl+]			;; / a = X en datos nivel
+		add a, OAM_X_OFFSET	;; \ + offset_X
+		push hl				;; hl --> dir. Y en datos nivel
+		
+		ld hl, E_X			;; /
+		add hl, de			;; /
+		ld [hl], a			;; \
+		
+
+		;; Y
+		pop hl				;; hl --> dir. Y en datos nivel
+		ld a, [hl+]			;; / a = Y en datos nivel
+		add a, OAM_Y_OFFSET	;; \ + offset_y
+		push hl				;; hl --> dir. VX en datos nivel
+
+		ld hl, E_Y			;; /
+		add hl, de			;; |  hl = &entidad.y
+		ld [hl], a			;; \
+		
+
+		;; VX
+		pop hl				;; hl --> dir. VX en datos nivel
+		ld a, [hl+]			;; a = VX en datos nivel
+		push hl				;; hl --> dir. VY en datos nivel
+
+		ld hl, E_VX
+		add hl, de
+		ld [hl], a
+		
+		;; VY
+		pop hl				;; hl --> dir. VY en datos nivel
+		ld a, [hl+]			;; a = vy
+		push hl				;; hl --> dir. ATTR en datos nivel
+
+		ld hl, E_VY
+		add hl, de
+		ld [hl], a
+
+		
+		;; ATTR
+		pop hl				;; hl --> dir. ATTR en datos nivel
+		ld a, [hl+]			;; a = attr
+		push hl				;; next KIND en datos nivel
+
+		ld hl, E_ATTR
+		add hl, de
+		ld [hl], a
+		
+		
+		ld a, e
+		add a, ENTITY_SIZE
+		ld e, a
+		jr nc, .sin_acarreo
+			inc d
+		.sin_acarreo
+		;; de: dir. next posicion de entidad en array de entidad
+		
+		pop hl	;; next KIND en datos nivel
+		pop bc 	;; recuperar contador b
+		dec b
+	jr nz, .next_enemy
+ret
+
+
+ia_enemigo_update::
+	;; Llama a ai correspondiente, de las entidades vivas
+	;; I: DE = dir. base de la entidad
+	;; O: -
+	;; M: A, HL
+	push de		;; guardar dir. base de entidad
+
+	ld hl, E_KIND	;; / 
+	add hl, de		;; | hl = &entidad_kind 
+	ld a, [hl]		;; \ a = kind
+
+	pop de		;; recuperar dir. base de entidad
+
+	cp KIND_JUGADOR
+	ret z
+	
+	cp KIND_ESCORPION
+	jp z, ia_escorpion
+	
+	cp KIND_MURCIELAGO
+	jp z, ia_murcielago
+	
+	cp KIND_MOMIA
+	jp z, ia_momia
+	
+	cp KIND_PINCHOS
+	jp z, ia_pinchos
+	
+	cp KIND_ESTALACTITA
+	jp z, ia_estalactita
+
+	;; cp
+	;; jp z,
+ret
+
+ia_escorpion::
+	;; Escorpión. En el suelo, se mueve de derecha-izquierda y gira tras tocar pared
+	;; I: DE = dir. base de la entidad
+	;; O: -
+	;; M: A, B, HL
+
+	ld hl, E_VX	
+	add hl, de		;; hl = dir. vx de la entidad
+
+	ld a, [hl]
+	ld b, a			;; b = vx
+
+	ld hl, E_X		
+	add hl, de		;; hl = dir. x
+
+	ld a, [hl]		;; / a = x actual
+	add a, b		;; | x = x + vx
+	ld [hl], a		;; \ guardar nueva x
+
+	;; TODO: giro al chocar con pared
+ret
+
+ia_murcielago::
+	;; Murcielago. Igual que el escorpion pero en el cielo
+	;; por el momento la logica es la misma que el escorpion --> call ia_escorpion
+
+	call ia_escorpion
+ret
+
+ia_momia::
+	;; Momia. -
+	;; por definir
+ret
+
+ia_pinchos::
+	;; Pinchos. En el suelo, no se mueven salen y bajan en ciclo,
+
+ret
+
+ia_estalactita::
+	;; Estalactitas. Se generan el el techo y caen cuando el jugador pasa por debajo (cuando x la estalactita = x jugador)
+	;; añadir un tolerancia suficiente (igual a la velocidad del jugador?) para que cuando caiga pueda tocar al jugador si el jugador no modifica nada
+	;; si ya esta cayendo no hay que detectar si el jugador esta dentro de rango o no
+ret
+
+ia_serpiente::
+	;; Serpiente. En paredes, se moveran de arriba a abajo,
+	;; por el momento seran 
+ret
+
+entidad_cambiar_dir_movimiento_horizontal::
+	;; Modifica la direccion de movimieto dercha-izq de la entidad recibida
+	;; I: HL =  dir. de entidad que se quiere modificar la direccion de movimiento
+	;; O: -
+	;; M: A, DE
+	push hl	;; guardar dir. base de entidad
+	
+	ld de, E_VX
+	add hl, de	;; hl -> &entidad.vx 
+
+	ld a, [hl]	;; a = vx
+	cpl			;; / invertir el valor de vx 
+	inc a		;; \ vx -> -vx
+	ld [hl], a	;; guardar vx modificado
+	
+	pop hl	;; recuperar la dir. base de la entidad
+	call sprite_espejo_x
+ret
+
+entidad_cambiar_dir_movimiento_vertical::
+	;; Modifica la direccion de movimieto arriba-abajo de la entidad recibida
+	;; I: HL =  dir. de entidad que se quiere modificar la direccion de movimiento
+	;; O: -
+	;; M: A, DE
+	push hl	;; guardar dir. base de entidad
+	
+	ld de, E_VY
+	add hl, de	;; hl -> &entidad.vy 
+
+	ld a, [hl]	;; a = vy
+	cpl			;; / invertir el valor de vy
+	inc a		;; \ vy -> -vy
+	ld [hl], a	;; guardar vy modificado
+	
+	pop hl	;; recuperar la dir. base de la entidad
+	call sprite_espejo_y
+ret

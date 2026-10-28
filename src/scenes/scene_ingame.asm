@@ -15,8 +15,16 @@ scene_ingame_init::
     call system_render_load_map
     call system_prerender_init_entities
     call system_prerender_init_jugador
-    call system_prerender_init_escorpion
-jp   init_hud
+
+    ;; ===================================
+    ;; pureba
+        ;; mover esto a una funcion o algo
+        xor a                    ;; / no se llama a update de enemigos si 
+        ld [enemigos_activos], a ;; \ enemigos_activos = 0, se activa tras primer imput
+    ;;=====================================
+
+    call manager_entity_init_enemies
+jp init_hud
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cada frame en la partida: mueve al jugador y prepara los sprites.
@@ -30,4 +38,23 @@ scene_ingame_update::
     call system_render_scroll         ;; el scroll, pero como max_x_y van ha ser 0 no modifica
     call system_colisiones_update     ;; deteccion de colisiones
     call system_prerender_pos_jugador ;; actualiza la posicion del jugador en memoria y las prepara para el OAM
+    
+    ;; ===================================
+    ;; pureba
+    ;; mover esto a una funcion o algo
+        ld a, [enemigos_activos]
+        and a       ;; a == 0?
+        jr nz, .actualiza_ia
+            ;; pulsar cualquier tacla para comenzar
+                ld a, [joypad_pressed]
+                and a
+                jr z, .no_actulizar_ia
+
+                ld a, 1
+                ld [enemigos_activos], a
+            .actualiza_ia
+                ld hl, ia_enemigo_update          ;; actualizar a las entidades
+                call manager_entity_for_each
+        .no_actulizar_ia
+    ;;=====================================
 jp   system_prerender_update      ;; preparar los sprites de como ha quedado todo
