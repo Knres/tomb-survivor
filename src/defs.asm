@@ -111,14 +111,15 @@ EXPORT DEF VBLANK_START = $90   ;; 144 en decimal
 
 ;; TILES
 EXPORT DEF TILE_FONDO = $00     ;; fondo
-EXPORT DEF TILE_SUELO = $01     ;; suelo -> pisble, colisiona y no muere se mantiene al jugador encima
-EXPORT DEF TILE_PARED = $02     ;; pared -> al colisionar con ellas muere el jugador
+EXPORT DEF TILE_SUELO = $01     ;; suelo temporal
+EXPORT DEF TILE_PARED = $02     ;; pared temporal
 EXPORT DEF TILE_JUGADOR = $03	;; jugador
-EXPORT DEF TILE_ESCORPION = $04   ;; escorpion
-EXPORT DEF TILE_PLAT_DERECHA = $05   ;; plataforma derecha
-EXPORT DEF TILE_PLAT_IZQUIERDA = $06   ;; plataforma izquierda
-EXPORT DEF TILE_PARED_NUEVA = $07   ;; pared nueva
-EXPORT DEF TILE_CORAZON = $08   ;; corazon
+EXPORT DEF TILE_ESCORPION = $04         ;; escorpion
+EXPORT DEF TILE_PLAT_DERECHA = $05      ;; plataforma derecha
+EXPORT DEF TILE_PLAT_IZQUIERDA = $06    ;; plataforma izquierda
+EXPORT DEF TILE_PARED_NUEVA = $07       ;; pared nueva
+EXPORT DEF TILE_CORAZON    = $08        ;; corazon
+EXPORT DEF TILE_NO_CORAZON = $09        ;; no corazon
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Info. tam. entidades/jugador

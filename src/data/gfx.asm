@@ -58,6 +58,17 @@ tile_data::
 	;; Tile 8 ($08): corazon
     INCBIN "src/data/gfx/corazon.2bpp"
 
+	;; Tile 9 ($09): no corazon
+	DB %00000000, %00000000 ;; fila 0
+	DB %01000010, %01100011 ;; fila 1
+	DB %00100100, %00110110 ;; fila 3
+	DB %00011000, %00011100 ;; fila 2
+	DB %00011000, %00011100 ;; fila 4
+	DB %00100100, %00110110 ;; fila 5
+	DB %01000010, %01100011 ;; fila 6
+	DB %00000000, %00000000 ;; fila 7
+
+
 	;; ---------- FUENTE ----------
 ;; Dibujo en los comentarios: # negro (color 3), + gris (color 1), . blanco (color 0)
 

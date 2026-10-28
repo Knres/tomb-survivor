@@ -105,10 +105,11 @@ jp hud_draw_hearts
 
 hud_draw_hearts::
     ;; Dibujar las vidas que tiene el jugador
-    ;; I: -
-    ;; O: -
+    ;; I: - 
+    ;; O: - 
     ;; M: A, BC, HL
     ld a, [jugador_vidas]
+    ;; ld a, 1
     ld c, a
     
     call wait_vblank
@@ -118,7 +119,7 @@ hud_draw_hearts::
     .do_while
         ld a, c                 ;; a = corazones que tiene
         or a                    ;; a == 0 ?
-        ld a, TILE_FONDO        ;; a <-- tile de corazon vacio (por defecto)
+        ld a, TILE_NO_CORAZON   ;; a <-- tile de corazon vacio (por defecto)
 
         jr z, .dibujar          ;; a == 0 -> Z
             ;; a > 0 --> le que dan vidas
