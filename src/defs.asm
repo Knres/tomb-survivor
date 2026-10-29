@@ -135,6 +135,10 @@ EXPORT DEF TILE_JUGADOR_1 = $0D         ;; jugador, frame 1
 EXPORT DEF TILE_JUGADOR_2 = $0E         ;; jugador, frame 2
 EXPORT DEF TILE_JUGADOR_SALTO = $0F     ;; jugador saltando
 EXPORT DEF TILE_JUGADOR = TILE_JUGADOR_2;; frame por defecto
+EXPORT DEF TILE_ESTALACTITA = TILE_PINCHOS   ;; estalactita TODO: sustituir sprite
+EXPORT DEF TILE_ESCORPION_1 = TILE_ESCORPION ;; escorpion, frame 1 
+EXPORT DEF TILE_ESCORPION_2 = TILE_ESCORPION ;; escorpion, frame 2 TODO: sustituir este frame
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Info. tam. entidades/jugador
@@ -280,6 +284,13 @@ EXPORT DEF VIDAS_JUGADOR        = 3  ;; vidas maximas e iniciales que tiene el j
 
 ;; ENTIDAD: MURCIELAGO
 EXPORT DEF MURCIELAGO_ESPERA_FRAME = 20         ;; updates entre cambios de frame
+;; ENTIDAD: ESCORPION
+EXPORT DEF ESCORPION_ESPERA_FRAME = 15          ;; updates entre cambios de frame
+;; ENTIDAD: ESTALACTITA
+EXPORT DEF ESTALACTITA_ESTADO_ESPERANDO = 0
+EXPORT DEF ESTALACTITA_ESTADO_CAYENDO = 1
+EXPORT DEF ESTALACTITA_ESTADO_FINALIZADO = 2
+EXPORT DEF ESTALACTITA_VELOCIDAD = 1            ;; px por update
 ;; ENTIDAD: PINCHOS
 EXPORT DEF PINCHOS_FASE_SUBIDA = TILE_SIZE      ;; <-- Sube una altura de un tile (8px) fase subida 0-7  --> 8 fin de fase
 EXPORT DEF PINCHOS_FASE_BAJADA = TILE_SIZE * 2  ;; <-- Baja una altura de un tile       fase bajada 7-15 --> 0 fin de fase <-- si llega a 16 se pone a 0

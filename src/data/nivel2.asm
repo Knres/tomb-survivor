@@ -46,9 +46,12 @@ mapa_nivel_2_enemigos::
 								;; 0-7 : subida ;; 8 --> fin subida
 								;; 8-15: bajada ;; 0 --> fin bajada <-- llegando a 16 se ponea a 0 
 	;; =================================================
-
+	;; ESTALACTITA no usa VX y VY como velocidades
+			;; VX = radio de deteccion horizontal (tolerancia de deteccion)
+			;; VY = estado (esperando para caer o cayendo)
 	;; Como Escorpion y Murcielago solo tienen vx, 
-		;; VY = contador de cuanto tiempo cambiar de frame
+			;; VY = contador de cuanto tiempo cambiar de frame
+	;; =================================================
 
 	;; TIPO_ENEMIGO,        X,    Y,  VX, VY, ATTR_FLIP (en caso de girar en dos 2 direccion "ATTR_FLIP_X | ATTR_FLIP_Y")
 	;;DB 

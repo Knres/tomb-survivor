@@ -49,15 +49,21 @@ mapa_nivel_1_enemigos::
 								;; 0-7 : subida ;; 8 --> fin subida
 								;; 8-15: bajada ;; 0 --> fin bajada <-- llegando a 16 se ponea a 0 
 	;; =================================================
-
+	;; ESTALACTITA no usa VX y VY como velocidades
+			;; VX = radio de deteccion horizontal (tolerancia de deteccion) en px
+			;; VY = estado (esperando para caer o cayendo)
 	;; Como Escorpion y Murcielago solo tienen vx, 
-		;; VY = contador de cuanto tiempo cambiar de frame
+			;; VY = contador de cuanto tiempo cambiar de frame
+	;; =================================================
 		
 	;; TIPO_ENEMIGO,        X,    Y,  VX, VY, ATTR_FLIP (en caso de girar en dos 2 direccion "ATTR_FLIP_X | ATTR_FLIP_Y")
 	DB KIND_ESCORPION,   16*8, 14*8,  -1,  0, 0
-	DB KIND_MURCIELAGO,  16*8,  8*8,   2,  0, ATTR_FLIP_X
+	DB KIND_MURCIELAGO,  16*8,  8*8,   2,  30, ATTR_FLIP_X
 	
 	DB KIND_PINCHOS,      3*8, 15*8,  37,  0, ATTR_FLIP_X
 	DB KIND_PINCHOS,      7*8, 14*8,   8,  8, 0
+
+	DB KIND_ESTALACTITA,  16*8, 0*8,  16,  0, ATTR_FLIP_Y
+	
 	DB KIND_FIN_ENEMIGOS
 mapa_nivel_1_enemigos_fin::

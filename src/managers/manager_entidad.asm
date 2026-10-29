@@ -90,7 +90,7 @@ manager_entity_init_enemies::
 		jr .aplicar
 
 		.tile_escorpion
-			ld a, TILE_ESCORPION
+			ld a, TILE_ESCORPION_1
 		jr .aplicar
 
 		.tile_murcielago
@@ -106,7 +106,7 @@ manager_entity_init_enemies::
 		jr .aplicar
 
 		.tile_estalactita
-			ld a, TILE_ESCORPION	;; TODO: sustituir tiel
+			ld a, TILE_ESTALACTITA
 		;; jr .aplicar
 		
 		.aplicar
@@ -217,8 +217,7 @@ ia_enemigo_update::
 	;; jp z,
 ret
 
-ia_escorpion::
-	;; Escorpión. En el suelo, se mueve de derecha-izquierda y gira tras tocar pared
+ia_mov_izq_der::
 	;; I: DE = dir. base de la entidad
 	;; O: -
 	;; M: A, B, HL
@@ -248,6 +247,45 @@ ia_escorpion::
 		
 		pop de
 	.no_sale
+ret
+
+ia_escorpion::
+	;; Escorpión. En el suelo, se mueve de derecha-izquierda y gira tras tocar pared
+	;; I: DE = dir. base de la entidad
+	;; O: -
+	;; M: A, B, HL
+
+	;; VY cuenta los updates que faltan para cambiar el frame.
+	ld hl, E_VY	;; /
+	add hl, de	;; | recuperar vy (contador)
+	ld a, [hl]	;; \ 
+	
+	and a					;; contador == 0?
+	jr z, .cambiar_frame 	;; Z --> cambiar frame
+		;; NZ --> contador --
+		dec [hl]
+		jr nz, .mover
+	.cambiar_frame
+	
+	ld a, ESCORPION_ESPERA_FRAME	;; / resetear
+	ld [hl], a						;; \ contador
+
+
+	ld hl, E_TILE
+	add hl, de
+	ld a, [hl]
+	
+	cp TILE_ESCORPION_1
+	jr z, .frame_2
+		ld a, TILE_ESCORPION_1
+		jr .guardar_frame
+	.frame_2
+		ld a, TILE_ESCORPION_2
+	.guardar_frame
+	ld [hl], a
+
+	.mover
+	call ia_mov_izq_der
 ret
 
 ia_murcielago::
@@ -284,7 +322,7 @@ ia_murcielago::
 	ld [hl], a
 
 	.mover
-	call ia_escorpion
+	call ia_mov_izq_der
 ret
 
 ia_momia::
@@ -297,9 +335,9 @@ ia_pinchos::
 
 	;; VX cuenta frames; 
 	;; VY recorre las fases 0-7 arriba y 8-15 abajo.
-	ld hl, E_VX	;; /
+	ld hl, E_VX	;; / 
 	add hl, de	;; | recuperar vx (contador)
-	ld a, [hl]	;; \ 
+	ld a, [hl]	;; \  
 
 	and a			;; contador == 0?
 	jr z, .fase_mov	;; Z --> Fase de movimientos
@@ -374,6 +412,72 @@ ia_estalactita::
 	;; Estalactitas. Se generan el el techo y caen cuando el jugador pasa por debajo (cuando x la estalactita = x jugador)
 	;; añadir un tolerancia suficiente (igual a la velocidad del jugador?) para que cuando caiga pueda tocar al jugador si el jugador no modifica nada
 	;; si ya esta cayendo no hay que detectar si el jugador esta dentro de rango o no
+	;; I: DE = dir. base de la entidad
+	;; O: -
+	;; M: A, B, HL
+
+	;; E_VX = radio de deteccion horizontal (tolerancia de deteccion)
+	;; E_VY = estado
+	ld hl, E_VY 	;; / 
+	add hl, de 		;; | recuperar vy (estado)
+	ld a, [hl]		;; \ 
+
+	cp ESTALACTITA_ESTADO_CAYENDO
+	jr z, .caer
+		;; NZ --> no cayendo
+		cp ESTALACTITA_ESTADO_FINALIZADO
+		ret z
+
+	;; ACTIVACION
+	ld a, [jugador_x]	;; /
+	add OAM_X_OFFSET	;; |
+	ld b, a				;; \ b = jugador_x
+
+	ld hl, E_X			;; /
+	add hl, de			;; |
+	ld a, [hl]			;; \ a = entidad_x
+
+	sub b				;; entidad_x - jugador_x
+
+	jr nc, .no_negativo
+		cpl		;; / -a -> a
+		inc a	;; \ a = |a|
+	.no_negativo
+	;; a = |a|
+	ld b, a			;; b = |entidad_x - jugador_x|
+
+	ld hl, E_VX		;; /
+	add hl, de		;; | recuperar vx (radio de deteccion horizontal (tolerancia de deteccion))
+	ld a, [hl]		;; \ a = tolerancia deteccion
+
+	cp b			;; (a - b)
+					;;  5 - 7 = -2 --> C --> fuera de rango 
+	ret c
+
+	;; NC --> dentro de rango
+	;; Cambiar estado a cayendo
+	ld hl, E_VY							;; /
+	add hl, de							;; |
+	ld a, ESTALACTITA_ESTADO_CAYENDO	;; |
+	ld [hl], a							;; \ cambiar estado a cayendo
+
+
+	;; Cayendo
+	.caer
+		ld hl, E_Y					;; /
+		add hl, de					;; | hacer bajar la entidad
+		ld a, [hl]					;; |
+		add ESTALACTITA_VELOCIDAD	;; \ a = nueva pos. Y
+
+		call entidad_comprobar_salida_vertical	;; O: a corregida
+		ld [hl], a
+		cp OAM_Y_OFFSET + LEVEL_FLOOR_PX - TILE_SIZE	;; comprobar si esta en el sulo (pos corregida)
+	ret nz
+
+	;; Z --> toca suelo la pos corregida --> Eliminar
+	ld hl, E_CMP
+	add hl, de
+	res CMP_ALIVE_BIT, [hl]
 ret
 
 ia_serpiente::
