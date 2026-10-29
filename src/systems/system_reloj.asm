@@ -8,7 +8,6 @@ system_actualizar_reloj:
     jr z, .continua ;; si ha llegado el contador a 0 puede continuar, no debe bajar de 0, si no, se resta 1
     dec a
     ld [reloj_fin_nivel], a
-    call prueba_reloj
     .continua:
 ret
 
