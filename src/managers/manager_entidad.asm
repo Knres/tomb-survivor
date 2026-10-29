@@ -233,16 +233,27 @@ ia_escorpion::
 	add hl, de		;; hl = dir. x
 
 	ld a, [hl]		;; / a = x actual
-	add a, b		;; | x = x + vx
-	ld [hl], a		;; \ guardar nueva x
+	add a, b		;; \ x = x + vx
+	
+	call entidad_comprobar_salida_horizontal
+	ld [hl], a		;; guardar x, sin salir de los limites
+	
+	jr nc, .no_sale	;; NC --> no se sale horizontalmente 
+		;; C --> se sale horizontaleme
+		push de
 
-	;; TODO: giro al chocar con pared
+		ld h, d			;; / hl = entidad
+		ld l, e			;; \ para entidad_cambiar_dir_movimiento_horizontal
+		call entidad_cambiar_dir_movimiento_horizontal
+		
+		pop de
+	.no_sale
 ret
 
 ia_murcielago::
 	;; Murcielago. Igual que el escorpion pero en el cielo
 	;; por el momento la logica es la misma que el escorpion --> call ia_escorpion
-
+	
 	call ia_escorpion
 ret
 
@@ -265,6 +276,58 @@ ret
 ia_serpiente::
 	;; Serpiente. En paredes, se moveran de arriba a abajo,
 	;; por el momento seran 
+ret
+
+entidad_comprobar_salida_horizontal::
+	;; Limita la nueva X al area interior, sin solaparse con las paredes laterales.
+	;; I: A = nueva X (X + VX), en coordenadas OAM
+	;; O: A = X limitada; C = 1 si se salió por un extremo
+	;; M: A
+	cp OAM_X_OFFSET + TILE_SIZE	;; borde izquierdo + tile pared lateral
+	jr c, .limite_izquierdo
+		;; NC --> No se sale del borde iquierdo
+		cp OAM_X_OFFSET + PANTALLA_ANCHO * TILE_SIZE - TILE_SIZE + 1 - TILE_SIZE;; borde derecho - tile pared lateral
+		jr nc, .limite_derecho
+			;; C --> No se sale del bored derecho
+			and a ;; Carry = 0
+		ret
+	;; ret
+
+	.limite_izquierdo
+		ld a, OAM_X_OFFSET + TILE_SIZE	;; limite izq. + tile pared lateral
+		scf
+	ret
+
+	.limite_derecho
+		ld a, OAM_X_OFFSET + PANTALLA_ANCHO * TILE_SIZE - TILE_SIZE - TILE_SIZE	;; limite der. - tile pared lateral
+		scf
+	;; ret
+ret
+
+entidad_comprobar_salida_vertical::
+	;; Limita la nueva Y al area interior, sin solaparse con el techo ni el suelo.
+	;; I: A = nueva Y (Y + VY), en coordenadas OAM
+	;; O: A = Y limitada; C = 1 si se salió por un extremo
+	;; M: A
+	cp OAM_Y_OFFSET + TILE_SIZE	;; borde superior + tile de techo
+	jr c, .limite_superior
+		;; NC --> No se sale del borde superior
+		cp OAM_Y_OFFSET + LEVEL_FLOOR_PX - TILE_SIZE + 1	;; borde inferior + tile de suelo
+		jr nc, .limite_inferior
+			;; C --> No se sale del borde inferior
+			and a ;; Carry = 0
+		ret
+	;; ret
+
+	.limite_superior
+		ld a, OAM_Y_OFFSET + TILE_SIZE	;; limite superior + tile de techo
+		scf
+	ret
+
+	.limite_inferior
+		ld a, OAM_Y_OFFSET + LEVEL_FLOOR_PX - TILE_SIZE	;; limite inferior - tile de suelo
+		scf
+	;; ret
 ret
 
 entidad_cambiar_dir_movimiento_horizontal::

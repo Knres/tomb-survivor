@@ -40,7 +40,7 @@ mapa_nivel_1_enemigos::
 	;; tanto x, y, vx, xy estan en px.
 	
 	;; TIPO_ENEMIGO,        X,    Y,  VX, VY, ATTR_FLIP
-	DB KIND_ESCORPION,   16*8, 14*8,  -2,  0, 0
-	DB KIND_MURCIELAGO,  16*8, 10*8,   2,  0, ATTR_FLIP_X
+	DB KIND_ESCORPION,   16*8, 14*8,  -1,  0, 0
+	DB KIND_MURCIELAGO,  16*8,  8*8,   1,  0, ATTR_FLIP_X
 	DB KIND_FIN_ENEMIGOS
 mapa_nivel_1_enemigos_fin::

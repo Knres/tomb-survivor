@@ -1,5 +1,21 @@
 SECTION "System render", ROM0
 
+system_render_scroll::
+    ;; Actualiza el scroll del fondo con la posicion de camara
+    ;; I: -
+    ;; O: -
+    ;; M: A, BC
+    call get_camera_pos     
+        ;; b = camera Y
+        ;; c = camera X
+
+    ld a, c
+    ldh [rSCX], a
+
+    ld a, b
+    ldh [rSCY], a
+ret
+
 system_render_load_map::
     ;; copia el mapa del nivel actual de ROM --> VRAM
     ;; El mapa del nivel solo se carga una ver

@@ -38,21 +38,7 @@ get_camera_pos::
     ld b, a
 ret
 
-system_render_scroll::
-    ;; Actualiza el scroll del fondo con la posicion de camara
-    ;; I: -
-    ;; O: -
-    ;; M: A, BC
-    call get_camera_pos     
-        ;; b = camera Y
-        ;; c = camera X
 
-    ld a, c
-    ldh [rSCX], a
-
-    ld a, b
-    ldh [rSCY], a
-ret
 
 hud_show::
     ;; Activar windows y posicionar hud
