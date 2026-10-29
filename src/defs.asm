@@ -137,7 +137,7 @@ EXPORT DEF TILE_JUGADOR = TILE_JUGADOR_2;; frame por defecto
 EXPORT DEF TILE_SIZE      = 8
 EXPORT DEF JUGADOR_ALTO   = TILE_SIZE
 EXPORT DEF TAM_COLISION   = 6
-
+EXPORT DEF LIST_END       = $FF
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Info. de niveles
