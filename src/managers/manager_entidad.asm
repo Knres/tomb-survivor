@@ -94,19 +94,19 @@ manager_entity_init_enemies::
 		jr .aplicar
 
 		.tile_murcielago
-			ld a, TILE_ESCORPION
+			ld a, TILE_ESCORPION	;; TODO: sustituir tiel
 		jr .aplicar
 
 		.tile_momia
-			ld a, TILE_ESCORPION
+			ld a, TILE_ESCORPION	;; TODO: sustituir tiel
 		jr .aplicar
 
 		.tile_pinchos
-			ld a, TILE_ESCORPION
+			ld a, TILE_PLAT_DERECHA	;; TODO: sustituir tiel
 		jr .aplicar
 
 		.tile_estalactita
-			ld a, TILE_ESCORPION
+			ld a, TILE_ESCORPION	;; TODO: sustituir tiel
 		;; jr .aplicar
 		
 		.aplicar
@@ -178,7 +178,7 @@ manager_entity_init_enemies::
 		pop hl	;; next KIND en datos nivel
 		pop bc 	;; recuperar contador b
 		dec b
-	jr nz, .next_enemy
+	jp nz, .next_enemy
 ret
 
 
@@ -265,6 +265,79 @@ ret
 ia_pinchos::
 	;; Pinchos. En el suelo, no se mueven salen y bajan en ciclo,
 
+	;; VX cuenta frames; 
+	;; VY recorre las fases 0-7 arriba y 8-15 abajo.
+	ld hl, E_VX	;; /
+	add hl, de	;; | recuperar vx (contador)
+	ld a, [hl]	;; \ 
+
+	and a			;; contador == 0?
+	jr z, .fase_mov	;; Z --> Fase de movimientos
+		;; NZ --> modificar conttdor
+		
+		dec [hl]	;; / contador --
+		ld a, [hl]	;; |
+		and a		;; \ contador == 0?
+	ret nz			;;   != 0 --> no hace nada
+
+	.fase_mov
+		ld hl, E_VY	;; / recuperar vy (fase)
+		add hl, de	;; | 0-7 : subida
+		ld a, [hl]	;; \ 8-15: bajada
+	
+		cp PINCHOS_FASE_SUBIDA 	;; a - 8 
+		jr nc, .bajar			;; 3 - 8 = -5 --> C subida 
+			;; C --> subida
+
+			inc a		;; / val. fase ++
+			ld [hl], a	;; \ guadar incremento de fase
+			ld b, -1	;; b= dir. movimiento (subir-bajar)
+			
+			jr .mover_y
+		.bajar
+			inc a					;; val. fase ++
+			cp PINCHOS_FASE_BAJADA	;; ha terminadoo fase bajada (> 15?)
+			jr c, .no_fin_bajada	;; C --> no
+				;;  NC --> Si, > 15 --> volver a fase subida -> = 0
+				
+				xor a	;; a = 0
+			.no_fin_bajada
+			ld [hl], a 		;; guadar incremento de fase
+			ld b, 1			;; b= dir. movimiento (subir-bajar)
+			
+			;; jr .mover_y
+		.mover_y
+			ld hl, E_Y	;; /
+			add hl, de	;; \ hl --> &entidad.y
+
+			ld a, [hl]	;; /
+			add a, b    ;; | Mover arriba o abajo al pincho
+			ld [hl], a	;; \
+
+		
+		;; comprobar si ha termiando de subir-bajar
+		;; si ha terminado aplicar una espera para que se mantenga
+		ld hl, E_VY		;; /
+		add hl, de		;; | recuperar vy (fase)
+		ld a, [hl]		;; \
+
+		cp PINCHOS_FASE_SUBIDA	;; es fin de fase subida?
+		jr z, .poner_espera		;; Z --> si lo es
+			;; NZ --> no es fin de fase subida
+			and a				;; es fin de fase bajada (a == 0?)
+			jr z, .poner_espera	;; Z --> si lo es
+				;; NZ -> no es fin bajada 
+				ld a, PINCHOS_ESPERA_SUBIDA_BAJARA
+		jr .guardar_espera
+
+		.poner_espera
+			ld a, PINCHOS_ESPERA_FASE
+
+		.guardar_espera
+		ld hl, E_VX	;; /
+		add hl, de	;; | guardar espera
+		ld [hl], a	;; \
+	;; end_fase_mov
 ret
 
 ia_estalactita::

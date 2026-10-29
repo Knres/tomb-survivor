@@ -1,4 +1,4 @@
-EXPORT DEF MAX_ENTITIES = 4 ;; MODIFICAR NUMERO DE ENTIDADES MAXIMAS
+EXPORT DEF MAX_ENTITIES = 8 ;; MODIFICAR NUMERO DE ENTIDADES MAXIMAS
 
 EXPORT DEF OAM_ENTRY_SIZE = 4
 EXPORT DEF SHADOW_OAM_SIZE = MAX_ENTITIES * OAM_ENTRY_SIZE
@@ -19,7 +19,7 @@ jugador_en_suelo::       DS 1
 jugador_y_anterior::     DS 1
 jugador_a_anterior::     DS 1
 jugador_vidas::          DS 1
-enemigos_activos::       DS 1
+enemigos_activos::       DS 1   ;; 0 -> no update enemigos (no hace call ia_enemigo_update)
 
 SECTION "Nivel actual", WRAM0
 nivel_actual:: DS 1

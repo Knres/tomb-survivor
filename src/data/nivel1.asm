@@ -39,8 +39,22 @@ mapa_nivel_1_enemigos::
 	;;   	si vx > 0 --> ATTR_FLIP_X
 	;; tanto x, y, vx, xy estan en px.
 	
+	;; ================================================
+	;; Especial PINCHOS no usa VX y VY como velocidades
+		;; VX = temporizador de ciclos (en frames) para cambiar de estado
+			;; este temporizador lo que se ponga aqui solo afecta al primer cambio de fase
+			;; para el next ciclo ya sera = PINCHOS_PAUSA_FASE
+			;; se puede poner un numero diferente para que no aparente que todos los pinchos se mueven a la vez	
+		;; VY = fase (poner 0 o 8, no otros valores). 
+								;; 0-7 : subida ;; 8 --> fin subida
+								;; 8-15: bajada ;; 0 --> fin bajada <-- llegando a 16 se ponea a 0 
+	;; =================================================
+
 	;; TIPO_ENEMIGO,        X,    Y,  VX, VY, ATTR_FLIP
 	DB KIND_ESCORPION,   16*8, 14*8,  -1,  0, 0
-	DB KIND_MURCIELAGO,  16*8,  8*8,   1,  0, ATTR_FLIP_X
+	DB KIND_MURCIELAGO,  16*8,  8*8,   2,  0, ATTR_FLIP_X
+	
+	DB KIND_PINCHOS,      3*8, 15*8,  37,  0, ATTR_FLIP_Y
+	DB KIND_PINCHOS,      7*8, 14*8,   8,  8, ATTR_FLIP_Y
 	DB KIND_FIN_ENEMIGOS
 mapa_nivel_1_enemigos_fin::

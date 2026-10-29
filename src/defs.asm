@@ -263,5 +263,13 @@ EXPORT DEF VELOCIDAD_MAX_CAIDA  = 4  ;; px por frame
 EXPORT DEF VIDAS_JUGADOR        = 3  ;; vidas maximas e iniciales que tiene el jugador   
 
 
+;; ENTIDAD ESPECIAL: PINCHOS
+EXPORT DEF PINCHOS_FASE_SUBIDA = TILE_SIZE      ;; <-- Sube una altura de un tile (8px) fase subida 0-7  --> 8 fin de fase
+EXPORT DEF PINCHOS_FASE_BAJADA = TILE_SIZE * 2  ;; <-- Baja una altura de un tile       fase bajada 7-15 --> 0 fin de fase <-- si llega a 16 se pone a 0
+EXPORT DEF PINCHOS_ESPERA_SUBIDA_BAJARA = 4     ;; pausa para la subida-bajada, a 1px por update es demasidao rapido
+EXPORT DEF PINCHOS_ESPERA_FASE     = 120        ;; se mantiene en estado subido o bajado durante tantos frames
+
+
+
 EXPORT DEF DURACION_PANTALLA = 180
 EXPORT DEF NUM_NIVELES = 1
