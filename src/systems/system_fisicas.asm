@@ -54,6 +54,10 @@ system_fisicas_update::
         ;; Consumir petición.
         ld [jugador_solicita_salto], a
 
+        ;Sonido de salto
+        ld hl, SfxSalto
+        call sys_sound_play_sfx
+        
         ;; Aplicar el impulso completo este frame
         jr .mover_y
 

@@ -11,9 +11,8 @@ scene_victoria::
 ;; O: -
 ;; M: A, BC, DE, HL
 scene_victoria_init::
+    ld   hl, musica_victoria
+    call sys_music_play
     ld   hl, pantalla_victoria
     ld   de, scene_menu
-    call manager_escena_temporizada_init
-
-    ld   hl, SfxNivel
-    jp   sys_sound_play_sfx
+    jp manager_escena_temporizada_init

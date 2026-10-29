@@ -17,6 +17,12 @@ scene_menu_init::
     ld   b, SHADOW_OAM_SIZE
     call memset8
 
+    ld a, 1
+    ld [menu_start_anterior], a
+
+    ld hl, musica_titulo
+    call sys_music_play
+
     ld   hl, pantalla_titulo
     jp   sys_pantalla_dibujar
 
@@ -26,10 +32,29 @@ scene_menu_init::
 ;; O: -
 ;; M: -
 scene_menu_update::
-    ;; TODO: cuando el input tenga los botones recien pulsados:
-    ;;   si START se acaba de pulsar ->
-    ;;     ld   hl, SfxMenuOk
-    ;;     call sys_sound_play_sfx
-    ;;     ld   hl, scene_ingame
-    ;;     jp   manager_escena_cambiar
+    ld a, [joypad_pressed]
+    and 1 << START_BIT
+    ld b, a
+
+    ld a, [menu_start_anterior]
+    ld c, a
+
+    ld a, b
+    ld [menu_start_anterior], a
+
+    and a
+    ret z
+    ld a, c
+    and a
+    ret nz
+
+    ld  a, 1
+    ld [nivel_actual], a
+
+    ld   hl, SfxMenuOk
+    call sys_sound_play_sfx
+
+    ld   hl, scene_ingame
+    jp   manager_escena_cambiar
+
     ret

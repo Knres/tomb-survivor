@@ -11,6 +11,7 @@ scene_gameover::
 ;; O: -
 ;; M: A, BC, DE, HL
 scene_gameover_init::
+    call sys_music_stop
     ld   hl, pantalla_gameover
     ld   de, scene_menu
     jp   manager_escena_temporizada_init

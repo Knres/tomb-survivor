@@ -30,6 +30,17 @@ system_colisiones_update::
     ld a, LEVEL_FLOOR_PX - JUGADOR_ALTO ;; 120 - 8: jugador justo sobre el suelo
     ld [jugador_y], a
 
+    ;; sonido de aterrizar, solo si caia de verdad
+    ;; estando de pie VY solo vale GRAVEDAD (un frame de gravedad), eso no es un aterrizaje
+    ld a, [entity_array + E_VY]
+    cp GRAVEDAD + 1
+    jr c, .sin_sonido
+
+    ld hl, SfxAterrizar
+    call sys_sound_play_sfx
+
+    .sin_sonido:
+
     ;; detenemos la caída y permitimos salto
     xor a
     ld [entity_array + E_VY], a  ;; detener caída

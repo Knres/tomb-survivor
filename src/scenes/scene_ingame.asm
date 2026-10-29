@@ -15,6 +15,8 @@ scene_ingame_init::
     call system_render_load_map
     call system_prerender_init_entities
     call system_prerender_init_jugador
+    ld hl, musica_partida
+    call sys_music_play
 
     ;; ===================================
     ;; pureba

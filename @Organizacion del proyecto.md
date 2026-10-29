@@ -18,33 +18,38 @@ v1_plataformero/
 		defs.asm                   ; Registros, constantes y offsets de entidades
 		header.asm                 ; Cabecera de la ROM
 		main.asm                   ; Inicializacion y bucle principal
-		input_update.asm           ; Lectura del joypad
-		scene_manager.asm          ; Entrada del gestor de escenas
+		sprite_helper.asm          ; Voltear sprites (espejo X / Y)
 		wram.asm                   ; Variables y buffers de trabajo en WRAM0
 		funciones.md               ; Referencia de rutinas comunes
 		data/
-			gfx.asm                  ; Tiles y datos graficos constantes en ROM
-			niveles.asm              ; Mapas, spawn y apariciones de enemigos en ROM
+			gfx.asm                  ; Tiles y datos graficos constantes en ROM (incluye la fuente)
+			gfx/                     ; Tiles en formato .2bpp (INCBIN desde gfx.asm)
+			nivel1.asm               ; Nivel 1: mapa, spawn del jugador y enemigos
+			nivel2.asm               ; Nivel 2: mapa, spawn del jugador y enemigos
+			pantallas.asm            ; Pantallas de titulo, game over, nivel completado y victoria
 			sfx.asm                  ; Efectos de sonido en ROM
+			musica.asm               ; Canciones en ROM (titulo, partida, victoria)
 		managers/
-			manager_entidad.asm      ; Gestion de las entidades
-			manager_escena.asm       ; Gestion del cambio de escenas
+			manager_entidad.asm      ; Gestion de las entidades y IA de los enemigos
+			manager_escena.asm       ; Cambio de escenas y pantallas temporizadas
 			manager_nivel.asm        ; Seleccion de datos del nivel actual
 		scenes/
-			scene_ingame.asm         ; Escena de partida
-			scene_gameover.asm       ; Escena de fin de partida
-			scene_menu.asm           ; Escena del menu principal
-			scene_pausa.asm          ; Escena de pausa
+			scene_menu.asm           ; Titulo (START empieza la partida)
+			scene_ingame.asm         ; Partida
+			scene_gameover.asm       ; Fin de partida (sale sola al titulo)
+			scene_nivel.asm          ; Nivel completado (sale sola al nivel siguiente o a la victoria)
+			scene_victoria.asm       ; Victoria (sale sola al titulo)
 		systems/
 			system_colisiones.asm   ; Deteccion y resolucion de colisiones
 			system_fisicas.asm      ; Gravedad, velocidad y movimiento
-			system_input.asm        ; Entrada e intenciones
+			system_input.asm        ; Lectura del joypad
+			system_pantalla.asm     ; Dibujar una pantalla completa desde la ROM
 			system_prerender.asm    ; Preparacion de sprites en shadow_oam
-			system_render.asm       ; Copias a VRAM/OAM durante VBlank
+			system_render.asm       ; Copias a VRAM/OAM durante VBlank y scroll
 			system_sonido.asm       ; Encendido del APU y reproduccion de efectos
-			system_sonido_test.asm  ; PRUEBA: cada boton reproduce un efecto (quitar antes de entregar)
+			system_musica.asm       ; Reproduccion de la musica por el canal 2
 		ui/
-			hud.asm					 ; HUD en partida
+			hud.asm                  ; HUD en partida (nivel y vidas)
 ```
 
 El `Makefile` ya busca los archivos `.asm` dentro de `src`, incluidos los de subcarpetas. Si una carpeta nueva no se enlaza como esperamos, se comprueba primero que el archivo tenga extension `.asm` y que este dentro de `src`.
@@ -102,6 +107,8 @@ El mapa y los tiles son estaticos: se cargan al inicializar el juego/nivel, no c
 > ret
 > ```
 
+Lo que es comun a todas las escenas (leer el joypad, avanzar la musica y copiar los sprites a la OAM) se llama desde el bucle principal de `main.asm`, no desde cada escena.
+
 
 
 
@@ -111,14 +118,14 @@ Desde `v1_plataformero/` ejecutar intrucción a intrucción:
 
 ```bash
 make
-gbt_bgb game.gb
+gbt_bgb survive.gb
 make clean
 ```
 
 > [!NOTE]
 > **Checklist antes de hacer push:**
 > - [ ] `make` termina sin errores ni warnings nuevos.
-> - [ ] La ROM arranca en BGB `gbt_bgb game.gb`.
+> - [ ] La ROM arranca en BGB `gbt_bgb survive.gb`.
 > - [ ] La escena inicializa sus datos antes del primer update.
 > - [ ] No se escribe en VRAM fuera de VBlank.
 > - [ ] No hay bucles infinitos.

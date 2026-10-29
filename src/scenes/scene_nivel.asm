@@ -14,6 +14,7 @@ scene_nivel::
 ;; O: -
 ;; M: A, BC, DE, HL
 scene_nivel_init::
+    call sys_music_stop
     ld   a, [nivel_actual]
     cp   NUM_NIVELES
     jr   c, .hay_siguiente

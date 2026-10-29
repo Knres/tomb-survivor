@@ -20,6 +20,9 @@ jugador_y_anterior::     DS 1
 jugador_a_anterior::     DS 1
 jugador_vidas::          DS 1
 enemigos_activos::       DS 1   ;; 0 -> no update enemigos (no hace call ia_enemigo_update)
+musica_inicio::   DS 2     ;; Direccion de la primera nota
+musica_ptr::      DS 2     ;; Direccion de la nota siguiente
+musica_contador:: DS 1     ;; Frames que le quedan a la nota actual
 
 SECTION "Nivel actual", WRAM0
 nivel_actual:: DS 1
@@ -31,3 +34,6 @@ escena_update:: DS 2
 SECTION "Escena temporizada", WRAM0
 escena_contador::  DS 1
 escena_siguiente:: DS 2
+
+SECTION "Menu", WRAM0
+menu_start_anterior:: DS 1 
