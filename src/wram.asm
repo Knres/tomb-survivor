@@ -36,5 +36,8 @@ SECTION "Escena temporizada", WRAM0
 escena_contador::  DS 1
 escena_siguiente:: DS 2
 
+frame_actual:: DS 1 ;; cuenta el frame actual de cada segundo. Se reinicia a los 60 frames. Valores: 0-59
+reloj_fin_nivel:: DS 1 ;; cuenta en que segundo se encuentra el nivel. Hace una cuenta regresiva desde INICIO_RELOJ a 0
+
 SECTION "Menu", WRAM0
 menu_start_anterior:: DS 1 

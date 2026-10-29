@@ -112,8 +112,10 @@ EXPORT DEF WRAM_END   = $DFFF
 ;; Otros
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 EXPORT DEF VBLANK_START = $90   ;; 144 en decimal
-
-
+EXPORT DEF INICIO_RELOJ = 30    ;; inicio del reloj del nivel que determina cuándo acaba este
+EXPORT DEF FIN_RELOJ = 0
+EXPORT DEF FIN_SEGUNDO = 59
+EXPORT DEF INICIO_SEGUNDO = 0
 ;; TILES
 EXPORT DEF TILE_FONDO = $00             ;; fondo
 EXPORT DEF TILE_SUELO = $01             ;; suelo temporal
@@ -146,7 +148,7 @@ EXPORT DEF TILE_ESCORPION_2 = TILE_ESCORPION ;; escorpion, frame 2 TODO: sustitu
 EXPORT DEF TILE_SIZE      = 8
 EXPORT DEF JUGADOR_ALTO   = TILE_SIZE
 EXPORT DEF TAM_COLISION   = 6
-
+EXPORT DEF LIST_END       = $FF
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Info. de niveles
