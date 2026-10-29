@@ -94,7 +94,7 @@ manager_entity_init_enemies::
 		jr .aplicar
 
 		.tile_murcielago
-			ld a, TILE_ESCORPION	;; TODO: sustituir tiel
+			ld a, TILE_MURCIELAGO_1
 		jr .aplicar
 
 		.tile_momia
@@ -102,7 +102,7 @@ manager_entity_init_enemies::
 		jr .aplicar
 
 		.tile_pinchos
-			ld a, TILE_PLAT_DERECHA	;; TODO: sustituir tiel
+			ld a, TILE_PINCHOS
 		jr .aplicar
 
 		.tile_estalactita
@@ -254,6 +254,36 @@ ia_murcielago::
 	;; Murcielago. Igual que el escorpion pero en el cielo
 	;; por el momento la logica es la misma que el escorpion --> call ia_escorpion
 	
+	;; VY cuenta los updates que faltan para cambiar el frame.
+	ld hl, E_VY	;; /
+	add hl, de	;; | recuperar vy (contador)
+	ld a, [hl]	;; \ 
+	
+	and a					;; contador == 0?
+	jr z, .cambiar_frame 	;; Z --> cambiar frame
+		;; NZ --> contador --
+		dec [hl]
+		jr nz, .mover
+	.cambiar_frame
+	
+	ld a, MURCIELAGO_ESPERA_FRAME	;; / resetear 
+	ld [hl], a						;; \ contador
+
+
+	ld hl, E_TILE
+	add hl, de
+	ld a, [hl]
+	
+	cp TILE_MURCIELAGO_1
+	jr z, .frame_2
+		ld a, TILE_MURCIELAGO_1
+		jr .guardar_frame
+	.frame_2
+		ld a, TILE_MURCIELAGO_2
+	.guardar_frame
+	ld [hl], a
+
+	.mover
 	call ia_escorpion
 ret
 

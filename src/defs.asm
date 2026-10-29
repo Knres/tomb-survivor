@@ -110,16 +110,26 @@ EXPORT DEF VBLANK_START = $90   ;; 144 en decimal
 
 
 ;; TILES
-EXPORT DEF TILE_FONDO = $00     ;; fondo
-EXPORT DEF TILE_SUELO = $01     ;; suelo temporal
-EXPORT DEF TILE_PARED = $02     ;; pared temporal
-EXPORT DEF TILE_JUGADOR = $03	;; jugador
+EXPORT DEF TILE_FONDO = $00             ;; fondo
+EXPORT DEF TILE_SUELO = $01             ;; suelo temporal
+EXPORT DEF TILE_PARED = $02             ;; pared temporal
+;;EXPORT DEF TILE_JUGADOR = $03	        ;; jugador temporal
+
+
 EXPORT DEF TILE_ESCORPION = $04         ;; escorpion
 EXPORT DEF TILE_PLAT_DERECHA = $05      ;; plataforma derecha
 EXPORT DEF TILE_PLAT_IZQUIERDA = $06    ;; plataforma izquierda
 EXPORT DEF TILE_PARED_NUEVA = $07       ;; pared nueva
 EXPORT DEF TILE_CORAZON    = $08        ;; corazon
 EXPORT DEF TILE_NO_CORAZON = $09        ;; no corazon
+EXPORT DEF TILE_PINCHOS    = $0A        ;; pinchos
+EXPORT DEF TILE_MURCIELAGO_1 = $0B      ;; murcielago, frame 1
+EXPORT DEF TILE_MURCIELAGO_2 = $0C      ;; murcielago, frame 2
+EXPORT DEF TILE_JUGADOR_TEMPORAL = $03  ;; jugador temporal
+EXPORT DEF TILE_JUGADOR_1 = $0D         ;; jugador, frame 1
+EXPORT DEF TILE_JUGADOR_2 = $0E         ;; jugador, frame 2
+EXPORT DEF TILE_JUGADOR_SALTO = $0F     ;; jugador saltando
+EXPORT DEF TILE_JUGADOR = TILE_JUGADOR_2;; frame por defecto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Info. tam. entidades/jugador
@@ -263,7 +273,9 @@ EXPORT DEF VELOCIDAD_MAX_CAIDA  = 4  ;; px por frame
 EXPORT DEF VIDAS_JUGADOR        = 3  ;; vidas maximas e iniciales que tiene el jugador   
 
 
-;; ENTIDAD ESPECIAL: PINCHOS
+;; ENTIDAD: MURCIELAGO
+EXPORT DEF MURCIELAGO_ESPERA_FRAME = 20         ;; updates entre cambios de frame
+;; ENTIDAD: PINCHOS
 EXPORT DEF PINCHOS_FASE_SUBIDA = TILE_SIZE      ;; <-- Sube una altura de un tile (8px) fase subida 0-7  --> 8 fin de fase
 EXPORT DEF PINCHOS_FASE_BAJADA = TILE_SIZE * 2  ;; <-- Baja una altura de un tile       fase bajada 7-15 --> 0 fin de fase <-- si llega a 16 se pone a 0
 EXPORT DEF PINCHOS_ESPERA_SUBIDA_BAJARA = 4     ;; pausa para la subida-bajada, a 1px por update es demasidao rapido

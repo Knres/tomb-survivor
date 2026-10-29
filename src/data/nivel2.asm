@@ -37,7 +37,7 @@ mapa_nivel_2_enemigos::
 	;; tanto x, y, vx, xy estan en px.
 	
 	;; ================================================
-	;; Especial PINCHOS no usa VX y VY como velocidades
+	;; PINCHOS no usa VX y VY como velocidades
 		;; VX = temporizador de ciclos (en frames) para cambiar de estado
 			;; este temporizador lo que se ponga aqui solo afecta al primer cambio de fase
 			;; para el next ciclo ya sera = PINCHOS_PAUSA_FASE
