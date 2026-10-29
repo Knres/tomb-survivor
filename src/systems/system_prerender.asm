@@ -37,6 +37,8 @@ system_prerender_init_jugador::
 	ld [jugador_solicita_salto], a
 	ld [jugador_en_suelo], a
 	ld [jugador_a_anterior], a
+	ld a, JUGADOR_ESPERA_FRAME
+	ld [jugador_espera_cambio_frame], a
 
 	ld hl, entity_array ;; hl -> CMP de primera entidad (jugador)
 	ld a, CMP_ALIVE | CMP_INPUT | CMP_COLLIDER | CMP_PHYSICS | CMP_SPRITE
@@ -127,6 +129,85 @@ system_prerender_pos_jugador::
 	ld a, [jugador_x]   ;; recuperar X
 	add a, OAM_X_OFFSET ;; coordenada de OAM
 	ld [hl], a          ;; guardar X ; HL -> TILE
+ret
+
+jugador_sprite_update::
+	;; Modifica el sprite y aplica flip al sprite del jugador
+	;; I: -
+	;; O: -
+	;; M: A, HL
+	ld a, [jugador_direccion_movimiento]
+
+	cp E_MOVE_LEFT
+	jr nz, .mirar_izquierda	;; NZ -- mira a la izquierda
+	
+	cp E_MOVE_RIGHT
+	jr nz, .mirar_derecha	;; nz --> mira a la derecha 
+	
+	
+	
+	jr .actualizar_sprite
+
+	.mirar_izquierda
+		ld hl, entity_array + E_ATTR
+		set ATTR_BIT_FLIP_X, [hl]
+	jr .actualizar_sprite
+
+	.mirar_derecha
+		ld hl, entity_array + E_ATTR
+		res ATTR_BIT_FLIP_X, [hl]
+	;;jr .actualizar_sprite
+
+	.actualizar_sprite
+	ld hl, entity_array + E_TILE	;; hl = entidad1_tile <-- entidad jugador
+	ld a, [jugador_en_suelo]
+	
+	and a		;; a == 0? --> comprobar si esta en el suelo
+	jr z, .saltando
+		;; NZ --> No saltando
+		ld a, [hl]
+		cp TILE_JUGADOR_SALTO
+		jr z, .cambiar_suelo ;; Z --> en ciclo anteriro era tile salto -> modificar a tile_jugador_1 2
+
+	;; En el suelo
+	ld a, [jugador_espera_cambio_frame]
+
+	and a	;; a == 0?	--> modificar sprite?
+	jr z, .cambiar_frame
+		;; NZ --> no modificar sprite
+		dec a								;; /
+		ld [jugador_espera_cambio_frame], a	;; \ contador--
+	ret nz ;;-> contador != 0
+
+	;; contador == 0
+	.cambiar_frame
+		ld a, [hl]	;; tile actual
+
+		cp TILE_JUGADOR_1
+		jr z, .tile_2
+			ld a, TILE_JUGADOR_1
+			jr .guardar_tile
+		.tile_2
+			ld a, TILE_JUGADOR_2
+		.guardar_tile
+
+		ld [hl], a
+		ld a, JUGADOR_ESPERA_FRAME	;; restablecer contador
+		ld [jugador_espera_cambio_frame], a
+	ret
+
+	;; estado anterior fue saltando, ahora en suelo --> tile 1 por defecto
+	.cambiar_suelo
+		ld a, TILE_JUGADOR_1
+		ld [hl], a
+		ld a, JUGADOR_ESPERA_FRAME	;; reseteo de contador
+		ld [jugador_espera_cambio_frame], a
+	ret
+
+	;; Saltando --> tile saltando
+	.saltando
+	ld a, TILE_JUGADOR_SALTO
+	ld [hl], a
 ret
 
 system_jugador_update::
