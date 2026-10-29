@@ -47,6 +47,8 @@ mapa_nivel_2_enemigos::
 								;; 8-15: bajada ;; 0 --> fin bajada <-- llegando a 16 se ponea a 0 
 	;; =================================================
 
+	;; Como Escorpion y Murcielago solo tienen vx, 
+		;; VY = contador de cuanto tiempo cambiar de frame
 
 	;; TIPO_ENEMIGO,        X,    Y,  VX, VY, ATTR_FLIP (en caso de girar en dos 2 direccion "ATTR_FLIP_X | ATTR_FLIP_Y")
 	;;DB 
