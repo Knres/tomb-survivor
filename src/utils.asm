@@ -7,6 +7,7 @@ init_game::
     ;; I: -
     ;; O: -
     ;; M: A, BC, DE, HL
+    call init_reloj
     call init_scroll
     call init_palet
     call init_lcd
@@ -15,6 +16,7 @@ init_game::
     call init_oam
     call system_render_load_tiles
 ret
+
 
 init_scroll::
     ;; pone el fondo en pos (0,0)
@@ -94,6 +96,19 @@ init_oam::
     ld b, OAM_SIZE      ;; contador
 jp memset8
 
+init_reloj::
+    ;; inicializar reloj de tiempo real
+    ;; I: -
+    ;; O: -
+    ;; M: A
+    ld a, 0
+    ld [frame_actual], a
+    
+    ld a, INICIO_RELOJ
+    ld [reloj_fin_nivel], a
+
+ret
+
 wait_vblank::
     ;; espera el inicio de vblank
     ;; I: -
@@ -165,3 +180,4 @@ digit2tile::
     ;; M: A, flags
     add a, TILE_NUM_0
 ret
+

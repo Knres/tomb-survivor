@@ -95,6 +95,12 @@ system_prerender_one::
     ld [shadow_cursor+1], a ;; \ d = byte alto
 ret
 
+prueba_reloj:
+	ld a, [jugador_x]
+	inc a
+	ld [jugador_x], a
+ret
+
 system_prerender_update::
 	;; prepara shadow_oam, situa shadow_cursor = shadow_oam
     ;; llama a man_entity_for_each para popiar las entidades vivas.

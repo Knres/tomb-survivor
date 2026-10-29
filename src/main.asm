@@ -58,14 +58,9 @@ main::
     bucle_principal:
         ;ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
         call sys_input_update
-        
-;        .bucle:
-;        ld a, [joypad_pressed]
-;        cp 0
-;        jr z, .sigue
-;        jr .bucle
+        call system_actualizar_reloj
 
-        .sigue:
+
         call sys_sound_test_update  ;; PRUEBA de sonido: quitar junto a system_sonido_test.asm
         call manager_escena_update      ;; la escena actual hace lo suyo (jugador, prerender... van en scene_ingame_update)
         call system_render_update       ;; comun: copiar sprites a la OAM en VBLANK
