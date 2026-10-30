@@ -1,6 +1,9 @@
 SECTION "System Reloj", ROM0
 
 system_actualizar_reloj:
+    ;; I - 
+    ;; O - flag(z)
+    ;; M - a, [frame_actual], [reloj_fin_nivel]
     ;; TODO sustituir esta comprobacion por la suya propia
     ;; esto es para evitar que empiece el contador antes del primer imput del jugador
         ld a, [enemigos_activos]
