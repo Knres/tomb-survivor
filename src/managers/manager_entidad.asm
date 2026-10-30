@@ -516,7 +516,7 @@ entidad_comprobar_salida_vertical::
 	;; I: A = nueva Y (Y + VY), en coordenadas OAM
 	;; O: A = Y limitada; C = 1 si se salió por un extremo
 	;; M: A
-	cp OAM_Y_OFFSET + TILE_SIZE	;; borde superior + tile de techo
+	cp OAM_Y_OFFSET ;;+ TILE_SIZE	;; borde superior + tile de techo
 	jr c, .limite_superior
 		;; NC --> No se sale del borde superior
 		cp OAM_Y_OFFSET + LEVEL_FLOOR_PX - TILE_SIZE + 1	;; borde inferior + tile de suelo
