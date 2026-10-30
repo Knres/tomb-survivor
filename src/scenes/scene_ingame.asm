@@ -12,6 +12,7 @@ scene_ingame::
 ;; O: -
 ;; M: A, BC, DE, HL
 scene_ingame_init::
+    call init_reloj
     call system_render_load_map
     call system_prerender_init_entities
     call system_prerender_init_jugador

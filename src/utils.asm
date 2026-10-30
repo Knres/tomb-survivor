@@ -7,7 +7,6 @@ init_game::
     ;; I: -
     ;; O: -
     ;; M: A, BC, DE, HL
-    call init_reloj
     call init_scroll
     call init_palet
     call init_lcd

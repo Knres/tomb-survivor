@@ -1,6 +1,13 @@
 SECTION "System Reloj", ROM0
 
 system_actualizar_reloj:
+    ;; TODO sustituir esta comprobacion por la suya propia
+    ;; esto es para evitar que empiece el contador antes del primer imput del jugador
+        ld a, [enemigos_activos]
+        and a
+        ret z
+    ;; =====
+
     call system_actualiza_frame_actual
     jr nz, .continua
     ld a, [reloj_fin_nivel]
@@ -8,6 +15,7 @@ system_actualizar_reloj:
     jr z, .continua ;; si ha llegado el contador a 0 puede continuar, no debe bajar de 0, si no, se resta 1
     dec a
     ld [reloj_fin_nivel], a
+    call hud_draw_clock
     .continua:
 ret
 

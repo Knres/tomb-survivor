@@ -87,7 +87,44 @@ init_hud::
     ld a, [nivel_actual]    ;; numero de nivel
     call digit2tile         ;; convertir a tile
     ld [hl], a
+
+    call hud_draw_clock
 jp hud_draw_hearts
+
+hud_draw_clock::
+    ;; Dibuja los segundos restantes como dos digitos.
+    ;; I: -
+    ;; O: -
+    ;; M: A, BC, HL
+    ld a, [reloj_fin_nivel]
+    ld b, 0
+
+    ;; b -> decenas
+    ;; c -> unidades
+    
+    .decenas
+        ;; calculo de decenas
+        cp 10
+        jr c, .end_decenas
+        ;; NC que dan 
+        sub 10      ;; / a - 10
+        inc b       ;; \ decenas++
+    jr .decenas
+    .end_decenas
+
+    ld c, a         ;; valor restante --> unidades
+    call wait_vblank
+
+    ;; decenas
+    ld a, b
+    call digit2tile
+    ld [HUD_CONTADOR_TIEMPO], a
+
+    ;; unidades
+    ld a, c
+    call digit2tile
+    ld [HUD_CONTADOR_TIEMPO + 1], a
+ret
 
 hud_draw_hearts::
     ;; Dibujar las vidas que tiene el jugador
