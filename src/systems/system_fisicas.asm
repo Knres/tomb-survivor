@@ -28,13 +28,34 @@ system_fisicas_update::
         ld a, VX_JUGADOR
 
     .guardar_vx:
-        ld [entity_array + E_VX], a
+    ld [entity_array + E_VX], a
 
-        ;; aplicamos velocidad horizontal
-        ld b, a
+    ;; sin movimiento horizontal
+    and a
+    jr z, .sin_movimiento_horizontal
+
+    ;; si la velocidad es negativa, va hacia la izquierda
+    bit 7, a
+    jr nz, .mover_izquierda
+
+    ;; movimiento hacia la derecha
+    call check_right_wall
+    jr z, .sin_movimiento_horizontal
+
+    ld a, [jugador_x]
+    add VX_JUGADOR
+    ld [jugador_x], a
+    jr .sin_movimiento_horizontal
+
+    .mover_izquierda:
+        call check_left_wall
+        jr z, .sin_movimiento_horizontal
+
         ld a, [jugador_x]
-        add a, b
+        add -VX_JUGADOR
         ld [jugador_x], a
+
+.sin_movimiento_horizontal:
 
         ;; inicia salto si se ha solicitado y está en el suelo o apoyado
         ld a, [jugador_solicita_salto]

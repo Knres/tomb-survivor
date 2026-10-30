@@ -1,33 +1,32 @@
 SECTION "Sistema colisiones", ROM0
 
 system_colisiones_update::
-    ;; comprueba si el jugador está bajando
-    ld a, [entity_array + E_VY]
-
-    bit 7, a
-    ret nz  ;; VY negativa, está subiendo
-
-    and a
-    ret z   ;; VY = 0, no está bajando
-
-    ;; comprobamos la posición anterior de los pies, debe estar sobre el suelo (Y anterior + alto jugador < 120)
-    ld a, [jugador_y_anterior]
-    add a, JUGADOR_ALTO
-    ret c ;; evitar desbordamiento
-
-    cp LEVEL_FLOOR_PX + 1
-    ret nc                  ;; pies anteriores > 120, ya estaba por debajo
-
-    ;; comprobar la posición nueva de los pies, deben haber alcanzado o cruzado el borde superior del suelo (Y nueva + alto jugador >= 120)
+    ;; punto situado bajo el pie izquierdo
     ld a, [jugador_y]
-    add a, JUGADOR_ALTO     ;; pies nuevos = Y nueva + alto jugador
-    ret c                   ;; evitar desbordamiento
+    add JUGADOR_ALTO
+    ld d, a
 
-    cp LEVEL_FLOOR_PX
-    ret c                   ;; pies nuevos < 120, aún no llega al suelo
+    ld a, [jugador_x]
+    ld e, a
+
+    call map_is_solid_at
+    jr nz, .hay_superficie
+
+    ;; punto situado bajo el pie derecho
+    ld a, [jugador_x]
+    add JUGADOR_ALTO - 1
+    ld e, a
+
+    call map_is_solid_at
+    ret z
+
+.hay_superficie:
 
     ;; colocar al jugador, ha alcanzado o cruzado el borde superior
-    ld a, LEVEL_FLOOR_PX - JUGADOR_ALTO ;; 120 - 8: jugador justo sobre el suelo
+    ;; la superficie empieza en el multiplo de 8 de los pies
+    ld a, d
+    and $F8
+    sub JUGADOR_ALTO
     ld [jugador_y], a
 
     ;; sonido de aterrizar, solo si caia de verdad
@@ -162,3 +161,66 @@ inc a ;; (cpl + inc: complemento a dos)
 .x_positive
 cp TAM_COLISION ;; Carry si |dX| < TAM_COLISION:
 ret ;; C = se solapan, NC = no se solapan
+
+map_tile_address::
+    ;; D = Y en px E = X en px
+    ;; HL = direccion del tile en el mapa
+
+    ;; fila = Y / 8
+    ld a, d
+    srl a
+    srl a
+    srl a
+    ld l, a
+    ld h, 0
+
+    ;; fila * 20
+    add hl, hl       ;; fila * 2
+    ld b, h
+    ld c, l          ;; BC = fila * 2
+
+    add hl, hl       ;; fila * 4
+    add hl, hl       ;; fila * 8
+    add hl, hl       ;; fila * 16
+    add hl, bc       ;; fila * 18
+    add hl, bc       ;; fila * 20
+
+    ;; columna = X / 8
+    ld a, e
+    srl a
+    srl a
+    srl a
+    ld c, a
+    ld b, 0
+    add hl, bc
+
+    ;; Sumar dirección del mapa
+    push hl
+    call get_mapa_nivel_actual
+    pop bc
+    add hl, bc
+    ret
+
+
+map_is_solid_at::
+    ;; D = Y, E = X
+    ;; Z = libre, NZ = sólido
+
+    call map_tile_address
+    ld a, [hl]
+
+    cp TILE_PLAT_DERECHA
+    jr z, .solido
+
+    cp TILE_PLAT_IZQUIERDA
+    jr z, .solido
+
+    cp TILE_PARED_NUEVA
+    jr z, .solido
+
+    xor a
+    ret
+
+.solido:
+    or 1
+    ret

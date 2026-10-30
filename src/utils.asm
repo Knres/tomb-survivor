@@ -7,6 +7,7 @@ init_game::
     ;; I: -
     ;; O: -
     ;; M: A, BC, DE, HL
+    ;; call init_reloj ;;<-- se ha movideo ingame (init game es la inicializacion del juego, no del nivel)
     call init_scroll
     call init_palet
     call init_lcd
