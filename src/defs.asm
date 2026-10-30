@@ -139,7 +139,9 @@ EXPORT DEF TILE_JUGADOR_SALTO = $0F     ;; jugador saltando
 EXPORT DEF TILE_JUGADOR = TILE_JUGADOR_2;; frame por defecto
 EXPORT DEF TILE_ESTALACTITA = TILE_PINCHOS   ;; estalactita TODO: sustituir sprite
 EXPORT DEF TILE_ESCORPION_1 = TILE_ESCORPION ;; escorpion, frame 1 
-EXPORT DEF TILE_ESCORPION_2 = TILE_ESCORPION ;; escorpion, frame 2 TODO: sustituir este frame
+EXPORT DEF TILE_ESCORPION_2 = TILE_PARED_NUEVA ;; escorpion, frame 2 TODO: sustituir este frame
+EXPORT DEF TILE_MOMIA_1 = TILE_PLAT_DERECHA
+EXPORT DEF TILE_MOMIA_2 = TILE_PLAT_IZQUIERDA
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -290,6 +292,8 @@ EXPORT DEF JUGADOR_ESPERA_FRAME = 10 ;; updates entre cambios de frame
 EXPORT DEF MURCIELAGO_ESPERA_FRAME = 20         ;; updates entre cambios de frame
 ;; ENTIDAD: ESCORPION
 EXPORT DEF ESCORPION_ESPERA_FRAME = 15          ;; updates entre cambios de frame
+;; ENTIDAD: ESCORPION
+EXPORT DEF MOMIA_ESPERA_FRAME = 60              ;; updates entre pasos y cambio de frame
 ;; ENTIDAD: ESTALACTITA
 EXPORT DEF ESTALACTITA_ESTADO_ESPERANDO = 0
 EXPORT DEF ESTALACTITA_ESTADO_CAYENDO = 1

@@ -98,7 +98,7 @@ manager_entity_init_enemies::
 		jr .aplicar
 
 		.tile_momia
-			ld a, TILE_ESCORPION	;; TODO: sustituir tiel
+			ld a, TILE_MOMIA_1
 		jr .aplicar
 
 		.tile_pinchos
@@ -326,8 +326,89 @@ ia_murcielago::
 ret
 
 ia_momia::
-	;; Momia. -
-	;; por definir
+	;; En el suelo y se mueve horizontalmente, solo en una direccion 
+	;; se movera "muy lento", para acdamovimietno cambiara su sprite 1 <--> 2
+	;; cuando sale de pantalla cmp --> NO vivo 
+	ld hl, E_VX
+	add hl, de
+	ld a, [hl]
+	and a
+	jr z, .actualizar_contador
+	ld hl, E_ATTR
+	add hl, de
+	bit 7, a
+	jr nz, .mirar_izquierda
+	set ATTR_BIT_FLIP_X, [hl]
+	jr .actualizar_contador
+
+	.mirar_izquierda
+	res ATTR_BIT_FLIP_X, [hl]
+	
+	;; VY --> contador para el movimiento y cambio de sprite
+	.actualizar_contador
+	ld hl, E_VY	;; /
+	add hl, de	;; | recuperar vy (cotador)
+	ld a, [hl]	;; \
+
+	and a		;; a == 0?
+	jr z, .mover	;; Z --> fin de contador --> mover y actualizar sprite
+		;; NZ --> no fin de contador
+		dec [hl]	;; contador --
+	ret nz
+
+	;; contador ya = 0
+	.mover
+		ld hl, E_X	;; /
+		add hl, de	;; |
+		ld a, [hl]	;; |
+		ld b, a		;; \ b = x actual
+
+		ld hl, E_VX	;; /
+		add hl, de	;; |
+		ld a, [hl]	;; \ a = vx
+		
+		and a	;; vx == 0?
+		jr z, .borrar ;; Z --> Ya ha esperado un ciclo tocando borde --> borrar	
+	
+		add b		;; a +b = new posicion x 
+		call entidad_comprobar_salida_horizontal
+		;; a = x corregida
+	jr c, .toca_borde
+
+
+	ld hl, E_X
+	add hl, de
+	ld [hl], a
+
+	ld hl, E_VY
+	add hl, de
+	ld [hl], MOMIA_ESPERA_FRAME
+
+	ld hl, E_TILE
+	add hl, de
+	ld a, [hl]
+	
+	cp TILE_MOMIA_1
+	jr z, .frame_2
+		ld a, TILE_MOMIA_1
+		jr .guardar_frame
+	.frame_2
+		ld a, TILE_MOMIA_2
+	.guardar_frame
+		ld [hl], a
+	ret
+
+	.toca_borde
+		ld hl, E_VX	;; /
+		add hl, de	;; |
+		xor a		;; |
+		ld [hl], a	;; \ xv = 0
+	ret
+
+	.borrar
+	ld hl, E_CMP
+	add hl, de
+	res CMP_ALIVE_BIT, [hl]
 ret
 
 ia_pinchos::

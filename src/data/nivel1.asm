@@ -54,6 +54,7 @@ mapa_nivel_1_enemigos::
 			;; VY = estado (esperando para caer o cayendo)
 	;; Como Escorpion y Murcielago solo tienen vx, 
 			;; VY = contador de cuanto tiempo cambiar de frame
+	;; Momia utilizara vy como contador de movimiento y cambio de frame
 	;; =================================================
 		
 	;; TIPO_ENEMIGO,        X,    Y,  VX, VY, ATTR_FLIP (en caso de girar en dos 2 direccion "ATTR_FLIP_X | ATTR_FLIP_Y")
@@ -63,7 +64,9 @@ mapa_nivel_1_enemigos::
 	DB KIND_PINCHOS,      3*8, 15*8,  37,  0, ATTR_FLIP_X
 	DB KIND_PINCHOS,      7*8, 14*8,   8,  8, 0
 
-	DB KIND_ESTALACTITA,  16*8, 0*8,  16,  0, ATTR_FLIP_Y
+	;;DB KIND_ESTALACTITA, 16*8,  0*8,  16,  0, ATTR_FLIP_Y
+	DB KIND_MOMIA,         3*8, 14*8,   4, 20, 0
+	DB KIND_MOMIA,        17*8, 14*8,  -4, 20, 0
 	
 	DB KIND_FIN_ENEMIGOS
 mapa_nivel_1_enemigos_fin::
