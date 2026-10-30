@@ -103,10 +103,8 @@ init_reloj::
     ;; M: A
     ld a, 0
     ld [frame_actual], a
-    
-    ld a, INICIO_RELOJ
-    ld [reloj_fin_nivel], a
-
+    call resetear_reloj
+    call desactivar_reloj
 ret
 
 wait_vblank::

@@ -116,6 +116,8 @@ EXPORT DEF INICIO_RELOJ = 30    ;; inicio del reloj del nivel que determina cuá
 EXPORT DEF FIN_RELOJ = 0
 EXPORT DEF FIN_SEGUNDO = 59
 EXPORT DEF INICIO_SEGUNDO = 0
+EXPORT DEF RELOJ_PARADO = 0
+EXPORT DEF RELOJ_ENCENDIDO = 1
 ;; TILES
 EXPORT DEF TILE_FONDO = $00             ;; fondo
 EXPORT DEF TILE_SUELO = $01             ;; suelo temporal

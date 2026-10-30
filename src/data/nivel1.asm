@@ -66,7 +66,7 @@ mapa_nivel_1_enemigos::
 	DB KIND_ESTALACTITA,  16*8, 0*8,  16,  0, ATTR_FLIP_Y
 	
 	DB KIND_FIN_ENEMIGOS
-	tiempos_spawn::
+	tiempos_spawn_1::
 	DB 20, 15, 12, 8, $FF
 
 mapa_nivel_1_enemigos_fin::

@@ -1,13 +1,13 @@
 SECTION "System Reloj", ROM0
 
-system_actualizar_reloj:
+system_actualizar_reloj::
     ;; I - 
     ;; O - flag(z)
     ;; M - a, [frame_actual], [reloj_fin_nivel]
     ;; TODO sustituir esta comprobacion por la suya propia
-    ;; esto es para evitar que empiece el contador antes del primer imput del jugador
-        ld a, [enemigos_activos]
-        and a
+    ;; esto es para evitar que empiece el contador antes del primer input del jugador
+        ld a, [reloj_activo]
+        cp RELOJ_PARADO
         ret z
     ;; =====
 
@@ -22,7 +22,7 @@ system_actualizar_reloj:
     .continua:
 ret
 
-system_actualiza_frame_actual:
+system_actualiza_frame_actual::
     ;; I - 
     ;; O - flag(z)
     ;; M - a, [frame_actual]
@@ -42,4 +42,19 @@ system_actualiza_frame_actual:
 
     .set:
     ld [frame_actual], a
+ret
+
+activar_reloj::
+    ld a, RELOJ_ENCENDIDO
+    ld [reloj_activo], a
+ret
+
+desactivar_reloj::
+    ld a, RELOJ_PARADO
+    ld [reloj_activo], a
+ret 
+
+resetear_reloj::
+    ld a, INICIO_RELOJ
+    ld [reloj_fin_nivel], a
 ret
