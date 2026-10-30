@@ -119,10 +119,9 @@ EXPORT DEF INICIO_SEGUNDO = 0
 ;; TILES
 EXPORT DEF TILE_FONDO = $00             ;; fondo
 EXPORT DEF TILE_SUELO = $01             ;; suelo temporal
-EXPORT DEF TILE_PARED = $02             ;; pared temporal
 ;;EXPORT DEF TILE_JUGADOR = $03	        ;; jugador temporal
 
-
+EXPORT DEF TILE_ESCORPION2 = $02        ;; escorpion2
 EXPORT DEF TILE_ESCORPION = $04         ;; escorpion
 EXPORT DEF TILE_PLAT_DERECHA = $05      ;; plataforma derecha
 EXPORT DEF TILE_PLAT_IZQUIERDA = $06    ;; plataforma izquierda
@@ -139,7 +138,7 @@ EXPORT DEF TILE_JUGADOR_SALTO = $0F     ;; jugador saltando
 EXPORT DEF TILE_JUGADOR = TILE_JUGADOR_2;; frame por defecto
 EXPORT DEF TILE_ESTALACTITA = TILE_PINCHOS   ;; estalactita TODO: sustituir sprite
 EXPORT DEF TILE_ESCORPION_1 = TILE_ESCORPION ;; escorpion, frame 1 
-EXPORT DEF TILE_ESCORPION_2 = TILE_PARED_NUEVA ;; escorpion, frame 2 TODO: sustituir este frame
+EXPORT DEF TILE_ESCORPION_2 = TILE_ESCORPION2 ;; escorpion, frame 2 TODO: sustituir este frame
 EXPORT DEF TILE_MOMIA_1 = TILE_PLAT_DERECHA
 EXPORT DEF TILE_MOMIA_2 = TILE_PLAT_IZQUIERDA
 
