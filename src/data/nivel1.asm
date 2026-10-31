@@ -67,13 +67,15 @@ mapa_nivel_1_enemigos::
 	DB KIND_MOMIA,         3*8, 14*8,   4, 20, 0
 	DB KIND_MOMIA,        17*8, 14*8,  -4, 20, 0
 	
+	DB KIND_ESTALACTITA, 13*8,  0*8,  2,  3, ATTR_FLIP_Y
+	DB KIND_DARDO, 		  1*8,  2*8,  2,  3, ATTR_FLIP_Y ;; el dardo recibe en vy el temporizador para que salga propulsado. Asi el jugador ve que va a salir un dardo pero no sabe cuando
+	DB KIND_DARDO, 		  18*8,  2*8,  -2,  3, ATTR_FLIP_Y ;; el dardo recibe en vy el temporizador para que salga propulsado. Asi el jugador ve que va a salir un dardo pero no sabe cuando
+;	DB KIND_ESTALACTITA, 16*8,  0*8,  16,  0, ATTR_FLIP_Y
+;	DB KIND_ESTALACTITA, 8*8,  0*8,  16,  0, ATTR_FLIP_Y
+;	DB KIND_ESTALACTITA, 3*8,  0*8,  16,  0, ATTR_FLIP_Y
 	DB KIND_FIN_ENEMIGOS_FIJOS
 	
 	enemigos_no_fijos_1::
-	DB KIND_ESTALACTITA, 16*8,  0*8,  16,  0, ATTR_FLIP_Y
-	DB KIND_ESTALACTITA, 16*8,  0*8,  16,  0, ATTR_FLIP_Y
-	DB KIND_ESTALACTITA, 16*8,  0*8,  16,  0, ATTR_FLIP_Y
-	DB KIND_ESTALACTITA, 16*8,  0*8,  16,  0, ATTR_FLIP_Y
 	
 	tiempos_spawn_1::
 	DB 20, 15, 12, 8, $FF

@@ -139,6 +139,7 @@ EXPORT DEF TILE_JUGADOR_2 = $0E         ;; jugador, frame 2
 EXPORT DEF TILE_JUGADOR_SALTO = $0F     ;; jugador saltando
 EXPORT DEF TILE_JUGADOR = TILE_JUGADOR_2;; frame por defecto
 EXPORT DEF TILE_ESTALACTITA = TILE_PINCHOS   ;; estalactita TODO: sustituir sprite
+EXPORT DEF TILE_DARDO = $10                  ;; dardo
 EXPORT DEF TILE_ESCORPION_1 = TILE_ESCORPION ;; escorpion, frame 1 
 EXPORT DEF TILE_ESCORPION_2 = TILE_ESCORPION2 ;; escorpion, frame 2 TODO: sustituir este frame
 EXPORT DEF TILE_MOMIA_1 = TILE_PLAT_DERECHA
@@ -245,7 +246,7 @@ EXPORT DEF KIND_MURCIELAGO_BIT  = 2
 EXPORT DEF KIND_MOMIA_BIT       = 3
 EXPORT DEF KIND_PINCHOS_BIT     = 4
 EXPORT DEF KIND_ESTALACTITA_BIT = 5
-;; EXPORT DEF KIND_             = 6
+EXPORT DEF KIND_DARDO_BIT       = 6
 ;; EXPORT DEF KIND_             = 7
         EXPORT DEF KIND_FIN_ENEMIGOS_FIJOS    = 0 ;; estilo centinela
         EXPORT DEF KIND_JUGADOR         = 1 << KIND_JUGADOR_BIT
@@ -254,7 +255,7 @@ EXPORT DEF KIND_ESTALACTITA_BIT = 5
         EXPORT DEF KIND_MOMIA           = 1 << KIND_MOMIA_BIT
         EXPORT DEF KIND_PINCHOS         = 1 << KIND_PINCHOS_BIT
         EXPORT DEF KIND_ESTALACTITA     = 1 << KIND_ESTALACTITA_BIT
-        ;; EXPORT DEF KIND_             = 1 << CMP_6
+        EXPORT DEF KIND_DARDO           = 1 << KIND_DARDO_BIT
         ;; EXPORT DEF KIND_             = 1 << CMP_7
 ;; TODO: definir tipos de enemigos tras tener una base funcional
 
@@ -306,6 +307,8 @@ EXPORT DEF PINCHOS_FASE_BAJADA = TILE_SIZE * 2  ;; <-- Baja una altura de un til
 EXPORT DEF PINCHOS_ESPERA_SUBIDA_BAJARA = 4     ;; pausa para la subida-bajada, a 1px por update es demasidao rapido
 EXPORT DEF PINCHOS_ESPERA_FASE     = 120        ;; se mantiene en estado subido o bajado durante tantos frames
 
+;; ENTIDAD: DARDO
+EXPORT DEF EN_VUELO = $F0
 
 
 EXPORT DEF DURACION_PANTALLA = 180

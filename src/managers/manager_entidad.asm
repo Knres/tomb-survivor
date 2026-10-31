@@ -86,6 +86,9 @@ manager_entity_init_enemies::
 
 		cp KIND_ESTALACTITA
 		jr z, .tile_estalactita
+
+		cp KIND_DARDO
+		jr z, .tile_dardo
 		
 		jr .aplicar
 
@@ -107,6 +110,10 @@ manager_entity_init_enemies::
 
 		.tile_estalactita
 			ld a, TILE_ESTALACTITA
+		jr .aplicar
+
+		.tile_dardo
+			ld a, TILE_DARDO
 		;; jr .aplicar
 		
 		.aplicar
@@ -213,6 +220,9 @@ ia_enemigo_update::
 	cp KIND_ESTALACTITA
 	jp z, ia_estalactita
 
+	cp KIND_DARDO
+	jp z, ia_dardo
+
 	;; cp
 	;; jp z,
 ret
@@ -254,7 +264,6 @@ ia_escorpion::
 	;; I: DE = dir. base de la entidad
 	;; O: -
 	;; M: A, B, HL
-
 	;; VY cuenta los updates que faltan para cambiar el frame.
 	ld hl, E_VY	;; /
 	add hl, de	;; | recuperar vy (contador)
@@ -487,6 +496,61 @@ ia_pinchos::
 		add hl, de	;; | guardar espera
 		ld [hl], a	;; \
 	;; end_fase_mov
+ret
+
+ia_dardo:
+	;; para el dardo vy determina cuantos segundos debe esperar hasta que de propulse en su direccion. Una vez se propulsa se cambia ese valor a EN_VUELO
+	ld hl, E_VY
+	add hl, de ;; obtengo vy
+	ld a, [hl]
+	
+	cp EN_VUELO
+	jr z, .se_mueve
+	
+	ld c, a
+
+
+	.standby:
+		ld a, [frame_actual] ;; si no es el inicio de un segundo no hace nada
+		cp INICIO_SEGUNDO
+		ret nz
+		
+		ld a, c		;; recupero b para modificar el contador
+		dec a
+		cp 0
+		jr nz, .sigue_parado		;; si llega a 0 empieza el movimiento
+		ld a, EN_VUELO
+		ld [hl], a		;; modifico para que en la siguiente actualizacion empiece a volar
+		jr .fin
+
+
+	.sigue_parado:
+		ld [hl], a
+		jr .fin
+	
+	.se_mueve:
+		ld hl, E_VX	
+		add hl, de		;; hl = dir. vx de la entidad
+
+		ld a, [hl]
+		ld b, a			;; b = vx
+
+		ld hl, E_X		
+		add hl, de		;; hl = dir. x
+
+		ld a, [hl]		;; / a = x actual
+		add a, b		;; \ x = x + vx
+		
+		call entidad_comprobar_salida_horizontal ;; c si se sale, nc si no se sale
+		ld [hl], a
+		ret nc
+	
+	.destruir:
+		ld hl, E_CMP
+		add hl, de
+		res CMP_ALIVE_BIT, [hl]
+
+	.fin:
 ret
 
 ia_estalactita::
