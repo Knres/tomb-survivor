@@ -56,4 +56,5 @@ mapa_nivel_2_enemigos::
 	;; TIPO_ENEMIGO,        X,    Y,  VX, VY, ATTR_FLIP (en caso de girar en dos 2 direccion "ATTR_FLIP_X | ATTR_FLIP_Y")
 	;;DB 
 	DB KIND_FIN_ENEMIGOS_FIJOS
+	DB LIST_END
 mapa_nivel_2_enemigos_fin::

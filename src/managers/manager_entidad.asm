@@ -32,6 +32,39 @@ manager_entity_for_each::
 	jr nz, .next
 ret
 
+buscar_memoria_entidad_libre::
+	;; Busca una entidad con CMP_ALIVE == 0
+	;; I: -
+	;; O: DE = dir. mememoria libre; C = 1 si no hay ninguno.
+	;; M: A, B, DE
+	ld de, entity_array
+	ld b, MAX_ENTITIES
+
+	.next_slot
+		ld a, [de]
+		bit CMP_ALIVE_BIT, a
+		jr nz, .siguiente_slot
+			;; Z --> slot libre; devolver DE con C = 0.
+			and a
+		ret
+
+		;; cambiar de a siguiente cmp
+		.siguiente_slot
+		ld a, e
+		add a, ENTITY_SIZE
+		ld e, a
+		jr nc, .no_carry
+			inc d
+		.no_carry
+		;; de --> next cmp
+		
+		dec b
+	jr nz, .next_slot
+		;; Z --> no queda memoria libre
+		scf	;; C = 0
+	;; ret
+ret
+
 manager_entity_init_enemies::
 	;; Crea las entidades descritas por la tabla del nivel actual
 	;; KIND_FIN_ENEMIGOS_FIJOS --> fin de enemigos en mapa nivel
@@ -46,8 +79,20 @@ manager_entity_init_enemies::
 		;; hl --> dir. KIND en datos nivel
 		ld a, [hl]				;; a = KIND en datos nivel
 		cp KIND_FIN_ENEMIGOS_FIJOS	;; comprobar si quedan más enemigos por cargar
-		ret z
+		jr nz, .no_fin_lista
+			;; Z -->  no quedan guardar next direccion 
+			;;	      que es segundo de spawn de entidades no pre inicializadas
+			
+			;; hl --> DB KIND_FIN_ENEMIGOS_FIJOS
+			inc hl	;; HL --> Segundo, spawn de primer enemigo no pre-inicializado
 
+			ld a, l
+			ld [next_segundo_spwan], a
+			ld a, h
+			ld [next_segundo_spwan + 1], a
+		ret
+
+		.no_fin_lista
 		push bc					;; guardar contador b
 		push hl					;; hl --> dir. KIND en datos nivel
 		

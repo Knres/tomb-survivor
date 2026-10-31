@@ -19,11 +19,6 @@ scene_ingame_init::
     ld hl, musica_partida
     call sys_music_play
 
-    ld a, HIGH(tiempos_spawn_1) ;; seteo siguiente_enemigo como tiempos_spawn solo al principio de cada nivel
-    ld [siguiente_enemigo_high], a
-    ld a, LOW(tiempos_spawn_1) ;; seteo siguiente_enemigo como tiempos_spawn solo al principio de cada nivel
-    ld [siguiente_enemigo_low], a
-
     ;; ===================================
     ;; pureba
         ;; mover esto a una funcion o algo
