@@ -16,7 +16,8 @@ spawn_enemigo_no_fijo:
     cp [hl]
     ret nZ
     call siguiente_enemigo_update   
-    ld b, b 
+
+    
 ret
 
 siguiente_enemigo_update:
