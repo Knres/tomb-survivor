@@ -34,7 +34,7 @@ ret
 
 manager_entity_init_enemies::
 	;; Crea las entidades descritas por la tabla del nivel actual
-	;; KIND_FIN_ENEMIGOS --> fin de enemigos en mapa nivel
+	;; KIND_FIN_ENEMIGOS_FIJOS --> fin de enemigos en mapa nivel
 	;; I: -
 	;; O: -
 	;; M: A, B, DE, HL
@@ -45,7 +45,7 @@ manager_entity_init_enemies::
 	.next_enemy
 		;; hl --> dir. KIND en datos nivel
 		ld a, [hl]				;; a = KIND en datos nivel
-		cp KIND_FIN_ENEMIGOS	;; comprobar si quedan más enemigos por cargar
+		cp KIND_FIN_ENEMIGOS_FIJOS	;; comprobar si quedan más enemigos por cargar
 		ret z
 
 		push bc					;; guardar contador b

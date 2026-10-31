@@ -64,11 +64,17 @@ mapa_nivel_1_enemigos::
 	DB KIND_PINCHOS,      3*8, 15*8,  37,  0, ATTR_FLIP_X
 	DB KIND_PINCHOS,      7*8, 14*8,   8,  8, 0
 
-	;;DB KIND_ESTALACTITA, 16*8,  0*8,  16,  0, ATTR_FLIP_Y
 	DB KIND_MOMIA,         3*8, 14*8,   4, 20, 0
 	DB KIND_MOMIA,        17*8, 14*8,  -4, 20, 0
 	
-	DB KIND_FIN_ENEMIGOS
+	DB KIND_FIN_ENEMIGOS_FIJOS
+	
+	enemigos_no_fijos_1::
+	DB KIND_ESTALACTITA, 16*8,  0*8,  16,  0, ATTR_FLIP_Y
+	DB KIND_ESTALACTITA, 16*8,  0*8,  16,  0, ATTR_FLIP_Y
+	DB KIND_ESTALACTITA, 16*8,  0*8,  16,  0, ATTR_FLIP_Y
+	DB KIND_ESTALACTITA, 16*8,  0*8,  16,  0, ATTR_FLIP_Y
+	
 	tiempos_spawn_1::
 	DB 20, 15, 12, 8, $FF
 
