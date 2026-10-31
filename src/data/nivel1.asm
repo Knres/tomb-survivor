@@ -66,7 +66,7 @@ mapa_nivel_1_enemigos::
 
 	DB KIND_ESTALACTITA, 13*8,  0*8,  2,  3, ATTR_FLIP_Y
 	DB KIND_DARDO, 		  1*8,  2*8,  2,  3, ATTR_FLIP_Y ;; el dardo recibe en vy el temporizador para que salga propulsado. Asi el jugador ve que va a salir un dardo pero no sabe cuando
-	DB KIND_DARDO, 		  18*8,  2*8,  -2,  3, ATTR_FLIP_Y ;; el dardo recibe en vy el temporizador para que salga propulsado. Asi el jugador ve que va a salir un dardo pero no sabe cuando
+	DB KIND_DARDO, 		  18*8,  2*8,  -2,  3, ATTR_FLIP_X ;; el dardo recibe en vy el temporizador para que salga propulsado. Asi el jugador ve que va a salir un dardo pero no sabe cuando
 	DB KIND_FIN_ENEMIGOS_FIJOS
 	
 	;; ↓↓↓ ENEMIGOS NO PRE-INICIALIZADOS
