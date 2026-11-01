@@ -65,5 +65,6 @@ scene_ingame_update::
                 ld hl, ia_enemigo_update          ;; actualizar a las entidades
                 call manager_entity_for_each
         .no_actulizar_ia
+        call game_handle_collisions
     ;;=====================================
 jp   system_prerender_update      ;; preparar los sprites de como ha quedado todo
