@@ -8,12 +8,16 @@ DEF FILA = 20
 ;; Pantalla de titulo: 20x18 tiles, fila a fila.
 ;; Cada fila tiene que sumar FILA (20) tiles.
 pantalla_titulo::
-    DS FILA * 6, TILE_FONDO
-
-    ;; fila 6: SURVIVE (6 + 7 + 7 = 20)
-    DS 6, TILE_FONDO
-    DB TILE_LETRA_S, TILE_LETRA_U, TILE_LETRA_R, TILE_LETRA_V, TILE_LETRA_I, TILE_LETRA_V, TILE_LETRA_E
+    DS FILA * 5, TILE_FONDO
+    ;; fila 6: TOMB (7 + 6 + 7 = 20)
     DS 7, TILE_FONDO
+    DB TILE_LETRA_T, TILE_LETRA_O, TILE_LETRA_M, TILE_LETRA_B, TILE_FONDO, TILE_TUMBA
+    DS 7, TILE_FONDO
+
+    ;; fila 7: SURVIVOR (6 + 8 + 6 = 20)
+    DS 6, TILE_FONDO
+    DB TILE_LETRA_S, TILE_LETRA_U, TILE_LETRA_R, TILE_LETRA_V, TILE_LETRA_I, TILE_LETRA_V, TILE_LETRA_O, TILE_LETRA_R
+    DS 6, TILE_FONDO
 
     DS FILA * 5, TILE_FONDO
 
