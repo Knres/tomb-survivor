@@ -219,7 +219,7 @@ EXPORT DEF E_KIND   = 7
 ;;   bit  7 6 5 4 3 2 1 0                  bit   7 6 5 4 3 2 1 0
 ;;   CMP |1|x|x|1|x|1|1|1|                 KIND |x|x|x|x|x|x|x|x|
 ;; ALIVE ─┘ │ │ │ │ │ │ └─ SPRITE             x ─┘ │ │ │ │ │ │ └─ JUGADOR
-;;       x ─┘ │ │ │ │ └─ PHYSICS                x ─┘ │ │ │ │ └─ ESCORPION
+;;       x ─┘ │ │ │ │ └─ PHYSICS            DARDO ─┘ │ │ │ │ └─ ESCORPION
 ;;         x ─┘ │ │ └─ COLLIDER        ESTALACTITAS ─┘ │ │ └─ MURCIELAGO
 ;;       INPUT ─┘ └─ x                        PINCHOS ─┘ └─ MOMIA
 
@@ -313,7 +313,7 @@ EXPORT DEF EN_VUELO = $F0
 
 
 EXPORT DEF DURACION_PANTALLA = 180
-EXPORT DEF NUM_NIVELES = 1
+EXPORT DEF NUM_NIVELES = 9
 
 ;; Notas para la musica (tono del canal 2). C=do D=re E=mi F=fa G=sol A=la B=si, S=sostenido
 EXPORT DEF NOTA_SILENCIO = 0
