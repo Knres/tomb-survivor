@@ -1,4 +1,4 @@
-EXPORT DEF MAX_ENTITIES = 8 ;; MODIFICAR NUMERO DE ENTIDADES MAXIMAS
+EXPORT DEF MAX_ENTITIES = 12;; MODIFICAR NUMERO DE ENTIDADES MAXIMAS
 
 EXPORT DEF OAM_ENTRY_SIZE = 4
 EXPORT DEF SHADOW_OAM_SIZE = MAX_ENTITIES * OAM_ENTRY_SIZE
@@ -38,6 +38,8 @@ escena_siguiente:: DS 2
 
 frame_actual:: DS 1 ;; cuenta el frame actual de cada segundo. Se reinicia a los 60 frames. Valores: 0-59
 reloj_fin_nivel:: DS 1 ;; cuenta en que segundo se encuentra el nivel. Hace una cuenta regresiva desde INICIO_RELOJ a 0
+reloj_activo:: DS  1 ;; 0 = parao, distinto = encendido
+next_segundo_spwan:: DS 2
 
 SECTION "Menu", WRAM0
 menu_start_anterior:: DS 1 

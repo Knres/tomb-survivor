@@ -53,7 +53,11 @@ scene_ingame_update::
     call system_colisiones_update     ;; deteccion de colisiones
     call jugador_sprite_update
     call system_prerender_pos_jugador ;; actualiza la posicion del jugador en memoria y las prepara para el OAM
-    
+    ld a, [reloj_activo]
+    cp RELOJ_ENCENDIDO ;; SI EL RELOJ ESTA APAGADO NO HACE FALTA QUE ENTRE A LO DE SPAWNEAR ENEMIGOS DURANTE EL NIVEL
+    jr nz, .continua
+    call spawn_enemigo_no_fijo
+    .continua:
     ;; ===================================
     ;; pureba
     ;; mover esto a una funcion o algo
@@ -67,9 +71,11 @@ scene_ingame_update::
 
                 ld a, 1
                 ld [enemigos_activos], a
+                call activar_reloj
             .actualiza_ia
                 ld hl, ia_enemigo_update          ;; actualizar a las entidades
                 call manager_entity_for_each
         .no_actulizar_ia
+        call game_handle_collisions
     ;;=====================================
 jp   system_prerender_update      ;; preparar los sprites de como ha quedado todo

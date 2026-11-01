@@ -32,9 +32,42 @@ manager_entity_for_each::
 	jr nz, .next
 ret
 
+buscar_memoria_entidad_libre::
+	;; Busca una entidad con CMP_ALIVE == 0
+	;; I: -
+	;; O: DE = dir. mememoria libre; C = 1 si no hay ninguno.
+	;; M: A, B, DE
+	ld de, entity_array
+	ld b, MAX_ENTITIES
+
+	.next_slot
+		ld a, [de]
+		bit CMP_ALIVE_BIT, a
+		jr nz, .siguiente_slot
+			;; Z --> slot libre; devolver DE con C = 0.
+			and a
+		ret
+
+		;; cambiar de a siguiente cmp
+		.siguiente_slot
+		ld a, e
+		add a, ENTITY_SIZE
+		ld e, a
+		jr nc, .no_carry
+			inc d
+		.no_carry
+		;; de --> next cmp
+		
+		dec b
+	jr nz, .next_slot
+		;; Z --> no queda memoria libre
+		scf	;; C = 0
+	;; ret
+ret
+
 manager_entity_init_enemies::
 	;; Crea las entidades descritas por la tabla del nivel actual
-	;; KIND_FIN_ENEMIGOS --> fin de enemigos en mapa nivel
+	;; KIND_FIN_ENEMIGOS_FIJOS --> fin de enemigos en mapa nivel
 	;; I: -
 	;; O: -
 	;; M: A, B, DE, HL
@@ -45,14 +78,26 @@ manager_entity_init_enemies::
 	.next_enemy
 		;; hl --> dir. KIND en datos nivel
 		ld a, [hl]				;; a = KIND en datos nivel
-		cp KIND_FIN_ENEMIGOS	;; comprobar si quedan más enemigos por cargar
-		ret z
+		cp KIND_FIN_ENEMIGOS_FIJOS	;; comprobar si quedan más enemigos por cargar
+		jr nz, .no_fin_lista
+			;; Z -->  no quedan guardar next direccion 
+			;;	      que es segundo de spawn de entidades no pre inicializadas
+			
+			;; hl --> DB KIND_FIN_ENEMIGOS_FIJOS
+			inc hl	;; HL --> Segundo, spawn de primer enemigo no pre-inicializado
 
+			ld a, l
+			ld [next_segundo_spwan], a
+			ld a, h
+			ld [next_segundo_spwan + 1], a
+		ret
+
+		.no_fin_lista
 		push bc					;; guardar contador b
 		push hl					;; hl --> dir. KIND en datos nivel
 		
 		;; CMP
-		ld a, CMP_ALIVE | CMP_SPRITE;; / a = enemigo vivo y con sprite 
+		ld a, CMP_ALIVE | CMP_SPRITE | CMP_COLLIDER ;; / a = enemigo vivo, con sprite y caja de colisión
 		ld hl, E_CMP				;; |
 		add hl, de					;; | hl --> &entidad.cmp
 		ld [hl], a					;; \
@@ -86,6 +131,9 @@ manager_entity_init_enemies::
 
 		cp KIND_ESTALACTITA
 		jr z, .tile_estalactita
+
+		cp KIND_DARDO
+		jr z, .tile_dardo
 		
 		jr .aplicar
 
@@ -98,7 +146,7 @@ manager_entity_init_enemies::
 		jr .aplicar
 
 		.tile_momia
-			ld a, TILE_ESCORPION	;; TODO: sustituir tiel
+			ld a, TILE_MOMIA_1
 		jr .aplicar
 
 		.tile_pinchos
@@ -107,6 +155,10 @@ manager_entity_init_enemies::
 
 		.tile_estalactita
 			ld a, TILE_ESTALACTITA
+		jr .aplicar
+
+		.tile_dardo
+			ld a, TILE_DARDO
 		;; jr .aplicar
 		
 		.aplicar
@@ -213,6 +265,9 @@ ia_enemigo_update::
 	cp KIND_ESTALACTITA
 	jp z, ia_estalactita
 
+	cp KIND_DARDO
+	jp z, ia_dardo
+
 	;; cp
 	;; jp z,
 ret
@@ -254,7 +309,6 @@ ia_escorpion::
 	;; I: DE = dir. base de la entidad
 	;; O: -
 	;; M: A, B, HL
-
 	;; VY cuenta los updates que faltan para cambiar el frame.
 	ld hl, E_VY	;; /
 	add hl, de	;; | recuperar vy (contador)
@@ -326,8 +380,89 @@ ia_murcielago::
 ret
 
 ia_momia::
-	;; Momia. -
-	;; por definir
+	;; En el suelo y se mueve horizontalmente, solo en una direccion 
+	;; se movera "muy lento", para acdamovimietno cambiara su sprite 1 <--> 2
+	;; cuando sale de pantalla cmp --> NO vivo 
+	ld hl, E_VX
+	add hl, de
+	ld a, [hl]
+	and a
+	jr z, .actualizar_contador
+	ld hl, E_ATTR
+	add hl, de
+	bit 7, a
+	jr nz, .mirar_izquierda
+	set ATTR_BIT_FLIP_X, [hl]
+	jr .actualizar_contador
+
+	.mirar_izquierda
+	res ATTR_BIT_FLIP_X, [hl]
+	
+	;; VY --> contador para el movimiento y cambio de sprite
+	.actualizar_contador
+	ld hl, E_VY	;; /
+	add hl, de	;; | recuperar vy (cotador)
+	ld a, [hl]	;; \
+
+	and a		;; a == 0?
+	jr z, .mover	;; Z --> fin de contador --> mover y actualizar sprite
+		;; NZ --> no fin de contador
+		dec [hl]	;; contador --
+	ret nz
+
+	;; contador ya = 0
+	.mover
+		ld hl, E_X	;; /
+		add hl, de	;; |
+		ld a, [hl]	;; |
+		ld b, a		;; \ b = x actual
+
+		ld hl, E_VX	;; /
+		add hl, de	;; |
+		ld a, [hl]	;; \ a = vx
+		
+		and a	;; vx == 0?
+		jr z, .borrar ;; Z --> Ya ha esperado un ciclo tocando borde --> borrar	
+	
+		add b		;; a +b = new posicion x 
+		call entidad_comprobar_salida_horizontal
+		;; a = x corregida
+	jr c, .toca_borde
+
+
+	ld hl, E_X
+	add hl, de
+	ld [hl], a
+
+	ld hl, E_VY
+	add hl, de
+	ld [hl], MOMIA_ESPERA_FRAME
+
+	ld hl, E_TILE
+	add hl, de
+	ld a, [hl]
+	
+	cp TILE_MOMIA_1
+	jr z, .frame_2
+		ld a, TILE_MOMIA_1
+		jr .guardar_frame
+	.frame_2
+		ld a, TILE_MOMIA_2
+	.guardar_frame
+		ld [hl], a
+	ret
+
+	.toca_borde
+		ld hl, E_VX	;; /
+		add hl, de	;; |
+		xor a		;; |
+		ld [hl], a	;; \ xv = 0
+	ret
+
+	.borrar
+	ld hl, E_CMP
+	add hl, de
+	res CMP_ALIVE_BIT, [hl]
 ret
 
 ia_pinchos::
@@ -406,6 +541,61 @@ ia_pinchos::
 		add hl, de	;; | guardar espera
 		ld [hl], a	;; \
 	;; end_fase_mov
+ret
+
+ia_dardo:
+	;; para el dardo vy determina cuantos segundos debe esperar hasta que de propulse en su direccion. Una vez se propulsa se cambia ese valor a EN_VUELO
+	ld hl, E_VY
+	add hl, de ;; obtengo vy
+	ld a, [hl]
+	
+	cp EN_VUELO
+	jr z, .se_mueve
+	
+	ld c, a
+
+
+	.standby:
+		ld a, [frame_actual] ;; si no es el inicio de un segundo no hace nada
+		cp INICIO_SEGUNDO
+		ret nz
+		
+		ld a, c		;; recupero b para modificar el contador
+		dec a
+		cp 0
+		jr nz, .sigue_parado		;; si llega a 0 empieza el movimiento
+		ld a, EN_VUELO
+		ld [hl], a		;; modifico para que en la siguiente actualizacion empiece a volar
+		jr .fin
+
+
+	.sigue_parado:
+		ld [hl], a
+		jr .fin
+	
+	.se_mueve:
+		ld hl, E_VX	
+		add hl, de		;; hl = dir. vx de la entidad
+
+		ld a, [hl]
+		ld b, a			;; b = vx
+
+		ld hl, E_X		
+		add hl, de		;; hl = dir. x
+
+		ld a, [hl]		;; / a = x actual
+		add a, b		;; \ x = x + vx
+		
+		call entidad_comprobar_salida_horizontal ;; c si se sale, nc si no se sale
+		ld [hl], a
+		ret nc
+	
+	.destruir:
+		ld hl, E_CMP
+		add hl, de
+		res CMP_ALIVE_BIT, [hl]
+
+	.fin:
 ret
 
 ia_estalactita::
@@ -516,7 +706,7 @@ entidad_comprobar_salida_vertical::
 	;; I: A = nueva Y (Y + VY), en coordenadas OAM
 	;; O: A = Y limitada; C = 1 si se salió por un extremo
 	;; M: A
-	cp OAM_Y_OFFSET + TILE_SIZE	;; borde superior + tile de techo
+	cp OAM_Y_OFFSET ;;+ TILE_SIZE	;; borde superior + tile de techo
 	jr c, .limite_superior
 		;; NC --> No se sale del borde superior
 		cp OAM_Y_OFFSET + LEVEL_FLOOR_PX - TILE_SIZE + 1	;; borde inferior + tile de suelo

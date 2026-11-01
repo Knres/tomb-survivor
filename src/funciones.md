@@ -148,7 +148,7 @@ Las constantes permaneceran en el archivo **`defs.asm`** en casos necesarios se 
 | `KIND_ESCORPION_BIT` ... `KIND_ESTALACTITA_BIT` | 1 ... 5 | Bit de cada tipo de enemigo: escorpion 1, murcielago 2, momia 3, pinchos 4, estalactita 5. |
 | `KIND_JUGADOR` | mascara | Mascara para identificar al jugador. |
 | `KIND_ESCORPION` ... `KIND_ESTALACTITA` | mascara | Mascara de cada tipo de enemigo (`1 << bit`). |
-| `KIND_FIN_ENEMIGOS` | 0 | Centinela: fin de la tabla de enemigos de un nivel. |
+| `KIND_FIN_ENEMIGOS_FIJOS` | 0 | Centinela: fin de la tabla de enemigos de un nivel. |
 | `ATTR_BIT_PRIORIDAD` ... `ATTR_BIT_PALET` | 7 ... 4 | Bits de atributos OAM: prioridad 7, espejo Y 6, espejo X 5, paleta 4. |
 | `ATTR_PRIORIDAD` ... `ATTR_PALET` | mascara | Mascara de cada atributo OAM (`1 << bit`). |
 | `E_DIR_HORIZONTAL` | 0 | Tipo de trayectoria horizontal de enemigo. |
@@ -253,7 +253,7 @@ Utilizar " <br> " para salto de linea en la tabla
 | utils.asm | digit2tile | Convierte un digito en el indice de su tile de numero. | A = digito | A = tile | A |
 | manager_nivel.asm | get_mapa_nivel_actual | Devuelve en `HL` la direccion del mapa del nivel actual seleccionado por `nivel_actual`. | - | HL = direccion del mapa | A, HL |
 | manager_nivel.asm | get_pos_inicial_jugador_nivel_actual | Devuelve en `HL` la direccion de la posicion inicial del jugador para el nivel actual. | - | HL = direccion de spawn | A, HL |
-| manager_nivel.asm | get_enemigos_nivel_actual | Devuelve en `HL` el inicio de la tabla de enemigos del nivel actual (registros KIND, X, Y, VX, VY, ATTR; acaba en `KIND_FIN_ENEMIGOS`). | - | HL = tabla de enemigos | A, HL |
+| manager_nivel.asm | get_enemigos_nivel_actual | Devuelve en `HL` el inicio de la tabla de enemigos del nivel actual (registros KIND, X, Y, VX, VY, ATTR; acaba en `KIND_FIN_ENEMIGOS_FIJOS`). | - | HL = tabla de enemigos | A, HL |
 | manager_entidad.asm | manager_entity_for_each | Llama a la rutina de `HL` una vez por cada entidad viva, con `DE` apuntando a la entidad. | HL = rutina | - | A, B, DE, HL |
 | manager_entidad.asm | manager_entity_init_enemies | Crea las entidades de la tabla de enemigos del nivel actual, a partir de la segunda entidad. | - | - | A, B, DE, HL |
 | manager_entidad.asm | ia_enemigo_update | Llama a la IA que corresponde al tipo (`E_KIND`) de la entidad. El jugador se salta. Se usa con `manager_entity_for_each`. | DE = entidad | - | A, HL (+ la IA llamada) |

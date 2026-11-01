@@ -46,15 +46,14 @@ main::
 
     ;; inicializacion de cosas
     call init_game  ;; llamar solo una vez por arranque de juego (¡¡ no arranque de nivel !!)
-
+    call init_reloj
     ld hl, scene_menu
-    call manager_escena_cambiar
+    call manager_escena_cambiar    
 
     bucle_principal:
         ;ld bc, ESTADO_ERROR  ;; SOLO SIRVE PARA VER SI ESTA YENDO A UN ESTADO QUE NO DEBE, NO HACE BUCLE Y TERMINA LA EJECUCION CON BC = $FF
         call sys_input_update
         call system_actualizar_reloj
-
 
         call manager_escena_update      ;; la escena actual hace lo suyo (jugador, prerender... van en scene_ingame_update)
         call sys_music_update            ;; actualiza la musica, si hay alguna nota en curso, la reproduce y la cuenta, si se acabo, pasa a la siguiente nota

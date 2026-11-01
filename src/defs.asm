@@ -116,13 +116,14 @@ EXPORT DEF INICIO_RELOJ = 30    ;; inicio del reloj del nivel que determina cuá
 EXPORT DEF FIN_RELOJ = 0
 EXPORT DEF FIN_SEGUNDO = 59
 EXPORT DEF INICIO_SEGUNDO = 0
+EXPORT DEF RELOJ_PARADO = 0
+EXPORT DEF RELOJ_ENCENDIDO = 1
 ;; TILES
 EXPORT DEF TILE_FONDO = $00             ;; fondo
 EXPORT DEF TILE_SUELO = $01             ;; suelo temporal
-EXPORT DEF TILE_PARED = $02             ;; pared temporal
 ;;EXPORT DEF TILE_JUGADOR = $03	        ;; jugador temporal
 
-
+EXPORT DEF TILE_ESCORPION2 = $02        ;; escorpion2
 EXPORT DEF TILE_ESCORPION = $04         ;; escorpion
 EXPORT DEF TILE_PLAT_DERECHA = $05      ;; plataforma derecha
 EXPORT DEF TILE_PLAT_IZQUIERDA = $06    ;; plataforma izquierda
@@ -132,14 +133,17 @@ EXPORT DEF TILE_NO_CORAZON = $09        ;; no corazon
 EXPORT DEF TILE_PINCHOS    = $0A        ;; pinchos
 EXPORT DEF TILE_MURCIELAGO_1 = $0B      ;; murcielago, frame 1
 EXPORT DEF TILE_MURCIELAGO_2 = $0C      ;; murcielago, frame 2
-EXPORT DEF TILE_JUGADOR_TEMPORAL = $03  ;; jugador temporal
+EXPORT DEF TILE_TUMBA = $03             ;; tumba
 EXPORT DEF TILE_JUGADOR_1 = $0D         ;; jugador, frame 1
 EXPORT DEF TILE_JUGADOR_2 = $0E         ;; jugador, frame 2
 EXPORT DEF TILE_JUGADOR_SALTO = $0F     ;; jugador saltando
 EXPORT DEF TILE_JUGADOR = TILE_JUGADOR_2;; frame por defecto
 EXPORT DEF TILE_ESTALACTITA = TILE_PINCHOS   ;; estalactita TODO: sustituir sprite
+EXPORT DEF TILE_DARDO = $10                  ;; dardo
 EXPORT DEF TILE_ESCORPION_1 = TILE_ESCORPION ;; escorpion, frame 1 
-EXPORT DEF TILE_ESCORPION_2 = TILE_ESCORPION ;; escorpion, frame 2 TODO: sustituir este frame
+EXPORT DEF TILE_ESCORPION_2 = TILE_ESCORPION2 ;; escorpion, frame 2 TODO: sustituir este frame
+EXPORT DEF TILE_MOMIA_1 = TILE_PLAT_DERECHA
+EXPORT DEF TILE_MOMIA_2 = TILE_PLAT_IZQUIERDA
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -215,7 +219,7 @@ EXPORT DEF E_KIND   = 7
 ;;   bit  7 6 5 4 3 2 1 0                  bit   7 6 5 4 3 2 1 0
 ;;   CMP |1|x|x|1|x|1|1|1|                 KIND |x|x|x|x|x|x|x|x|
 ;; ALIVE ─┘ │ │ │ │ │ │ └─ SPRITE             x ─┘ │ │ │ │ │ │ └─ JUGADOR
-;;       x ─┘ │ │ │ │ └─ PHYSICS                x ─┘ │ │ │ │ └─ ESCORPION
+;;       x ─┘ │ │ │ │ └─ PHYSICS            DARDO ─┘ │ │ │ │ └─ ESCORPION
 ;;         x ─┘ │ │ └─ COLLIDER        ESTALACTITAS ─┘ │ │ └─ MURCIELAGO
 ;;       INPUT ─┘ └─ x                        PINCHOS ─┘ └─ MOMIA
 
@@ -242,17 +246,18 @@ EXPORT DEF KIND_MURCIELAGO_BIT  = 2
 EXPORT DEF KIND_MOMIA_BIT       = 3
 EXPORT DEF KIND_PINCHOS_BIT     = 4
 EXPORT DEF KIND_ESTALACTITA_BIT = 5
-;; EXPORT DEF KIND_             = 6
-;; EXPORT DEF KIND_             = 7
-        EXPORT DEF KIND_FIN_ENEMIGOS    = 0 ;; estilo centinela
+EXPORT DEF KIND_DARDO_BIT       = 6
+;; EXPORT DEF KIND_..._BIT     = 7
+
+        EXPORT DEF KIND_FIN_ENEMIGOS_FIJOS    = 0 ;; estilo centinela
         EXPORT DEF KIND_JUGADOR         = 1 << KIND_JUGADOR_BIT
         EXPORT DEF KIND_ESCORPION       = 1 << KIND_ESCORPION_BIT
         EXPORT DEF KIND_MURCIELAGO      = 1 << KIND_MURCIELAGO_BIT
         EXPORT DEF KIND_MOMIA           = 1 << KIND_MOMIA_BIT
         EXPORT DEF KIND_PINCHOS         = 1 << KIND_PINCHOS_BIT
         EXPORT DEF KIND_ESTALACTITA     = 1 << KIND_ESTALACTITA_BIT
-        ;; EXPORT DEF KIND_             = 1 << CMP_6
-        ;; EXPORT DEF KIND_             = 1 << CMP_7
+        EXPORT DEF KIND_DARDO           = 1 << KIND_DARDO_BIT
+        ;; EXPORT DEF KIND_...       = 1 << KIND_..._BIT
 ;; TODO: definir tipos de enemigos tras tener una base funcional
 
 
@@ -290,6 +295,8 @@ EXPORT DEF JUGADOR_ESPERA_FRAME = 10 ;; updates entre cambios de frame
 EXPORT DEF MURCIELAGO_ESPERA_FRAME = 20         ;; updates entre cambios de frame
 ;; ENTIDAD: ESCORPION
 EXPORT DEF ESCORPION_ESPERA_FRAME = 15          ;; updates entre cambios de frame
+;; ENTIDAD: ESCORPION
+EXPORT DEF MOMIA_ESPERA_FRAME = 60              ;; updates entre pasos y cambio de frame
 ;; ENTIDAD: ESTALACTITA
 EXPORT DEF ESTALACTITA_ESTADO_ESPERANDO = 0
 EXPORT DEF ESTALACTITA_ESTADO_CAYENDO = 1
@@ -301,10 +308,12 @@ EXPORT DEF PINCHOS_FASE_BAJADA = TILE_SIZE * 2  ;; <-- Baja una altura de un til
 EXPORT DEF PINCHOS_ESPERA_SUBIDA_BAJARA = 4     ;; pausa para la subida-bajada, a 1px por update es demasidao rapido
 EXPORT DEF PINCHOS_ESPERA_FASE     = 120        ;; se mantiene en estado subido o bajado durante tantos frames
 
+;; ENTIDAD: DARDO
+EXPORT DEF EN_VUELO = $F0
 
 
 EXPORT DEF DURACION_PANTALLA = 180
-EXPORT DEF NUM_NIVELES = 1
+EXPORT DEF NUM_NIVELES = 9
 
 ;; Notas para la musica (tono del canal 2). C=do D=re E=mi F=fa G=sol A=la B=si, S=sostenido
 EXPORT DEF NOTA_SILENCIO = 0
