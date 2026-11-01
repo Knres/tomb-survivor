@@ -97,7 +97,7 @@ manager_entity_init_enemies::
 		push hl					;; hl --> dir. KIND en datos nivel
 		
 		;; CMP
-		ld a, CMP_ALIVE | CMP_SPRITE;; / a = enemigo vivo y con sprite 
+		ld a, CMP_ALIVE | CMP_SPRITE | CMP_COLLIDER ;; / a = enemigo vivo, con sprite y caja de colisión
 		ld hl, E_CMP				;; |
 		add hl, de					;; | hl --> &entidad.cmp
 		ld [hl], a					;; \

@@ -247,7 +247,8 @@ EXPORT DEF KIND_MOMIA_BIT       = 3
 EXPORT DEF KIND_PINCHOS_BIT     = 4
 EXPORT DEF KIND_ESTALACTITA_BIT = 5
 EXPORT DEF KIND_DARDO_BIT       = 6
-;; EXPORT DEF KIND_             = 7
+;; EXPORT DEF KIND_..._BIT     = 7
+
         EXPORT DEF KIND_FIN_ENEMIGOS_FIJOS    = 0 ;; estilo centinela
         EXPORT DEF KIND_JUGADOR         = 1 << KIND_JUGADOR_BIT
         EXPORT DEF KIND_ESCORPION       = 1 << KIND_ESCORPION_BIT
@@ -256,7 +257,7 @@ EXPORT DEF KIND_DARDO_BIT       = 6
         EXPORT DEF KIND_PINCHOS         = 1 << KIND_PINCHOS_BIT
         EXPORT DEF KIND_ESTALACTITA     = 1 << KIND_ESTALACTITA_BIT
         EXPORT DEF KIND_DARDO           = 1 << KIND_DARDO_BIT
-        ;; EXPORT DEF KIND_             = 1 << CMP_7
+        ;; EXPORT DEF KIND_...       = 1 << KIND_..._BIT
 ;; TODO: definir tipos de enemigos tras tener una base funcional
 
 

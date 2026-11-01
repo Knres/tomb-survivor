@@ -224,3 +224,63 @@ map_is_solid_at::
 .solido:
     or 1
     ret
+
+game_handle_collisions::
+
+    ld hl, game_check_collision_player
+    call manager_entity_for_each
+
+    ret
+
+game_check_collision_player::
+
+    ld hl, E_KIND ;; Comprobar que no es el jugador
+    add hl, de  ;; DE = entidad actual
+    ld a, [hl]
+    and KIND_JUGADOR
+    ret nz
+
+    ld a, [de] ;; Comprobar que puede colisionar
+    bit CMP_COLLIDER_BIT, a
+    ret z
+
+    ld hl, E_KIND
+    add hl, de
+    ld a, [hl]
+    ld b, a  ;; Guardo en b el tipo porque a se modifica en sys_collision_overlaps
+
+    ld hl, entity_array ;; hl = jugador
+
+    ;; Comprobar solapamiento
+    call sys_collision_overlaps
+    ret nc
+
+    ld a, b 
+
+    cp KIND_ESCORPION
+    jr z, .is_enemy
+
+    cp KIND_MURCIELAGO
+    jr z, .is_enemy
+
+    cp KIND_MOMIA
+    jr z, .is_enemy
+
+    cp KIND_PINCHOS
+    jr z, .is_enemy
+
+    cp KIND_ESTALACTITA
+    jr z, .is_enemy
+
+    cp KIND_DARDO
+    jr z, .is_enemy
+
+    ret
+
+.is_enemy:
+    ld a, [jugador_vidas]
+    dec a
+    ld [jugador_vidas], a
+    call hud_draw_hearts
+
+ret
