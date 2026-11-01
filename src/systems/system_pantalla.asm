@@ -1,41 +1,64 @@
 SECTION "System pantalla", ROM0
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Dibuja una pantalla completa (20x18 tiles) desde la ROM al tilemap,
-;; con la pantalla apagada.
-;; I: HL = direccion de la pantalla en ROM (20x18 bytes, fila a fila)
-;; O: -
-;; M: A, BC, DE, HL
 sys_pantalla_dibujar::
-    push hl                                 ;; \ Guardar la pantalla: wait_vblank modifica HL
-    call wait_vblank                        ;; | La pantalla solo se puede apagar en VBLANK
-    pop  hl                                 ;; / HL = pantalla otra vez
+    ;; Dibuja una pantalla completa: copia sus tiles a la VRAM y su mapa (20x18) al tilemap.
+    ;; Se hace con la pantalla apagada. Al encender, la ventana (HUD) queda apagada.
+    ;; Ojo: los tiles de la pantalla sustituyen a los del juego, la partida los vuelve a cargar.
+    ;; I: HL = pantalla (DW tiles, DW bytes de tiles, mapa de 20x18 fila a fila)
+    ;; O: -
+    ;; M: A, BC, DE, HL
 
-    xor  a                                  ;; \ Apagar la pantalla
-    ldh  [rLCDC], a                         ;; /
+    ;; la pantalla solo se puede apagar en VBLANK (wait_vblank modifica HL)
+    push hl
+    call wait_vblank
+    pop hl
 
-    ld   de, TILEMAP_BG_START               ;; DE = destino: primera fila del tilemap
-    ld   b, PANTALLA_ALTO                   ;; B  = filas que quedan
+    xor a
+    ldh [rLCDC], a
 
-.fila
-    ld   c, PANTALLA_ANCHO                  ;; C  = columnas que quedan en esta fila
+    ;; DE = tiles de la pantalla, BC = bytes de tiles; HL queda apuntando al mapa
+    ld a, [hl+]
+    ld e, a
+    ld a, [hl+]
+    ld d, a
+    ld a, [hl+]
+    ld c, a
+    ld a, [hl+]
+    ld b, a
 
-.columna
-    ld   a, [hl+]                           ;; \ A = tile de la pantalla (HL avanza solo)
-    ld   [de], a                            ;; | escribirlo en el tilemap
-    inc  de                                 ;; | DE no avanza solo: avanzarlo a mano
-    dec  c                                  ;; | una columna menos
-    jr   nz, .columna                       ;; / mientras queden columnas
+    ;; copiar los tiles al principio de la VRAM (tile 0 en adelante)
+    push hl
+    ld h, d
+    ld l, e
+    ld de, TILE_DATA_START
+    call memcpy8_bc
+    pop hl
 
-    ld   a, e                               ;; \ DE += TILEMAP_WIDTH - PANTALLA_ANCHO
-    add  a, TILEMAP_WIDTH - PANTALLA_ANCHO  ;; |   (saltar los 12 tiles que no se ven
-    ld   e, a                               ;; |    para llegar a la fila siguiente)
-    jr   nc, .sin_acarreo                   ;; | si E no se ha pasado de 255, D no cambia
-    inc  d                                  ;; / si se ha pasado, D + 1
-.sin_acarreo
-    dec  b                                  ;; \ una fila menos
-    jr   nz, .fila                          ;; / mientras queden filas
+    ;; copiar el mapa al tilemap, fila a fila
+    ld de, TILEMAP_BG_START
+    ld b, PANTALLA_ALTO
 
-    ld   a, LCD_CONFIG                      ;; \ Volver a encender la pantalla
-    ldh  [rLCDC], a                         ;; / (con la ventana/HUD apagada)
+    .fila:
+        ld c, PANTALLA_ANCHO
+
+        .columna:
+            ld a, [hl+]
+            ld [de], a
+            inc de
+            dec c
+            jr nz, .columna
+
+        ;; saltar los 12 tiles del tilemap que no se ven para llegar a la fila siguiente
+        ld a, e
+        add a, TILEMAP_WIDTH - PANTALLA_ANCHO
+        ld e, a
+        jr nc, .sin_acarreo
+        inc d
+        .sin_acarreo:
+
+        dec b
+        jr nz, .fila
+
+    ld a, LCD_CONFIG
+    ldh [rLCDC], a
     ret

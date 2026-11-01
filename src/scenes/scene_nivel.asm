@@ -29,7 +29,7 @@ scene_nivel_init::
 
     call wait_vblank
     ld   a, [nivel_actual]
-    add  a, TILE_NUM_0
+    add  a, PANT_NIVEL_NUM_0             ;; numero dentro de los tiles de la pantalla de nivel
     ld   [POS_NUMERO_NIVEL], a
 
     ld   hl, nivel_actual

@@ -12,6 +12,8 @@ scene_ingame::
 ;; O: -
 ;; M: A, BC, DE, HL
 scene_ingame_init::
+    ;; las pantallas (titulo, nivel...) cargan sus propios tiles: volver a cargar los del juego
+    call system_render_load_tiles
     call init_reloj
     call system_render_load_map
     call system_prerender_init_entities
@@ -36,6 +38,15 @@ jp init_hud
 ;; O: -
 ;; M: A, BC, DE, HL
 scene_ingame_update::
+
+    ld a, [reloj_fin_nivel]
+    and  a
+    jr nz, .en_juego
+
+    ld hl, scene_nivel
+    jp manager_escena_cambiar
+
+    .en_juego
     call system_jugador_update        ;; input del jugador: direccion y salto
     call system_fisicas_update        ;; fisicas: aplica velocidad y gravedad
     call system_render_scroll         ;; el scroll, pero como max_x_y van ha ser 0 no modifica
