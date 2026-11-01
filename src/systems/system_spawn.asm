@@ -20,7 +20,7 @@ spawn_enemigo_no_fijo:
     ret nZ
     call spawn_enemigo
     call siguiente_enemigo_update
-    
+    jr spawn_enemigo_no_fijo    ;; intenta hacerlo otra vez por si hay mas de un enemigo en el mismo segundo de spawn
 ret
 
 siguiente_enemigo_update:
