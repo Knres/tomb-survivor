@@ -278,9 +278,38 @@ game_check_collision_player::
     ret
 
 .is_enemy:
+    call is_invincible ;; Compruebo invencibilidad
+    ret c
+
+    ld a, [reloj_fin_nivel] ;; Guardar el segundo en el que recibe daño
+    ld [ultimo_hit], a
+
+    ld a, 1
+    ld [hit_reciente], a
+
+    ;; Restar una vida
     ld a, [jugador_vidas]
+    and a
+    ret z
+
     dec a
     ld [jugador_vidas], a
     call hud_draw_hearts
+    ret
 
-ret
+is_invincible::
+    ld a, [hit_reciente]
+    and a
+    ret z
+
+    ld a, [ultimo_hit] ;; Calculo segundos transcurridos
+    ld b, a
+
+    ld a, [reloj_fin_nivel]
+    ld c, a
+
+    ld a, b
+    sub c
+
+    cp TIEMPO_INVENCIBLE
+    ret

@@ -288,6 +288,7 @@ EXPORT DEF IMPULSO_SALTO        = 10 ;; velocidad inicial de salto
 EXPORT DEF GRAVEDAD             = 1  ;; incremento de VY por frame
 EXPORT DEF VELOCIDAD_MAX_CAIDA  = 4  ;; px por frame
 EXPORT DEF VIDAS_JUGADOR        = 3  ;; vidas maximas e iniciales que tiene el jugador   
+EXPORT DEF TIEMPO_INVENCIBLE = 2 ;; segundos de invencibilidad tras recibir daño
 
 
 EXPORT DEF JUGADOR_ESPERA_FRAME = 10 ;; updates entre cambios de frame

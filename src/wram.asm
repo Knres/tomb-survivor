@@ -24,6 +24,8 @@ enemigos_activos::       DS 1   ;; 0 -> no update enemigos (no hace call ia_enem
 musica_inicio::   DS 2     ;; Direccion de la primera nota
 musica_ptr::      DS 2     ;; Direccion de la nota siguiente
 musica_contador:: DS 1     ;; Frames que le quedan a la nota actual
+ultimo_hit: DS 1
+hit_reciente: DS 1
 
 SECTION "Nivel actual", WRAM0
 nivel_actual:: DS 1
