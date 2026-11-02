@@ -58,6 +58,6 @@ main::
         call manager_escena_update      ;; la escena actual hace lo suyo (jugador, prerender... van en scene_ingame_update)
         call sys_music_update            ;; actualiza la musica, si hay alguna nota en curso, la reproduce y la cuenta, si se acabo, pasa a la siguiente nota
         call system_render_update       ;; comun: copiar sprites a la OAM en VBLANK
-
+        call comprobar_jugador_vivo
 
         jr bucle_principal
