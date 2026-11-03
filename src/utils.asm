@@ -8,6 +8,8 @@ init_game::
     ;; O: -
     ;; M: A, BC, DE, HL
     ;; call init_reloj ;;<-- se ha movideo ingame (init game es la inicializacion del juego, no del nivel)
+    ld a, VIDAS_JUGADOR
+    ld [jugador_vidas], a
     call init_scroll
     call init_palet
     call init_lcd

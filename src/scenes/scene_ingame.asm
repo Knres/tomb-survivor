@@ -14,9 +14,13 @@ scene_ingame::
 scene_ingame_init::
     ;; las pantallas (titulo, nivel...) cargan sus propios tiles: volver a cargar los del juego
     call system_render_load_tiles
+    ld a, LCD_CONFIG & %11111110
+    ldh [rLCDC], a
     call init_reloj
     call system_render_load_map
     call system_prerender_init_entities
+    ld a, LCD_CONFIG
+    ldh [rLCDC], a
     call system_prerender_init_jugador
     ld hl, musica_partida
     call sys_music_play
