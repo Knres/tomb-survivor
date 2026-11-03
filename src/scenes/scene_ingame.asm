@@ -68,11 +68,13 @@ scene_ingame_update::
         ld a, [enemigos_activos]
         and a       ;; a == 0?
         jr nz, .actualiza_ia
-            ;; pulsar cualquier tacla para comenzar
+            ;; pulsar tacla (← | →) para comenzar
                 ld a, [joypad_pressed]
-                and a
-                jr z, .no_actulizar_ia
-
+                bit LEFT_BIT, a
+                jr nz, .activar_enemigos
+                    bit RIGHT_BIT, a
+                    jr z, .no_actulizar_ia
+                .activar_enemigos:
                 ld a, 1
                 ld [enemigos_activos], a
                 call activar_reloj
