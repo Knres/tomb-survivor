@@ -18,7 +18,7 @@ SfxSalto::                    ;; CH1: tono que sube rapido
 
 SfxAterrizar::                ;; CH4: golpe seco, cortado por duracion
     DB LOW(rNR41), 4
-    DB $30, $81, $55, $C0         ;; NR41 duracion ~60 ms, NR42 vol 8, NR43 ruido grave, NR44 play + respetar duracion
+    DB $30, $C1, $55, $C0         ;; NR41 duracion ~60 ms, NR42 vol 8, NR43 ruido grave, NR44 play + respetar duracion
 
 ;; ---------- MUERTE ----------
 
