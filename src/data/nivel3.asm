@@ -32,12 +32,11 @@ mapa_nivel_3_enemigos::
 
 	;; 1. Entidades pre-inicializadas
 		;; TIPO_ENEMIGO,      X*8,  Y*8,  VX,  VY, ATTR_FLIP
-		DB KIND_PINCHOS,      1*8, 15*8,  60,   0, ATTR_FLIP_X
-		DB KIND_PINCHOS,      3*8, 15*8,  20,   0, ATTR_FLIP_X
-		DB KIND_PINCHOS,     13*8, 15*8,  14,   0, ATTR_FLIP_X
-		DB KIND_PINCHOS,     18*8, 15*8,  55,   0, ATTR_FLIP_X
-		DB KIND_ESCORPION,   16*8, 14*8,  -1,   0, 0
-		DB KIND_MURCIELAGO,  16*8,  8*8,   2,  30, ATTR_FLIP_X
+		DB KIND_ESTALACTITA,   2*8,  0*8,  12,  0, ATTR_FLIP_Y
+		DB KIND_ESTALACTITA,   6*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB KIND_ESTALACTITA,  11*8,  0*8,  12,  0, ATTR_FLIP_Y
+		DB KIND_ESTALACTITA,  15*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB KIND_ESTALACTITA,  18*8,  0*8,  12,  0, ATTR_FLIP_Y
 
 		;; ↓ END NO QUITAR
 	DB KIND_FIN_ENEMIGOS_FIJOS
@@ -47,7 +46,35 @@ mapa_nivel_3_enemigos::
 		;;	PSS: el contador va cuenta hacia atra, por lo que hay que colocar lo de mayor a menor (29 --> 1)
 	
 		;; SEGUNDO_SPAWN, TIPO_ENEMIGO,      X*8,  Y*8,  VX,  VY, ATTR_FLIP
-		;;DB 25,            KIND_ESTALACTITA,  8*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 29,            KIND_ESTALACTITA,  8*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 28,            KIND_ESTALACTITA,  4*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 27,            KIND_ESTALACTITA, 12*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 26,            KIND_ESTALACTITA,  6*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 25,            KIND_ESTALACTITA, 15*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 24,            KIND_ESTALACTITA,  9*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 23,            KIND_ESTALACTITA,  3*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 22,            KIND_ESTALACTITA, 13*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 21,            KIND_ESTALACTITA,  7*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 20,            KIND_ESTALACTITA, 17*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 19,            KIND_ESTALACTITA, 11*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 18,            KIND_ESTALACTITA,  5*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 17,            KIND_ESTALACTITA, 14*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 16,            KIND_ESTALACTITA,  8*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 15,            KIND_ESTALACTITA,  2*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 14,            KIND_ESTALACTITA, 10*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 13,            KIND_ESTALACTITA, 16*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 12,            KIND_ESTALACTITA,  6*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 11,            KIND_ESTALACTITA, 12*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 10,            KIND_ESTALACTITA,  4*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 9,             KIND_ESTALACTITA, 14*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 8,             KIND_ESTALACTITA,  8*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 7,             KIND_ESTALACTITA, 17*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 6,             KIND_ESTALACTITA,  5*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 5,             KIND_ESTALACTITA, 11*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 4,             KIND_ESTALACTITA,  3*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 3,             KIND_ESTALACTITA, 13*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 2,             KIND_ESTALACTITA,  7*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 1,             KIND_ESTALACTITA, 15*8,  0*8,  16,  0, ATTR_FLIP_Y
 			
 		;; ↓ END NO QUITAR
 	DB LIST_END 

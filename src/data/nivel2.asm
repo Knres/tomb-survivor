@@ -32,10 +32,10 @@ mapa_nivel_2_enemigos::
 
 	;; 1. Entidades pre-inicializadas
 		;; TIPO_ENEMIGO,      X*8,  Y*8,  VX,  VY, ATTR_FLIP
-		DB KIND_PINCHOS,      1*8, 15*8,  60,   0, ATTR_FLIP_X
-		DB KIND_PINCHOS,     18*8, 15*8,  30,   0, ATTR_FLIP_X
+		DB KIND_PINCHOS,     17*8, 15*8,  60,   0, ATTR_FLIP_X
+		DB KIND_PINCHOS,     10*8, 15*8,  30,   0, ATTR_FLIP_X
 		DB KIND_ESCORPION,   16*8, 14*8,  -1,   0, 0
-		DB KIND_MURCIELAGO,  16*8,  8*8,   2,  30, ATTR_FLIP_X
+		DB KIND_MURCIELAGO,  16*8, 12*8,   2,  30, ATTR_FLIP_X
 
 		;; ↓ END NO QUITAR
 	DB KIND_FIN_ENEMIGOS_FIJOS
