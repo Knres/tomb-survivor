@@ -284,7 +284,7 @@ EXPORT DEF E_MOVE_UP        = 4
 
 EXPORT DEF VX_JUGADOR           = 1  ;; px por frame
 ;; EXPORT DEF VY_JUGADOR        = 20 ;; en frames de salto (tras 5 frames empieza a caer)
-EXPORT DEF IMPULSO_SALTO        = 10 ;; velocidad inicial de salto
+EXPORT DEF IMPULSO_SALTO        = 8  ;; velocidad inicial de salto
 EXPORT DEF GRAVEDAD             = 1  ;; incremento de VY por frame
 EXPORT DEF VELOCIDAD_MAX_CAIDA  = 4  ;; px por frame
 EXPORT DEF VIDAS_JUGADOR        = 3  ;; vidas maximas e iniciales que tiene el jugador   
