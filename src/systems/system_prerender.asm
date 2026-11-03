@@ -39,6 +39,7 @@ system_prerender_init_jugador::
 	ld [jugador_a_anterior], a
 	ld a, JUGADOR_ESPERA_FRAME
 	ld [jugador_espera_cambio_frame], a
+    ld [jugador_frame_vertical], a
 
 	ld hl, entity_array ;; hl -> CMP de primera entidad (jugador)
 	ld a, CMP_ALIVE | CMP_INPUT | CMP_COLLIDER | CMP_PHYSICS | CMP_SPRITE
@@ -122,10 +123,31 @@ system_prerender_pos_jugador::
 	ld hl, entity_array ;; hl -> CMP de primera entidad (jugador)
 	inc hl ;; HL --> Y
 
-	ld a, [jugador_y]   ;; recuperar Y
-	add a, OAM_Y_OFFSET ;; coordenada de OAM
-	ld [hl+], a         ;; guardar Y ; HL -> X
+	;; En el suelo, dibujar en la posición real.
+    ld a, [jugador_en_suelo]
+    and a
+    jr nz, .y_real
 
+    ;; Si se ha saltado el paso vertical, dibujar en la posición final del paso anterior.
+    ld a, [jugador_frame_vertical]
+    and a
+    jr nz, .y_real
+
+    ;; Si las físicas acaban de mover Y, dibujar a medio camino.
+    ld a, [jugador_y_anterior]
+    ld b, a
+    ld a, [jugador_y]
+    add a, b
+    rra                     ;; (Y anterior + Y actual) / 2
+    jr .guardar_y
+
+.y_real:
+    ld a, [jugador_y]
+
+.guardar_y:
+    add a, OAM_Y_OFFSET
+    ld [hl+], a         ;; guardar Y; HL pasa a E_X
+	
 	ld a, [jugador_x]   ;; recuperar X
 	add a, OAM_X_OFFSET ;; coordenada de OAM
 	ld [hl], a          ;; guardar X ; HL -> TILE
