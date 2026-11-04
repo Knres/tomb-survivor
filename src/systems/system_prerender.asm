@@ -158,6 +158,27 @@ jugador_sprite_update::
 	;; I: -
 	;; O: -
 	;; M: A, HL
+	
+	;; parpadeo del jugador si es invencible
+	call is_invincible
+	jr nc, .paleta_obj0
+		;; C --> estado invencible
+		ld a, [frame_actual]
+		bit 4, a	;; parpadeo, lento -> 5, rapido -> 3
+
+		jr z, .paleta_obj0
+			;; NZ --> paleta_obj1
+			ld hl, entity_array + E_ATTR
+			set ATTR_BIT_PALET, [hl]
+		;;
+	jr .actualizar_direccion
+
+	.paleta_obj0
+		ld hl, entity_array + E_ATTR
+		res ATTR_BIT_PALET, [hl]
+	;;jr .actualizar_direccion
+	.actualizar_direccion
+	
 	ld a, [jugador_direccion_movimiento]
 
 	cp E_MOVE_LEFT
