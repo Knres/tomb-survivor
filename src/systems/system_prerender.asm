@@ -203,6 +203,14 @@ jugador_sprite_update::
 
 	;; contador == 0
 	.cambiar_frame
+		ld a, [enemigos_activos]
+		cp 0
+		ret z
+		;;jr nz, .enemigo_ya_activo
+		;;	ld a, TILE_JUGADOR_1
+		;;	jr .guardar_tile
+		;;.enemigo_ya_activo
+
 		ld a, [hl]	;; tile actual
 
 		cp TILE_JUGADOR_1
@@ -212,7 +220,7 @@ jugador_sprite_update::
 		.tile_2
 			ld a, TILE_JUGADOR_2
 		.guardar_tile
-
+			
 		ld [hl], a
 		ld a, JUGADOR_ESPERA_FRAME	;; restablecer contador
 		ld [jugador_espera_cambio_frame], a
@@ -230,6 +238,7 @@ jugador_sprite_update::
 	.saltando
 	ld a, TILE_JUGADOR_SALTO
 	ld [hl], a
+	.no_modificar
 ret
 
 system_jugador_update::
