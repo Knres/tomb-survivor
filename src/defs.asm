@@ -145,6 +145,9 @@ EXPORT DEF TILE_ESCORPION_2 = TILE_ESCORPION2 ;; escorpion, frame 2 TODO: sustit
 EXPORT DEF TILE_MOMIA_1 = TILE_PLAT_DERECHA
 EXPORT DEF TILE_MOMIA_2 = TILE_PLAT_IZQUIERDA
 
+EXPORT DEF OPCION_RESUME  = 0
+EXPORT DEF OPCION_RESTART = 1
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Info. tam. entidades/jugador
