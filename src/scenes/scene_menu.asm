@@ -48,7 +48,7 @@ scene_menu_update::
     and a
     ret nz
 
-    ld  a, 3
+    ld  a, 5
     ld [nivel_actual], a
 
     ld   hl, SfxMenuOk

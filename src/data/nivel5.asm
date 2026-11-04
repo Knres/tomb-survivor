@@ -30,13 +30,6 @@ mapa_nivel_5_enemigos::
 
 	;; 1. Entidades pre-inicializadas
 		;; TIPO_ENEMIGO,      X*8,  Y*8,  VX,  VY, ATTR_FLIP
-		DB KIND_PINCHOS,      1*8, 15*8,  60,   0, ATTR_FLIP_X
-		DB KIND_PINCHOS,      3*8, 15*8,  20,   0, ATTR_FLIP_X
-		DB KIND_PINCHOS,     13*8, 15*8,  14,   0, ATTR_FLIP_X
-		DB KIND_PINCHOS,     18*8, 15*8,  55,   0, ATTR_FLIP_X
-		DB KIND_ESCORPION,   16*8, 14*8,  -1,   0, 0
-		DB KIND_MURCIELAGO,  16*8,  8*8,   2,  30, ATTR_FLIP_X
-
 		;; ↓ END NO QUITAR
 	DB KIND_FIN_ENEMIGOS_FIJOS
 	
@@ -46,6 +39,7 @@ mapa_nivel_5_enemigos::
 	
 		;; SEGUNDO_SPAWN, TIPO_ENEMIGO,      X*8,  Y*8,  VX,  VY, ATTR_FLIP
 		;;DB 25,            KIND_ESTALACTITA,  8*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 28,				KIND_DARDO, 	 18*8,  14*8, -3, 	3, ATTR_FLIP_X
 			
 		;; ↓ END NO QUITAR
 	DB LIST_END 

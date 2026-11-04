@@ -82,6 +82,12 @@ spawn_enemigo:
     cp KIND_ESTALACTITA
     jr z, .tile_estalactita
     
+    cp KIND_DARDO
+    jr z, .tile_dardo
+
+;    cp KIND_SERPIENTE
+    jr z, .tile_serpiente
+    
     jr .aplicar
 
     .tile_escorpion
@@ -99,6 +105,15 @@ spawn_enemigo:
     .tile_pinchos
         ld a, TILE_PINCHOS
     jr .aplicar
+    .tile_dardo
+        ld a, TILE_DARDO
+    jr .aplicar
+
+    .tile_serpiente
+;        ld a, TILE_SERPIENTE_1
+    jr .aplicar
+
+
 
     .tile_estalactita
         ld a, TILE_ESTALACTITA
