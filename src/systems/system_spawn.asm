@@ -20,7 +20,7 @@ spawn_enemigo_no_fijo:
     ret nZ
     call spawn_enemigo
     call siguiente_enemigo_update
-    jp spawn_enemigo_no_fijo    ;; intenta hacerlo otra vez por si hay mas de un enemigo en el mismo segundo de spawn
+    jr spawn_enemigo_no_fijo    ;; intenta hacerlo otra vez por si hay mas de un enemigo en el mismo segundo de spawn
 ret
 
 siguiente_enemigo_update:
@@ -68,56 +68,56 @@ spawn_enemigo:
     ;; TODO: añadir la asignacion de los sprites correspondientes
 
     cp KIND_ESCORPION
-    jp z, .tile_escorpion
+    jr z, .tile_escorpion
 
     cp KIND_MURCIELAGO
-    jp z, .tile_murcielago
+    jr z, .tile_murcielago
 
     cp KIND_MOMIA
-    jp z, .tile_momia
+    jr z, .tile_momia
 
     cp KIND_PINCHOS
-    jp z, .tile_pinchos
+    jr z, .tile_pinchos
 
     cp KIND_ESTALACTITA
-    jp z, .tile_estalactita
+    jr z, .tile_estalactita
     
     cp KIND_DARDO
-    jp z, .tile_dardo
+    jr z, .tile_dardo
 
 ;    cp KIND_SERPIENTE
-    jp z, .tile_serpiente
+    jr z, .tile_serpiente
     
-    jp .aplicar
+    jr .aplicar
 
     .tile_escorpion
         ld a, TILE_ESCORPION_1
-    jp .aplicar
+    jr .aplicar
 
     .tile_murcielago
         ld a, TILE_MURCIELAGO_1
-    jp .aplicar
+    jr .aplicar
 
     .tile_momia
         ld a, TILE_MOMIA_1
-    jp .aplicar
+    jr .aplicar
 
     .tile_pinchos
         ld a, TILE_PINCHOS
-    jp .aplicar
+    jr .aplicar
     .tile_dardo
         ld a, TILE_DARDO
-    jp .aplicar
+    jr .aplicar
 
     .tile_serpiente
         ld a, TILE_SERPIENTE_1
-    jp .aplicar
+    jr .aplicar
 
 
 
     .tile_estalactita
         ld a, TILE_ESTALACTITA
-    ;; jp .aplicar
+    ;; jr .aplicar
     
     .aplicar
 
@@ -180,7 +180,7 @@ spawn_enemigo:
     ld a, e
     add a, ENTITY_SIZE
     ld e, a
-    jp nc, .sin_acarreo
+    jr nc, .sin_acarreo
         inc d
     .sin_acarreo
     pop hl
