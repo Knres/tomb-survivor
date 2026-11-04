@@ -75,6 +75,8 @@ system_fisicas_update::
         ;; Consumir petición.
         ld [jugador_solicita_salto], a
 
+        ld [jugador_frame_vertical], a
+
         ;Sonido de salto
         ld hl, SfxSalto
         call sys_sound_play_sfx
@@ -84,6 +86,11 @@ system_fisicas_update::
 
     ;; gravedad y limite de caida
     .gravedad:
+        ld a, [jugador_frame_vertical]
+        xor 1                   ;; alterna entre 0 y 1
+        ld [jugador_frame_vertical], a
+        ret nz
+
         ld hl, entity_array + E_VY
         ld a, [hl]
 

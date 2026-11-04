@@ -33,7 +33,7 @@ mapa_nivel_1_enemigos::
 	;; 1. Entidades pre-inicializadas
 		;; TIPO_ENEMIGO,      X*8,  Y*8,  VX,  VY, ATTR_FLIP
 		DB KIND_ESCORPION,   16*8, 14*8,  -1,   0, 0
-		DB KIND_ESCORPION,    4*8, 14*8,   2,   0, ATTR_FLIP_X
+		DB KIND_ESCORPION,    4*8, 14*8,   1,   0, ATTR_FLIP_X
 
 		;; ↓ END NO QUITAR
 	DB KIND_FIN_ENEMIGOS_FIJOS
