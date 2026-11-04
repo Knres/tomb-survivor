@@ -20,7 +20,7 @@ spawn_enemigo_no_fijo:
     ret nZ
     call spawn_enemigo
     call siguiente_enemigo_update
-    jr spawn_enemigo_no_fijo    ;; intenta hacerlo otra vez por si hay mas de un enemigo en el mismo segundo de spawn
+    jp spawn_enemigo_no_fijo    ;; intenta hacerlo otra vez por si hay mas de un enemigo en el mismo segundo de spawn
 ret
 
 siguiente_enemigo_update:
@@ -43,7 +43,7 @@ ret
 
 spawn_enemigo:
     call buscar_memoria_entidad_libre
-    jr c, .sin_memo_libre
+    jp c, .sin_memo_libre
     inc hl		;; saltar el byte de segundo; HL apunta a KIND
 	push hl     ;; hl --> dir. KIND en datos nivel
     
@@ -68,56 +68,56 @@ spawn_enemigo:
     ;; TODO: añadir la asignacion de los sprites correspondientes
 
     cp KIND_ESCORPION
-    jr z, .tile_escorpion
+    jp z, .tile_escorpion
 
     cp KIND_MURCIELAGO
-    jr z, .tile_murcielago
+    jp z, .tile_murcielago
 
     cp KIND_MOMIA
-    jr z, .tile_momia
+    jp z, .tile_momia
 
     cp KIND_PINCHOS
-    jr z, .tile_pinchos
+    jp z, .tile_pinchos
 
     cp KIND_ESTALACTITA
-    jr z, .tile_estalactita
+    jp z, .tile_estalactita
     
     cp KIND_DARDO
-    jr z, .tile_dardo
+    jp z, .tile_dardo
 
 ;    cp KIND_SERPIENTE
-    jr z, .tile_serpiente
+    jp z, .tile_serpiente
     
-    jr .aplicar
+    jp .aplicar
 
     .tile_escorpion
         ld a, TILE_ESCORPION_1
-    jr .aplicar
+    jp .aplicar
 
     .tile_murcielago
         ld a, TILE_MURCIELAGO_1
-    jr .aplicar
+    jp .aplicar
 
     .tile_momia
         ld a, TILE_MOMIA_1
-    jr .aplicar
+    jp .aplicar
 
     .tile_pinchos
         ld a, TILE_PINCHOS
-    jr .aplicar
+    jp .aplicar
     .tile_dardo
         ld a, TILE_DARDO
-    jr .aplicar
+    jp .aplicar
 
     .tile_serpiente
-;        ld a, TILE_SERPIENTE_1
-    jr .aplicar
+        ld a, TILE_SERPIENTE_1
+    jp .aplicar
 
 
 
     .tile_estalactita
         ld a, TILE_ESTALACTITA
-    ;; jr .aplicar
+    ;; jp .aplicar
     
     .aplicar
 
@@ -180,7 +180,7 @@ spawn_enemigo:
     ld a, e
     add a, ENTITY_SIZE
     ld e, a
-    jr nc, .sin_acarreo
+    jp nc, .sin_acarreo
         inc d
     .sin_acarreo
     pop hl
