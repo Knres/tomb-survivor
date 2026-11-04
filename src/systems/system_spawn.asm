@@ -47,7 +47,7 @@ spawn_enemigo:
     inc hl		;; saltar el byte de segundo; HL apunta a KIND
 	push hl     ;; hl --> dir. KIND en datos nivel
     
-    ld a, CMP_ALIVE | CMP_SPRITE;; / a = enemigo vivo y con sprite 
+    ld a, CMP_ALIVE | CMP_SPRITE | CMP_COLLIDER;; / a = enemigo vivo y con sprite 
     ld hl, E_CMP				;; |
     add hl, de					;; | hl --> &entidad.cmp
     ld [hl], a					;; \
