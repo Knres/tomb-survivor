@@ -34,9 +34,7 @@ mapa_nivel_1_enemigos::
 		;; TIPO_ENEMIGO,      X*8,  Y*8,  VX,  VY, ATTR_FLIP
 		DB KIND_ESCORPION,   16*8, 14*8,  -1,   0, 0
 		DB KIND_ESCORPION,    4*8, 14*8,   1,   0, ATTR_FLIP_X
-
-		;; Escudo
-    	;;DB KIND_ESCUDO,       8*8, 13*8,   0,   0, 0
+		DB KIND_MOMIA,        3*8, 14*8,   4,  20, 0
 
 		;; ↓ END NO QUITAR
 	DB KIND_FIN_ENEMIGOS_FIJOS
