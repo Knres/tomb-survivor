@@ -539,7 +539,6 @@ ia_pinchos::
 			inc a		;; / val. fase ++
 			ld [hl], a	;; \ guadar incremento de fase
 			ld b, -1	;; b= dir. movimiento (subir-bajar)
-			
 			ld hl, E_CMP
 			add hl, de
 			set CMP_COLLIDER_BIT, [hl]
@@ -551,13 +550,16 @@ ia_pinchos::
 			jr c, .no_fin_bajada	;; C --> no
 				;;  NC --> Si, > 15 --> volver a fase subida -> = 0
 				
+				xor a	;; a = 0
+				ld [hl], a
+
 				ld hl, E_CMP
 				add hl, de
 				res CMP_COLLIDER_BIT, [hl]
-
-				xor a	;; a = 0
+				jr .fin_bajada
 			.no_fin_bajada
 			ld [hl], a 		;; guadar incremento de fase
+			.fin_bajada
 			ld b, 1			;; b= dir. movimiento (subir-bajar)
 			
 			;; jr .mover_y
