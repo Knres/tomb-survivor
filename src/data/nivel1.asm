@@ -35,6 +35,9 @@ mapa_nivel_1_enemigos::
 		DB KIND_ESCORPION,   16*8, 14*8,  -1,   0, 0
 		DB KIND_ESCORPION,    4*8, 14*8,   1,   0, ATTR_FLIP_X
 
+		;; Escudo
+    	DB KIND_ESCUDO,       8*8, 13*8,   0,   0, 0
+
 		;; ↓ END NO QUITAR
 	DB KIND_FIN_ENEMIGOS_FIJOS
 	

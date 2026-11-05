@@ -146,7 +146,7 @@ EXPORT DEF TILE_MOMIA_1 = TILE_PLAT_DERECHA
 EXPORT DEF TILE_MOMIA_2 = TILE_PLAT_IZQUIERDA
 EXPORT DEF TILE_SERPIENTE_1 = TILE_PLAT_IZQUIERDA
 EXPORT DEF TILE_SERPIENTE_2 = TILE_PLAT_IZQUIERDA
-
+EXPORT DEF TILE_ESCUDO = TILE_CORAZON
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Info. tam. entidades/jugador
@@ -260,6 +260,7 @@ EXPORT DEF KIND_SERPIENTE_BIT     = 7
         EXPORT DEF KIND_ESTALACTITA     = 1 << KIND_ESTALACTITA_BIT
         EXPORT DEF KIND_DARDO           = 1 << KIND_DARDO_BIT
         EXPORT DEF KIND_SERPIENTE       = 1 << KIND_SERPIENTE_BIT
+        EXPORT DEF KIND_ESCUDO          = 9 ;; Esto funciona mientras que solo se utilice para comparaciones
 ;; TODO: definir tipos de enemigos tras tener una base funcional
 
 

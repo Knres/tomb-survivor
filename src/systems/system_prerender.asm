@@ -37,6 +37,7 @@ system_prerender_init_jugador::
 	ld [jugador_solicita_salto], a
 	ld [jugador_en_suelo], a
 	ld [jugador_a_anterior], a
+	ld [escudo_jugador], a 
 	ld a, JUGADOR_ESPERA_FRAME
 	ld [jugador_espera_cambio_frame], a
     ld [jugador_frame_vertical], a

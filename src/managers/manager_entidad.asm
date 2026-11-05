@@ -134,6 +134,9 @@ manager_entity_init_enemies::
 
 		cp KIND_DARDO
 		jr z, .tile_dardo
+
+		cp KIND_ESCUDO
+		jr z, .tile_escudo
 		
 		jr .aplicar
 
@@ -160,6 +163,11 @@ manager_entity_init_enemies::
 		.tile_dardo
 			ld a, TILE_DARDO
 		;; jr .aplicar
+
+		.tile_escudo
+    		ld a, TILE_ESCUDO
+    	jr .aplicar
+    	
 		
 		.aplicar
 
