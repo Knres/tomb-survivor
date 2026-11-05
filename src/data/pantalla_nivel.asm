@@ -1,7 +1,6 @@
 ;; Pantalla: Nivel completado: escaleras dentro de la puerta. GREAT y el numero del nivel.
 ;; Cada pantalla trae sus propios tiles: sys_pantalla_dibujar los copia a la VRAM
 ;; y despues dibuja el mapa. Los numeros del mapa son tiles de ESTA pantalla (0 = el primero).
-;; Generado a partir del dibujo de la pantalla (160x144).
 
 SECTION "Pantalla nivel", ROMX
 

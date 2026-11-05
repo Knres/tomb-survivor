@@ -2,7 +2,7 @@
 ;; Uso: ld hl, SfxNombre / call sys_sound_play_sfx
 ;;
 ;; Reparto de canales (dos efectos del mismo canal no suenan a la vez):
-;;   CH1: salto, muerte, nivel, menu OK
+;;   CH1: salto, muerte, nivel, menu (mover y OK)
 ;;   CH2: Libre en para la musica
 ;;   CH4: aterrizar, danio
 ;; Muerte y danio van en canales distintos: si coinciden, suenan los dos.
@@ -41,3 +41,7 @@ SfxNivel::                    ;; CH1: tono que sube lento, largo
 SfxMenuOk::                   ;; CH1: tono agudo que sube un poco
     DB LOW(rNR10), 5
     DB $17, $80, $F2, $06, $87
+
+SfxMenuMover::                ;; CH1: "tic" agudo y corto (cambiar de opcion en el menu)
+    DB LOW(rNR10), 5
+    DB $00, $40, $A1, $83, $87    ;; NR10 sin barrido, NR11 duty 25%, NR12 vol 10 se apaga rapido

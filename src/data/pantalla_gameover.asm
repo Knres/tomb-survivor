@@ -1,7 +1,6 @@
 ;; Pantalla: Game over: sala a oscuras, antorchas apagadas, puerta tapiada y calavera.
 ;; Cada pantalla trae sus propios tiles: sys_pantalla_dibujar los copia a la VRAM
 ;; y despues dibuja el mapa. Los numeros del mapa son tiles de ESTA pantalla (0 = el primero).
-;; Generado a partir del dibujo de la pantalla (160x144).
 
 SECTION "Pantalla gameover", ROM0
 

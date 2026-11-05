@@ -46,4 +46,7 @@ reloj_activo:: DS  1 ;; 0 = parao, distinto = encendido
 next_segundo_spwan:: DS 2
 
 SECTION "Menu", WRAM0
-menu_start_anterior:: DS 1 
+menu_start_anterior:: DS 1
+menu_opcion: DS 1
+menu_dpad_anterior:: DS 1 
+hay_partida:: DS 1

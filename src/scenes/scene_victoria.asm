@@ -11,6 +11,11 @@ scene_victoria::
 ;; O: -
 ;; M: A, BC, DE, HL
 scene_victoria_init::
+    xor a
+    ld [hay_partida], a
+    ld a, 1
+    ld [nivel_actual], a
+
     ld   hl, musica_victoria
     call sys_music_play
     ld   hl, pantalla_victoria
