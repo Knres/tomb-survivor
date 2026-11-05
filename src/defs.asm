@@ -156,6 +156,18 @@ EXPORT DEF JUGADOR_ALTO   = TILE_SIZE
 EXPORT DEF TAM_COLISION   = 6
 EXPORT DEF LIST_END       = $FF
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Info. controles
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; El BG de Game Boy es un tilemap 32x32; la pantalla visible tiene 20 columnas.
+;; Dibujamos dentro de los muros del nivel 1, sin tocar el HUD ($9C00).
+EXPORT DEF CONTROLES_FILA_SALTO = 5
+EXPORT DEF CONTROLES_FILA_GIRO  = 7
+EXPORT DEF CONTROLES_COL_SALTO  = 2
+EXPORT DEF CONTROLES_COL_GIRO   = 3
+EXPORT DEF CONTROLES_POS_SALTO  = TILEMAP_BG_START + CONTROLES_FILA_SALTO * TILEMAP_WIDTH + CONTROLES_COL_SALTO
+EXPORT DEF CONTROLES_POS_GIRO   = TILEMAP_BG_START + CONTROLES_FILA_GIRO  * TILEMAP_WIDTH + CONTROLES_COL_GIRO
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Info. de niveles
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

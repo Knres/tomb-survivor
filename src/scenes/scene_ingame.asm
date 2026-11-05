@@ -33,6 +33,13 @@ scene_ingame_init::
     ;;=====================================
 
     call manager_entity_init_enemies
+    call init_hud
+
+    ;; Solo en nivel 1: instrucciones mientras se espera IZQ o DCHA.
+    ld a, [nivel_actual]
+    cp 1
+    ret nz
+    jp controles_mostrar
 jp init_hud
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -93,6 +100,11 @@ scene_ingame_update::
                 ld a, 1
                 ld [enemigos_activos], a
                 call activar_reloj
+                ;; Borrar las instrucciones al empezar (solo nivel 1).
+                ld a, [nivel_actual]
+                cp 1
+                jr nz, .actualiza_ia
+                call controles_borrar
             .actualiza_ia
                 ld hl, ia_enemigo_update          ;; actualizar a las entidades
                 call manager_entity_for_each
