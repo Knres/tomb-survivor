@@ -8,11 +8,11 @@ mapa_nivel_8::
 	DB $07,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$07 ;; Y=4
 	DB $07,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$07 ;; Y=5
 	DB $07,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$07 ;; Y=6
-	DB $07,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$07 ;; Y=7
+	DB $07,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$06,$07 ;; Y=7
 	DB $07,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$07 ;; Y=8
 	DB $07,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$07 ;; Y=9
 	DB $07,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$07 ;; Y=10
-	DB $07,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$07 ;; Y=11
+	DB $07,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$06,$07 ;; Y=11
 	DB $07,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$07 ;; Y=12
 	DB $07,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$07 ;; Y=13
 	DB $07,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$07 ;; Y=14
@@ -30,12 +30,21 @@ mapa_nivel_8_enemigos::
 
 	;; 1. Entidades pre-inicializadas
 		;; TIPO_ENEMIGO,      X*8,  Y*8,  VX,  VY, ATTR_FLIP
-		DB KIND_PINCHOS,      1*8, 15*8,  60,   0, ATTR_FLIP_X
-		DB KIND_PINCHOS,      3*8, 15*8,  20,   0, ATTR_FLIP_X
-		DB KIND_PINCHOS,     13*8, 15*8,  14,   0, ATTR_FLIP_X
-		DB KIND_PINCHOS,     18*8, 15*8,  55,   0, ATTR_FLIP_X
-		DB KIND_ESCORPION,   16*8, 14*8,  -1,   0, 0
-		DB KIND_MURCIELAGO,  16*8,  8*8,   2,  30, ATTR_FLIP_X
+		DB KIND_PINCHOS,     18*8,1+6*8,   0,   9, ATTR_FLIP_X
+		DB KIND_PINCHOS,     18*8, 11*8,  20,   0, ATTR_FLIP_X
+
+		DB KIND_MURCIELAGO,  16*8,  6*8,   3,  30, ATTR_FLIP_X
+		DB KIND_MURCIELAGO,  16*8, 12*8,  -1,  30, 0
+
+		DB KIND_ESCUDO,      15*8,  3*8,   0,   0, 0
+    	DB KIND_ESCUDO,       1*8, 14*8,   5,   0, 0
+		
+		DB KIND_ESCORPION,    6*8, 14*8,  -2,   0, 0
+		DB KIND_ESCORPION,    2*8, 14*8,   1,   0, ATTR_FLIP_X
+
+		DB KIND_ESTALACTITA,  1*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB KIND_ESTALACTITA,  4*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB KIND_ESTALACTITA, 12*8,  0*8,  16,  0, ATTR_FLIP_Y
 
 		;; ↓ END NO QUITAR
 	DB KIND_FIN_ENEMIGOS_FIJOS
@@ -45,8 +54,22 @@ mapa_nivel_8_enemigos::
 		;;	PSS: el contador va cuenta hacia atra, por lo que hay que colocar lo de mayor a menor (29 --> 1)
 	
 		;; SEGUNDO_SPAWN, TIPO_ENEMIGO,      X*8,  Y*8,  VX,  VY, ATTR_FLIP
-		;;DB 25,            KIND_ESTALACTITA,  8*8,  0*8,  16,  0, ATTR_FLIP_Y
-			
+		DB 25,            KIND_ESTALACTITA,  1*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 25,            KIND_ESTALACTITA,  3*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 25,            KIND_ESTALACTITA, 14*8,  0*8,  16,  0, ATTR_FLIP_Y
+		
+		DB 20,            KIND_ESTALACTITA, 17*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 20,            KIND_ESTALACTITA,  5*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 20,            KIND_ESTALACTITA, 10*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 20,            KIND_ESTALACTITA,  1*8,  0*8,  16,  0, ATTR_FLIP_Y
+		
+		DB 15,            KIND_MOMIA,       18*8, 14*8,  -6, 20, ATTR_FLIP_X
+		
+		DB 10,            KIND_ESTALACTITA,  1*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 10,            KIND_ESTALACTITA,  4*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 10,            KIND_ESTALACTITA, 12*8,  0*8,  16,  0, ATTR_FLIP_Y
+		
+
 		;; ↓ END NO QUITAR
 	DB LIST_END 
 mapa_nivel_8_enemigos_fin::
