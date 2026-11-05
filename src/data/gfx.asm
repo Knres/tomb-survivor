@@ -160,6 +160,26 @@ tile_data::
 	DB %00011100, %00011000 ;; fila 6   ...##+...
 	DB %00000000, %00000000 ;; fila 7   ........
 
+	;; Tile 18 ($12): momia-1
+	DB %00000000, %00000000 ;; fila 0   ........
+	DB %00001110, %00001110 ;; fila 1   ....###.
+	DB %00001010, %00000110 ;; fila 2   ....+=#.
+	DB %00000110, %00000100 ;; fila 3   .....#+.
+	DB %00111100, %00100000 ;; fila 4   ..#+++..
+	DB %00000100, %00000000 ;; fila 5   .....+..
+	DB %00000000, %00000100 ;; fila 6   .....=..
+	DB %00000100, %00000100 ;; fila 7   .....#..
+
+	;; Tile 19 ($13): momia-2
+	DB %00000000, %00000000 ;; fila 0   ........
+	DB %00001110, %00001110 ;; fila 1   ....###.
+	DB %00001010, %00000110 ;; fila 2   ....+=#.
+	DB %00000110, %00001100 ;; fila 3   ....=#+.
+	DB %00101100, %00010000 ;; fila 4   ..+=++..
+	DB %00000000, %00000100 ;; fila 5   .....=..
+	DB %00001100, %00000000 ;; fila 6   ....++..
+	DB %00010100, %00010100 ;; fila 7   ...#.#..
+
 ;; ===========================================
 ;; LETRAS
 ;; ===========================================
@@ -314,6 +334,26 @@ fuente_data::
 	DB %00110011, %00100010 ;; fila 5   ..#+..#+
 	DB %00110011, %00100010 ;; fila 6   ..#+..#+
 	DB %00111110, %00111100 ;; fila 7   ..####+.
+
+    ;; Letra J
+    DB %00000000, %00000000
+    DB %00011110, %00011100
+    DB %00000110, %00000100
+    DB %00000110, %00000100
+    DB %00000110, %00000100
+    DB %00000110, %00000100
+    DB %01100110, %01000100
+    DB %00111100, %00111000
+
+    ;; Letra N
+    DB %00000000, %00000000
+    DB %01100110, %01000100
+    DB %01110110, %01010100
+    DB %01111110, %01011100
+    DB %01111110, %01011100
+    DB %01101110, %01001100
+    DB %01100110, %01000100
+    DB %01100110, %01000100
 
 ;; ===========================================
 ;; NUMEROS
@@ -551,6 +591,26 @@ decoracion_data::
 	DB %11110000, %11110000 ;; fila 6   ####....
 	DB %00000000, %00000000 ;; fila 7   ........
 
+    ;; Flecha izquierda (<-), (decoracion + 12)
+    DB %00000000, %00000000
+    DB %00010000, %00010000
+    DB %00110000, %00110000
+    DB %01111110, %01111110
+    DB %00110000, %00110000
+    DB %00010000, %00010000
+    DB %00000000, %00000000
+    DB %00000000, %00000000
+
+    ;; Flecha derecha (->), (decoracion + 13)
+    DB %00000000, %00000000
+    DB %00001000, %00001000
+    DB %00001100, %00001100
+    DB %01111110, %01111110
+    DB %00001100, %00001100
+    DB %00001000, %00001000
+    DB %00000000, %00000000
+    DB %00000000, %00000000
+
 tile_data_end::
 
 EXPORT DEF INITIAL_TILE_BYTES = tile_data_end - tile_data
@@ -575,6 +635,8 @@ EXPORT DEF TILE_LETRA_U = TILE_FUENTE + 11
 EXPORT DEF TILE_LETRA_V = TILE_FUENTE + 12
 EXPORT DEF TILE_LETRA_L = TILE_FUENTE + 13
 EXPORT DEF TILE_LETRA_B = TILE_FUENTE + 14
+EXPORT DEF TILE_LETRA_J = TILE_FUENTE + 15
+EXPORT DEF TILE_LETRA_N = TILE_FUENTE + 16
 
 EXPORT DEF TILE_NUM_0 = (numeros_data - tile_data) / 16
 ;; ---------- DECORACION ----------
@@ -589,3 +651,5 @@ EXPORT DEF TILE_ANTORCHA_LLAMA_1   = TILE_DECORACION + 5
 EXPORT DEF TILE_ANTORCHA_LLAMA_2   = TILE_DECORACION + 6
 EXPORT DEF TILE_ANTORCHA_MANGO     = TILE_DECORACION + 7
 EXPORT DEF TILE_CALAVERA           = TILE_DECORACION + 8    ;; 4 tiles: + 0 1 / + 2 3
+EXPORT DEF TILE_FLECHA_IZQ     	   = TILE_DECORACION + 12
+EXPORT DEF TILE_FLECHA_DCHA    	   = TILE_DECORACION + 13

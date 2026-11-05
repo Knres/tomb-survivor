@@ -33,6 +33,13 @@ scene_ingame_init::
     ;;=====================================
 
     call manager_entity_init_enemies
+    call init_hud
+
+    ;; Solo en nivel 1: instrucciones mientras se espera IZQ o DCHA.
+    ld a, [nivel_actual]
+    cp 1
+    ret nz
+    jp controles_mostrar
 jp init_hud
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -51,6 +58,21 @@ scene_ingame_update::
     jp manager_escena_cambiar
 
     .en_juego
+    ;; Select --> Pausar juego
+    ld a, [joypad_pressed]
+    bit SELECT_BIT, a
+
+    jr z, .continua_juego
+        ld a, [joypad_held]
+        bit SELECT_BIT, a
+
+        jr nz, .continua_juego
+            ld hl, scene_pause
+            jp manager_escena_cambiar
+        ;;
+    .continua_juego
+    ;; No pulsado boton select <- PAUSE de juego
+
     call system_jugador_update        ;; input del jugador: direccion y salto
     call system_fisicas_update        ;; fisicas: aplica velocidad y gravedad
     call system_render_scroll         ;; el scroll, pero como max_x_y van ha ser 0 no modifica
@@ -78,6 +100,11 @@ scene_ingame_update::
                 ld a, 1
                 ld [enemigos_activos], a
                 call activar_reloj
+                ;; Borrar las instrucciones al empezar (solo nivel 1).
+                ld a, [nivel_actual]
+                cp 1
+                jr nz, .actualiza_ia
+                call controles_borrar
             .actualiza_ia
                 ld hl, ia_enemigo_update          ;; actualizar a las entidades
                 call manager_entity_for_each
