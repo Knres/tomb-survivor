@@ -41,6 +41,11 @@ ret
 scene_pause_update::
     ;; Pulsar start para continuar
     ld a, [joypad_pressed]
+    cp 0
+    ret z
+    call saltar_nivel
+
+    ld a, [joypad_pressed]
     bit START_BIT, a
     ret z
 
@@ -67,4 +72,13 @@ scene_pause_update::
     ld [escena_update], a
     ld a, HIGH(scene_ingame_update)
     ld [escena_update + 1], a
+ret
+
+saltar_nivel:
+    ld a, [joypad_pressed]
+    cp CLAVE_TRAMPA_SALTAR_NIVEL
+    ret nz
+
+    ld a, 0
+    ld [reloj_fin_nivel], a
 ret

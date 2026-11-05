@@ -92,8 +92,6 @@ sys_input_update::
     
     and c                  ; solo conservo los bits que llevan dos iteraciones siendo pulsados
 
-    ld a, c
-
     ld [joypad_held], a
 
     ret
