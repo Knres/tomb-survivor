@@ -21,8 +21,8 @@ continuar_bucle: DS 1   ;;  tan solo sirve para mantener el bucle principal, es 
 estado_actual: DS 1     ;;  guarda el numero de estado en el que se encuentra el bucle principal. Hay hasta 256 posibles estados, pero no vamos a usar tantos
 
 
-; 0  0    0     0    0 0 0      0
-; up down right left a b start  select
+; 0  0    0      0     0     0    0    0
+; b  a    select start right left down up
 ; 0 = false, 1 = true (logica invertida a como funciona la lectura por joypad, me parece mas intuitiva)
 joypad_pressed: DS 1    ;; almacena qué botones acaban de ser pulsados en este frame
 joypad_held: DS 1    ;; almacena qué botones acaban de ser pulsados en este frame

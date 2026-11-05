@@ -31,6 +31,8 @@ mapa_nivel_5_enemigos::
 	;; 1. Entidades pre-inicializadas
 		;; TIPO_ENEMIGO,      X*8,  Y*8,  VX,  VY, ATTR_FLIP
 		;; ↓ END NO QUITAR
+;	DB KIND_PINCHOS,      1*8, 14*8,  30,   8, ATTR_FLIP_X
+;	DB KIND_PINCHOS,      18*8, 14*8,  30,   8, ATTR_FLIP_X
 	DB KIND_FIN_ENEMIGOS_FIJOS
 	
 	;; 2. Entidanes NO pre-inicializadas <-- Se cargan en un momento determinado
@@ -39,8 +41,52 @@ mapa_nivel_5_enemigos::
 	
 		;; SEGUNDO_SPAWN, TIPO_ENEMIGO,      X*8,  Y*8,  VX,  VY, ATTR_FLIP
 		;;DB 25,            KIND_ESTALACTITA,  8*8,  0*8,  16,  0, ATTR_FLIP_Y
-		DB 28,				KIND_DARDO, 	 18*8,  14*8, -3, 	3, ATTR_FLIP_X
+		DB 29,				KIND_DARDO, 	 18*8,  14*8, -3, 	3, ATTR_FLIP_X
+		DB 29,				KIND_DARDO, 	 1*8,  14*8, 3, 	3, 0
+		DB 28,				KIND_DARDO, 	 18*8,  13*8, -3, 	3, ATTR_FLIP_X
+		DB 28,				KIND_DARDO, 	 1*8,  13*8, 3, 	3, 0
+		DB 27,				KIND_DARDO, 	 18*8,  12*8, -3, 	2, ATTR_FLIP_X
+		DB 27,				KIND_DARDO, 	 1*8,  12*8, 3, 	2, 0
+
+		DB 24,				KIND_DARDO, 	 1*8,  13*8, 3, 	3, 0
+		DB 24,				KIND_DARDO, 	 1*8,  10*8, 3, 	3, 0
+		DB 24,				KIND_DARDO, 	 1*8,  14*8, 3, 	3, 0
 			
+
+		DB 22,				KIND_DARDO, 	 18*8,  13*8, -3, 	3, ATTR_FLIP_X
+		DB 22,				KIND_DARDO, 	 18*8,  10*8, -3, 	3, ATTR_FLIP_X
+		DB 22,				KIND_DARDO, 	 18*8,  14*8, -3, 	3, ATTR_FLIP_X
+		
+		DB 20,				KIND_DARDO, 	 18*8,  14*8, -3, 	3, ATTR_FLIP_X
+		DB 19,				KIND_DARDO, 	 1*8,  13*8, 3, 	3, 0
+		DB 18,				KIND_DARDO, 	 18*8,  12*8, -3, 	3, ATTR_FLIP_X
+		DB 18,				KIND_DARDO, 	 1*8,  14*8, 3, 	3, 0
+
+		DB 15,				KIND_DARDO, 	 1*8,  14*8, 3, 	3, 0
+		DB 15,				KIND_DARDO, 	 18*8,  14*8, -3, 	3, ATTR_FLIP_X
+		DB 14,				KIND_DARDO, 	 1*8,  13*8, 3, 	3, 0
+		DB 13,				KIND_DARDO, 	 1*8,  12*8, 3, 	3, 0
+		DB 13,				KIND_DARDO, 	 18*8,  14*8, -3, 	3, ATTR_FLIP_X
+
+		DB 12,				KIND_DARDO, 	 18*8,  12*8, -3, 	3, ATTR_FLIP_X
+		DB 12,				KIND_DARDO, 	 1*8,  14*8, 3, 	3, 0
+		DB 11,				KIND_DARDO, 	 18*8,  13*8, -3, 	3, ATTR_FLIP_X
+		DB 10,				KIND_DARDO, 	 18*8,  14*8, -3, 	3, ATTR_FLIP_X
+		DB 10,				KIND_DARDO, 	 1*8,  14*8, 3, 	3, 0
+
+		DB 9,				KIND_DARDO, 	 18*8,  13*8, -3, 	3, ATTR_FLIP_X
+		DB 8,				KIND_DARDO, 	 1*8,  13*8, 3, 	3, 0
+		DB 8,				KIND_DARDO, 	 18*8,  14*8, -3, 	3, ATTR_FLIP_X
+		DB 7,				KIND_DARDO, 	 1*8,  14*8, 3, 	3, 0
+
+		DB 5,				KIND_DARDO, 	 1*8,  14*8, 3, 	3, 0
+		DB 5,				KIND_DARDO, 	 18*8,  14*8, -3, 	3, ATTR_FLIP_X
+		DB 4,				KIND_DARDO, 	 1*8,  14*8, 3, 	3, 0
+		DB 4,				KIND_DARDO, 	 18*8,  14*8, -3, 	3, ATTR_FLIP_X
+		DB 3,				KIND_DARDO, 	 1*8,  14*8, 3, 	2, 0
+		DB 3,				KIND_DARDO, 	 18*8,  14*8, -3, 	2, ATTR_FLIP_X
+		
+
 		;; ↓ END NO QUITAR
 	DB LIST_END 
 mapa_nivel_5_enemigos_fin::

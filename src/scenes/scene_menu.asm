@@ -139,7 +139,7 @@ scene_menu_update::
     ld a, [menu_opcion]
     cp OPCION_RESTART
     jr nz,.empezar
-    ld a, 1
+    ld a, 5
     ld [nivel_actual], a
 
     .empezar:
