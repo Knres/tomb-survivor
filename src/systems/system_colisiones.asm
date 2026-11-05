@@ -290,6 +290,7 @@ game_check_collision_player::
     ld hl, E_CMP ;; Desactivo entidad de escudo
     add hl, de
     res CMP_ALIVE_BIT, [hl]
+    call hud_draw_hearts
     ret
 
 .is_enemy:
@@ -310,6 +311,7 @@ game_check_collision_player::
     ;; Consumir el escudo
     xor a
     ld [escudo_jugador], a
+    call hud_draw_hearts
     ret
 
 .lower_health

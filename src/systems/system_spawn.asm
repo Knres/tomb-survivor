@@ -85,7 +85,10 @@ spawn_enemigo:
     cp KIND_DARDO
     jr z, .tile_dardo
 
-;    cp KIND_SERPIENTE
+    cp KIND_ESCUDO
+    jr z, .tile_escudo
+
+    cp KIND_SERPIENTE
     jr z, .tile_serpiente
     
     jr .aplicar
@@ -107,6 +110,10 @@ spawn_enemigo:
     jr .aplicar
     .tile_dardo
         ld a, TILE_DARDO
+    jr .aplicar
+
+    .tile_escudo
+        ld a, TILE_ESCUDO
     jr .aplicar
 
     .tile_serpiente
