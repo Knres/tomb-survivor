@@ -559,7 +559,6 @@ ia_dardo:
 		ld a, [frame_actual] ;; si no es el inicio de un segundo no hace nada
 		cp INICIO_SEGUNDO
 		ret nz
-	ld b, b
 		
 		ld a, c		;; recupero b para modificar el contador
 		dec a
