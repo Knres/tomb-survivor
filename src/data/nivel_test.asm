@@ -74,6 +74,10 @@ mapa_nivel_T_enemigos::
 	;; 
 	;;		MOMIA: no utiliza vy como velocidad
 	;;				VY = contador de movimiento y cambio de frame
+	;;
+	;;		ESCUDO: no utiliza vx ni vy como velocidad
+	;;				NO usa vy
+	;;				VX = contador para que desaparezca
 	;; =================================================
 	;; SEGUNDO_SPAWN (29 --> 1)
 	;;		SOLO PARA ENTINADES NO PRE-INICIALIZADAS punto 2

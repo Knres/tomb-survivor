@@ -283,6 +283,9 @@ ia_enemigo_update::
 	cp KIND_DARDO
 	jp z, ia_dardo
 
+	cp KIND_ESCUDO
+	jp z, ia_escudo
+
 	;; cp
 	;; jp z,
 ret
@@ -392,6 +395,32 @@ ia_murcielago::
 
 	.mover
 	call ia_mov_izq_der
+ret
+
+ia_escudo::
+	;; VX cuenta segundos restantes; 0 -> no desaparece
+	ld a, [frame_actual]
+	cp INICIO_SEGUNDO
+	ret nz
+
+	ld hl, E_VX
+	add hl, de
+	ld a, [hl]
+
+	and a ;; == 0?
+	ret z ;;Z --> no desaparece nunca
+
+	;; NZ --> vx-- , si vx = 1 --> eliminar
+	cp 1
+	jr z, .eliminar
+		dec [hl]
+	ret
+
+	.eliminar
+		ld hl, E_CMP			;; /
+		add hl, de				;; | eliminar
+		res CMP_ALIVE_BIT, [hl]	;; \
+	;;ret
 ret
 
 ia_momia::
