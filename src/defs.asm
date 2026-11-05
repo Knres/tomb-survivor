@@ -151,7 +151,7 @@ EXPORT DEF TILE_ESCUDO = $11
 EXPORT DEF OPCION_RESUME  = 0
 EXPORT DEF OPCION_RESTART = 1
 
-EXPORT DEF CLAVE_TRAMPA_SALTAR_NIVEL = %11000000
+EXPORT DEF CLAVE_TRAMPA_SALTAR_NIVEL = %11001010
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Info. tam. entidades/jugador
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

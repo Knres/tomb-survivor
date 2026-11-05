@@ -75,16 +75,10 @@ scene_pause_update::
 ret
 
 saltar_nivel:
-    ld a, [joypad_held]
-;    cp %00000011
-    bit DOWN_BIT, a
-    ret z
-    ld b, b
-    bit UP_BIT, a
-    ret z
+    ld a, [joypad_pressed]
+    cp CLAVE_TRAMPA_SALTAR_NIVEL
+    ret nz
 
-    ld b,b 
     ld a, 0
-;    ld [reloj_fin_nivel], a
-
+    ld [reloj_fin_nivel], a
 ret
