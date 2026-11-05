@@ -237,8 +237,8 @@ game_check_collision_player::
     ld hl, E_KIND ;; Comprobar que no es el jugador
     add hl, de  ;; DE = entidad actual
     ld a, [hl]
-    and KIND_JUGADOR
-    ret nz
+    cp KIND_JUGADOR
+    ret z
 
     ld a, [de] ;; Comprobar que puede colisionar
     bit CMP_COLLIDER_BIT, a
@@ -275,6 +275,22 @@ game_check_collision_player::
     cp KIND_DARDO
     jr z, .is_enemy
 
+    cp KIND_ESCUDO
+    jr z, .pickup_shield
+
+    ret
+
+.pickup_shield::
+    dec de ;; Recupero la dirección inicial de la entidad
+    dec de
+
+    ld a, 1
+    ld [escudo_jugador], a
+
+    ld hl, E_CMP ;; Desactivo entidad de escudo
+    add hl, de
+    res CMP_ALIVE_BIT, [hl]
+    call hud_draw_hearts
     ret
 
 .is_enemy:
@@ -287,7 +303,18 @@ game_check_collision_player::
     ld a, 1
     ld [hit_reciente], a
 
-    ;; Restar una vida
+    ;; Comprobar si el jugador tiene escudo
+    ld a, [escudo_jugador]
+    and a
+    jr z, .lower_health
+
+    ;; Consumir el escudo
+    xor a
+    ld [escudo_jugador], a
+    call hud_draw_hearts
+    ret
+
+.lower_health
     ld a, [jugador_vidas]
     and a
     ret z

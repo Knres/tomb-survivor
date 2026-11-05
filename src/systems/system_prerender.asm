@@ -37,6 +37,7 @@ system_prerender_init_jugador::
 	ld [jugador_solicita_salto], a
 	ld [jugador_en_suelo], a
 	ld [jugador_a_anterior], a
+	ld [escudo_jugador], a 
 	ld a, JUGADOR_ESPERA_FRAME
 	ld [jugador_espera_cambio_frame], a
     ld [jugador_frame_vertical], a
@@ -158,6 +159,27 @@ jugador_sprite_update::
 	;; I: -
 	;; O: -
 	;; M: A, HL
+	
+	;; parpadeo del jugador si es invencible
+	call is_invincible
+	jr nc, .paleta_obj0
+		;; C --> estado invencible
+		ld a, [frame_actual]
+		bit 4, a	;; parpadeo, lento -> 5, rapido -> 3
+
+		jr z, .paleta_obj0
+			;; NZ --> paleta_obj1
+			ld hl, entity_array + E_ATTR
+			set ATTR_BIT_PALET, [hl]
+		;;
+	jr .actualizar_direccion
+
+	.paleta_obj0
+		ld hl, entity_array + E_ATTR
+		res ATTR_BIT_PALET, [hl]
+	;;jr .actualizar_direccion
+	.actualizar_direccion
+	
 	ld a, [jugador_direccion_movimiento]
 
 	cp E_MOVE_LEFT
@@ -203,6 +225,14 @@ jugador_sprite_update::
 
 	;; contador == 0
 	.cambiar_frame
+		ld a, [enemigos_activos]
+		cp 0
+		ret z
+		;;jr nz, .enemigo_ya_activo
+		;;	ld a, TILE_JUGADOR_1
+		;;	jr .guardar_tile
+		;;.enemigo_ya_activo
+
 		ld a, [hl]	;; tile actual
 
 		cp TILE_JUGADOR_1
@@ -212,7 +242,7 @@ jugador_sprite_update::
 		.tile_2
 			ld a, TILE_JUGADOR_2
 		.guardar_tile
-
+			
 		ld [hl], a
 		ld a, JUGADOR_ESPERA_FRAME	;; restablecer contador
 		ld [jugador_espera_cambio_frame], a
@@ -230,6 +260,7 @@ jugador_sprite_update::
 	.saltando
 	ld a, TILE_JUGADOR_SALTO
 	ld [hl], a
+	.no_modificar
 ret
 
 system_jugador_update::

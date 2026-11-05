@@ -107,7 +107,8 @@ mapa_nivel_T_enemigos::
 		DB 27,            KIND_MOMIA,        3*8, 14*8,   4, 20, 0
 		DB 26,            KIND_MOMIA,       17*8, 14*8,  -4, 20, 0
 		DB 25,            KIND_ESTALACTITA,  8*8,  0*8,  16,  0, ATTR_FLIP_Y
-	
+    	DB 24,			  KIND_ESCUDO,       15*8, 12*8,   0,   0, 0
+
 		;; ↓ END NO QUITAR
 	DB LIST_END
 mapa_nivel_T_enemigos_fin::

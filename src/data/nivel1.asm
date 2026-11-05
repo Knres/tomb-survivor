@@ -35,6 +35,9 @@ mapa_nivel_1_enemigos::
 		DB KIND_ESCORPION,   16*8, 14*8,  -1,   0, 0
 		DB KIND_ESCORPION,    4*8, 14*8,   1,   0, ATTR_FLIP_X
 
+		;; Escudo
+    	;;DB KIND_ESCUDO,       8*8, 13*8,   0,   0, 0
+
 		;; ↓ END NO QUITAR
 	DB KIND_FIN_ENEMIGOS_FIJOS
 	
@@ -44,7 +47,8 @@ mapa_nivel_1_enemigos::
 	
 		;; SEGUNDO_SPAWN, TIPO_ENEMIGO,      X*8,  Y*8,  VX,  VY, ATTR_FLIP
 		;;DB 25,            KIND_ESTALACTITA,  8*8,  0*8,  16,  0, ATTR_FLIP_Y
-			
+    	DB 29,				KIND_ESCUDO,       15*8, 12*8,   0,   0, 0
+		
 		;; ↓ END NO QUITAR
 	DB LIST_END 
 mapa_nivel_1_enemigos_fin::

@@ -43,11 +43,11 @@ ret
 
 spawn_enemigo:
     call buscar_memoria_entidad_libre
-    jr c, .sin_memo_libre
+    jp c, .sin_memo_libre
     inc hl		;; saltar el byte de segundo; HL apunta a KIND
 	push hl     ;; hl --> dir. KIND en datos nivel
     
-    ld a, CMP_ALIVE | CMP_SPRITE;; / a = enemigo vivo y con sprite 
+    ld a, CMP_ALIVE | CMP_SPRITE | CMP_COLLIDER;; / a = enemigo vivo y con sprite 
     ld hl, E_CMP				;; |
     add hl, de					;; | hl --> &entidad.cmp
     ld [hl], a					;; \
@@ -82,6 +82,15 @@ spawn_enemigo:
     cp KIND_ESTALACTITA
     jr z, .tile_estalactita
     
+    cp KIND_DARDO
+    jr z, .tile_dardo
+
+    cp KIND_ESCUDO
+    jr z, .tile_escudo
+
+    cp KIND_SERPIENTE
+    jr z, .tile_serpiente
+    
     jr .aplicar
 
     .tile_escorpion
@@ -99,6 +108,19 @@ spawn_enemigo:
     .tile_pinchos
         ld a, TILE_PINCHOS
     jr .aplicar
+    .tile_dardo
+        ld a, TILE_DARDO
+    jr .aplicar
+
+    .tile_escudo
+        ld a, TILE_ESCUDO
+    jr .aplicar
+
+    .tile_serpiente
+        ld a, TILE_SERPIENTE_1
+    jr .aplicar
+
+
 
     .tile_estalactita
         ld a, TILE_ESTALACTITA

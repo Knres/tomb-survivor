@@ -156,4 +156,15 @@ hud_draw_hearts::
 
     ;; b == 0 -> se ha alcanzaro el maximo de corezones 
     ;;           que se pueden dibujar -> salir
+
+    ld a, [escudo_jugador]
+    and a
+    jr nz, .tiene_escudo
+        ld a, TILE_FONDO
+        ld [hl], a
+    ret
+
+    .tiene_escudo
+    ld a, TILE_ESCUDO
+    ld [hl], a
 ret
