@@ -34,8 +34,7 @@ mapa_nivel_7_enemigos::
 		DB KIND_PINCHOS,      3*8, 15*8,  20,   0, ATTR_FLIP_X
 		DB KIND_PINCHOS,      5*8, 15*8,  30,   0, ATTR_FLIP_X
 		DB KIND_PINCHOS,      7*8, 15*8,  40,   0, ATTR_FLIP_X
-		DB KIND_PINCHOS,      9*8, 15*8,  50,   0, ATTR_FLIP_X
-		DB KIND_PINCHOS,      10*8, 15*8,  60,   0, ATTR_FLIP_X
+		DB KIND_PINCHOS,      9*8+4, 15*8,  50,   0, ATTR_FLIP_X
 		DB KIND_PINCHOS,      12*8, 15*8,  70,   0, ATTR_FLIP_X
 		DB KIND_PINCHOS,      14*8, 15*8,  80,   0, ATTR_FLIP_X
 		DB KIND_PINCHOS,      16*8, 15*8,  90,   0, ATTR_FLIP_X
