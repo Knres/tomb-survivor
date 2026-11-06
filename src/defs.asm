@@ -12,7 +12,7 @@ EXPORT DEF rNR41 = $FF20   ;; CH4 longitud
 EXPORT DEF rNR50 = $FF24   ;; Volumen maestro
 EXPORT DEF rNR51 = $FF25   ;; Canales -> altavoz izq/der
 EXPORT DEF rNR52 = $FF26   ;; Encendido del APU
-EXPORT DEF MUSICA_VOLUMEN = $C6   ;; volumen 7, se apaga poco a poco
+EXPORT DEF MUSICA_VOLUMEN = $C6   ;; volumen 12, se apaga poco a poco
 
 
 ;; Pantalla y Graficos

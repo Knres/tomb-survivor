@@ -48,6 +48,6 @@ SfxMenuOk::                   ;; CH1: tono que sube un poco (confirmar en el men
     DB LOW(rNR10), 5
     DB $16, $80, $F2, $C4, $86
 
-SfxMenuMover::                ;; CH1: "tic" chillon y corto (cambiar de opcion en el menu)
+SfxMenuMover::                ;; CH1: "tic" hueco y corto (cambiar de opcion en el menu)
     DB LOW(rNR10), 5
-    DB $00, $C0, $E1, $7C, $87    ;; NR10 sin barrido, NR11 timbre chillon, NR12 vol 14 se apaga muy rapido
+    DB $00, $C0, $E1, $7C, $87    ;; NR10 sin barrido, NR11 duty 75% (suena como el hueco), NR12 vol 14 se apaga muy rapido

@@ -12,8 +12,8 @@ Las memorias reservadas se ubicaran dentro del archcivo **`wram.asm`**, en casos
 
 | Etiqueta | Tamaño | ¿Para qué es? |
 | -------- | ------ | ------------- |
-| `entity_array` | `ENTITY_ARRAY_SIZE` (64 bytes) | Array de 8 entidades de 8 bytes (`CMP`, `Y`, `X`, `TILE`, `ATTR`, `VY`, `VX`, `KIND`). La primera es el jugador. |
-| `shadow_oam` | `SHADOW_OAM_SIZE` (32 bytes) | Copia de los datos `Y`, `X`, `TILE`, `ATTR` de hasta 8 sprites, preparada antes de VBlank. |
+| `entity_array` | `ENTITY_ARRAY_SIZE` (200 bytes) | Array de `MAX_ENTITIES` (25) entidades de 8 bytes (`CMP`, `Y`, `X`, `TILE`, `ATTR`, `VY`, `VX`, `KIND`). La primera es el jugador. |
+| `shadow_oam` | `SHADOW_OAM_SIZE` (100 bytes) | Copia de los datos `Y`, `X`, `TILE`, `ATTR` de hasta 25 sprites, preparada antes de VBlank. `system_render_update` la copia a la OAM. |
 | `shadow_cursor` | 2 bytes | Puntero al siguiente slot disponible en `shadow_oam`. |
 | `jugador_x` | 1 byte | Posicion horizontal del jugador en pixeles. |
 | `jugador_y` | 1 byte | Posicion vertical del jugador en pixeles. |
@@ -24,14 +24,27 @@ Las memorias reservadas se ubicaran dentro del archcivo **`wram.asm`**, en casos
 | `jugador_a_anterior` | 1 byte | Boton A en el frame anterior, para que el salto solo reaccione al pulsarlo (no al mantenerlo). |
 | `jugador_vidas` | 1 byte | Vidas que le quedan al jugador (empieza en `VIDAS_JUGADOR`). |
 | `enemigos_activos` | 1 byte | 0 = los enemigos no se mueven todavia; pasa a 1 con la primera pulsacion en la partida. |
-| `musica_inicio` | 2 bytes | Direccion de la primera nota de la cancion que suena (para volver a empezar). Declarada con `:` en `wram.asm`. |
-| `musica_ptr` | 2 bytes | Direccion de la nota siguiente de la cancion. Declarada con `:` en `wram.asm`. |
-| `musica_contador` | 1 byte | Frames que le quedan a la nota actual. 0 = no hay musica sonando. Declarada con `:` en `wram.asm`. |
+| `musica_inicio` | 2 bytes | Direccion de la primera nota de la cancion que suena (para volver a empezar). |
+| `musica_ptr` | 2 bytes | Direccion de la nota siguiente de la cancion. |
+| `musica_contador` | 1 byte | Frames que le quedan a la nota actual. 0 = no hay musica sonando. |
 | `nivel_actual` | 1 byte | Numero del nivel seleccionado. |
 | `escena_update` | 2 bytes | Direccion del update de la escena actual (byte bajo, byte alto). La escribe `manager_escena_cambiar`. |
 | `escena_contador` | 1 byte | Frames que quedan en una pantalla temporizada (game over, nivel, victoria). |
 | `escena_siguiente` | 2 bytes | Escena a la que se pasa cuando `escena_contador` llega a 0 (byte bajo, byte alto). |
 | `menu_start_anterior` | 1 byte | START en el frame anterior, para que el titulo solo reaccione al pulsarlo (no al mantenerlo). |
+| `jugador_frame_vertical` | 1 byte | Alterna 0/1 cada frame en el aire: la gravedad solo se aplica uno de cada dos frames y el sprite se dibuja a medio camino. |
+| `jugador_espera_cambio_frame` | 1 byte | Cuenta atras para cambiar el frame de animacion del jugador al andar (`JUGADOR_ESPERA_FRAME`). |
+| `escudo_jugador` | 1 byte | 1 si el jugador lleva escudo: el siguiente golpe solo gasta el escudo. |
+| `hit_reciente` | 1 byte | 1 si el jugador ha recibido un golpe; con `ultimo_hit` sirve para la invencibilidad. |
+| `ultimo_hit` | 1 byte | Segundo del reloj (`reloj_fin_nivel`) en el que recibio el ultimo golpe. |
+| `pause_saved_tiles` | 5 bytes | Tiles del fondo que tapa el texto PAUSE, para devolverlos al salir de la pausa. |
+| `pause_reloj_activo` | 1 byte | Estado del reloj al entrar en pausa, para restaurarlo al salir. |
+| `frame_actual` | 1 byte | Frame dentro del segundo actual (0-59). |
+| `reloj_fin_nivel` | 1 byte | Segundos que quedan del nivel; cuenta hacia atras desde `INICIO_RELOJ`. Al llegar a 0 se supera el nivel. |
+| `reloj_activo` | 1 byte | `RELOJ_PARADO` o `RELOJ_ENCENDIDO`. Se enciende con la primera pulsacion en la partida. |
+| `next_segundo_spwan` | 2 bytes | Puntero al siguiente enemigo de la lista de aparicion del nivel (los que salen segun el reloj). |
+| `menu_dpad_anterior` | 1 byte | Arriba/abajo en el frame anterior, para que el titulo cambie de opcion solo al pulsar (no al mantener). |
+| `hay_partida` | 1 byte | 1 si se ha perdido a mitad de partida: el titulo ofrece RESUME / RESTART. 0 = el titulo solo muestra START. |
 |  |  | <!-- NO MODIFICAR ESTA FILA, USAR PARA COPIAR Y PEGAR ARRIBA-->
 
 
@@ -65,7 +78,7 @@ Las constantes permaneceran en el archivo **`defs.asm`** en casos necesarios se 
 | `rNR50` | `$FF24` | Volumen maestro del sonido. |
 | `rNR51` | `$FF25` | Salida de cada canal de sonido a altavoz izquierdo/derecho. |
 | `rNR52` | `$FF26` | Encendido/apagado del chip de sonido (APU). |
-| `MUSICA_VOLUMEN` | `$73` | Valor de NR22 para las notas de la musica: volumen 7 que se apaga poco a poco. Con `$70` la nota se mantiene hasta la siguiente. |
+| `MUSICA_VOLUMEN` | `$C6` | Valor de NR22 para las notas de la musica: volumen 12 que se apaga poco a poco. Con `$C0` la nota se mantiene hasta la siguiente. |
 | `NOTA_SILENCIO` | 0 | Tono de un silencio en las canciones. |
 | `NOTA_C3` ... `NOTA_B5` | `$416` ... `$77B` | Tono de cada nota musical para el canal 2 (tres octavas). C=do D=re E=mi F=fa G=sol A=la B=si, S=sostenido (`NOTA_CS4` = do# 4). |
 | `BGP_CONFIG` | — | Configuracion inicial de tonos para fondo/ventana. |
@@ -92,8 +105,6 @@ Las constantes permaneceran en el archivo **`defs.asm`** en casos necesarios se 
 | `VBLANK_START` | `$90` | Valor LY de inicio de VBlank (linea 144). |
 | `TILE_FONDO` | `$00` | Indice de tile vacio. |
 | `TILE_SUELO` | `$01` | Indice de tile de suelo. |
-| `TILE_PARED` | `$02` | Indice de tile de pared. |
-| `TILE_JUGADOR_TEMPORAL` | `$03` | Tile temporal del jugador. |
 | `TILE_ESCORPION` | `$04` | Tile del escorpion. |
 | `TILE_PLAT_DERECHA` | `$05` | Tile de plataforma (lado derecho). |
 | `TILE_PLAT_IZQUIERDA` | `$06` | Tile de plataforma (lado izquierdo). |
@@ -104,7 +115,15 @@ Las constantes permaneceran en el archivo **`defs.asm`** en casos necesarios se 
 | `TILE_MURCIELAGO_1` / `_2` | `$0B` / `$0C` | Frames de animacion del murcielago. |
 | `TILE_JUGADOR_1` / `_2` | `$0D` / `$0E` | Frames de animacion del jugador. |
 | `TILE_JUGADOR_SALTO` | `$0F` | Jugador saltando. |
-| `TILE_JUGADOR` | `TILE_JUGADOR_2` | Frame por defecto del jugador. |
+| `TILE_JUGADOR` | `TILE_JUGADOR_1` | Frame por defecto del jugador. |
+| `TILE_ESCORPION2` | `$02` | Segundo frame del escorpion. |
+| `TILE_TUMBA` | `$03` | Tile de la tumba. |
+| `TILE_DARDO` | `$10` | Tile del dardo. |
+| `TILE_ESCUDO` | `$11` | Tile del escudo que se puede coger. |
+| `TILE_MOMIA_1` / `_2` | `$12` / `$13` | Frames de animacion de la momia. |
+| `TILE_ESCORPION_1` / `_2` | `TILE_ESCORPION` / `TILE_ESCORPION2` | Frames de animacion del escorpion. |
+| `TILE_ESTALACTITA` | `TILE_PINCHOS` | Tile de la estalactita (de momento el de los pinchos). |
+| `TILE_SERPIENTE_1` / `_2` | `TILE_PLAT_IZQUIERDA` | Frames de la serpiente (provisionales). |
 | `TILE_SIZE` | 8 | Tamano de un tile en pixeles. |
 | `JUGADOR_ALTO` | `TILE_SIZE` | Alto del jugador en pixeles. |
 | `TAM_COLISION` | 6 | Distancia en pixeles por debajo de la cual dos entidades se solapan (`sys_collision_overlaps`). |
@@ -145,9 +164,10 @@ Las constantes permaneceran en el archivo **`defs.asm`** en casos necesarios se 
 | `CMP_INPUT` | mascara | Mascara del componente de entrada. |
 | `CMP_ALIVE` | mascara | Mascara del bit de entidad viva. |
 | `KIND_JUGADOR_BIT` | 0 | Bit de tipo jugador. |
-| `KIND_ESCORPION_BIT` ... `KIND_ESTALACTITA_BIT` | 1 ... 5 | Bit de cada tipo de enemigo: escorpion 1, murcielago 2, momia 3, pinchos 4, estalactita 5. |
+| `KIND_ESCORPION_BIT` ... `KIND_SERPIENTE_BIT` | 1 ... 7 | Bit de cada tipo de enemigo: escorpion 1, murcielago 2, momia 3, pinchos 4, estalactita 5, dardo 6, serpiente 7. |
 | `KIND_JUGADOR` | mascara | Mascara para identificar al jugador. |
-| `KIND_ESCORPION` ... `KIND_ESTALACTITA` | mascara | Mascara de cada tipo de enemigo (`1 << bit`). |
+| `KIND_ESCORPION` ... `KIND_SERPIENTE` | mascara | Mascara de cada tipo de enemigo (`1 << bit`). |
+| `KIND_ESCUDO` | 9 | Tipo del escudo que se puede coger. No es una mascara: solo se usa para comparar. |
 | `KIND_FIN_ENEMIGOS_FIJOS` | 0 | Centinela: fin de la tabla de enemigos de un nivel. |
 | `ATTR_BIT_PRIORIDAD` ... `ATTR_BIT_PALET` | 7 ... 4 | Bits de atributos OAM: prioridad 7, espejo Y 6, espejo X 5, paleta 4. |
 | `ATTR_PRIORIDAD` ... `ATTR_PALET` | mascara | Mascara de cada atributo OAM (`1 << bit`). |
@@ -167,7 +187,7 @@ Las constantes permaneceran en el archivo **`defs.asm`** en casos necesarios se 
 | `PINCHOS_FASE_SUBIDA` / `PINCHOS_FASE_BAJADA` | 8 / 16 | Fin de la fase de subida y de bajada de los pinchos. |
 | `PINCHOS_ESPERA_SUBIDA_BAJARA` | 4 | Updates entre cada pixel que suben o bajan los pinchos. |
 | `PINCHOS_ESPERA_FASE` | 120 | Frames que los pinchos se quedan arriba o abajo. |
-| `MAX_ENTITIES` | 8 | Capacidad del array de entidades (definida en `wram.asm`). |
+| `MAX_ENTITIES` | 25 | Capacidad del array de entidades (definida en `wram.asm`). |
 | `OAM_ENTRY_SIZE` | 4 | Bytes por sprite en OAM. |
 | `SHADOW_OAM_SIZE` | `MAX_ENTITIES * OAM_ENTRY_SIZE` | Bytes reservados para OAM sombra. |
 | `ENTITY_SIZE` | 8 | Bytes por entidad en `entity_array`. |
@@ -178,13 +198,43 @@ Las constantes permaneceran en el archivo **`defs.asm`** en casos necesarios se 
 | `ESTADO_DOS` | 2 | Estado dos. |
 | `ESTADO_ERROR` | `$FF` | Estado de error. |
 | `TILE_FUENTE` | `(fuente_data - tile_data) / 16` | Primer tile de la fuente (en `data/gfx.asm`). |
-| `TILE_LETRA_A` ... `TILE_LETRA_L` | `TILE_FUENTE + n` | Tile de cada letra: A D E G I M O P R S T U V L. |
-| `TILE_NUM_0` | `(numeros_data - tile_data) / 16` | Tile del 0; el numero n es `TILE_NUM_0 + n` (del 0 al 6). |
+| `TILE_LETRA_A` ... `TILE_LETRA_N` | `TILE_FUENTE + n` | Tile de cada letra, en este orden: A D E G I M O P R S T U V L B J N. |
+| `TILE_NUM_0` | `(numeros_data - tile_data) / 16` | Tile del 0; el numero n es `TILE_NUM_0 + n` (del 0 al 9). |
+| `TILE_DECORACION` | `(decoracion_data - tile_data) / 16` | Primer tile de decoracion (en `data/gfx.asm`). |
+| `TILE_JEROGLIFICO_ANJ` ... `_JUNCO` | `TILE_DECORACION + 0 ... 4` | Jeroglificos: anj, pajaro, ojo, agua, junco. |
+| `TILE_ANTORCHA_LLAMA_1` / `_2` / `TILE_ANTORCHA_MANGO` | `TILE_DECORACION + 5 / 6 / 7` | Antorcha: dos frames de llama (arriba) y el mango (abajo). |
+| `TILE_CALAVERA` | `TILE_DECORACION + 8` | Calavera de 16x16: 4 tiles, `+0 +1` arriba y `+2 +3` abajo. |
+| `TILE_FLECHA_IZQ` / `TILE_FLECHA_DCHA` | `TILE_DECORACION + 12 / 13` | Flechas para el texto de los controles. |
 | `PANTALLA_ANCHO` | 20 | Tiles visibles en horizontal (una fila de pantalla). |
 | `PANTALLA_ALTO` | 18 | Tiles visibles en vertical (filas de pantalla). |
 | `DURACION_PANTALLA` | 180 | Frames que dura una pantalla temporizada (3 s a 60 fps). |
-| `NUM_NIVELES` | 1 | Cuantos niveles tiene el juego. Al pasar el ultimo se va a la victoria. |
-| `POS_NUMERO_NIVEL` | `$9800 + 8*32 + 12` | Direccion del tilemap donde se escribe el numero en la pantalla de nivel completado (definida en `data/pantallas.asm`). |
+| `NUM_NIVELES` | 9 | Cuantos niveles tiene el juego. Al pasar el ultimo se va a la victoria. |
+| `POS_NUMERO_NIVEL` | `$9800 + 16*32 + 12` | Direccion del tilemap donde se escribe el numero en la pantalla de nivel completado (definida en `data/pantallas.asm`). |
+| `PANT_NIVEL_NUM_0` | 0 | En los tiles de la pantalla de nivel, el numero n es el tile `PANT_NIVEL_NUM_0 + n` (del 1 al 8). |
+| `PANT_TITULO_TILE_VACIO` | 1 | Tile en blanco de la pantalla de titulo. |
+| `PANT_TITULO_TILE_BARRA` | 2 | Tile gris liso de la barra del menu (se usa como sprite). |
+| `POS_RECUADRO_MENU` | `$9800 + 15*32 + 6` | Esquina del recuadro del menu (2 filas de 8 tiles) en el tilemap. |
+| `MENU_BARRA_X` | `45 + 8` | X (en OAM) del primer sprite de la barra del menu. |
+| `MENU_BARRA_Y_RESUME` / `_RESTART` | `15*8 + 16` / `16*8 + 16` | Y (en OAM) de la barra en la fila de RESUME / RESTART. |
+| `MENU_BARRA_SPRITES` | 9 | Sprites que forman la barra del menu. |
+| `INICIO_RELOJ` | 30 | Segundos que dura cada nivel. |
+| `FIN_RELOJ` | 0 | Valor del reloj al acabar el nivel. |
+| `INICIO_SEGUNDO` / `FIN_SEGUNDO` | 0 / 59 | Primer y ultimo frame de cada segundo (`frame_actual`). |
+| `RELOJ_PARADO` / `RELOJ_ENCENDIDO` | 0 / 1 | Valores de `reloj_activo`. |
+| `OPCION_RESUME` / `OPCION_RESTART` | 0 / 1 | Opciones del menu del titulo (`menu_opcion`). |
+| `CLAVE_TRAMPA_SALTAR_NIVEL` | `%11001010` | Botones que, pulsados a la vez en pausa (B + A + derecha + abajo), dan el nivel por superado. |
+| `LIST_END` | `$FF` | Centinela: fin de la lista de enemigos que aparecen segun el reloj. |
+| `CONTROLES_FILA_SALTO` / `_GIRO` | 5 / 7 | Fila del tilemap de cada linea de instrucciones del nivel 1. |
+| `CONTROLES_COL_SALTO` / `_GIRO` | 2 / 3 | Columna donde empieza cada linea de instrucciones. |
+| `CONTROLES_POS_SALTO` / `_GIRO` | expresion | Direccion del tilemap de cada linea de instrucciones. |
+| `HUD_CONTADOR_TIEMPO` | `TILEMAP_HUD_START + 17` | Donde se dibujan los dos digitos del reloj en el HUD. |
+| `TIEMPO_INVENCIBLE` | 2 | Segundos de invencibilidad despues de recibir un golpe. |
+| `JUGADOR_ESPERA_FRAME` | 10 | Updates entre cambios de frame del jugador al andar. |
+| `ESCORPION_ESPERA_FRAME` | 15 | Updates entre cambios de frame del escorpion. |
+| `MOMIA_ESPERA_FRAME` | 60 | Updates entre cada paso (y cambio de frame) de la momia. |
+| `ESTALACTITA_ESTADO_ESPERANDO` / `_CAYENDO` / `_FINALIZADO` | 0 / 1 / 2 | Estados de la estalactita (en su `VY`). |
+| `ESTALACTITA_VELOCIDAD` | 1 | Pixeles que cae la estalactita por update. |
+| `EN_VUELO` | `$F0` | Valor de `VY` de un dardo que ya ha salido disparado. |
 |  |  | <!-- NO MODIFICAR ESTA FILA, USAR PARA COPIAR Y PEGAR ARRIBA-->
 
 
@@ -260,14 +310,21 @@ Utilizar " <br> " para salto de linea en la tabla
 | manager_entidad.asm | ia_escorpion | Escorpion: se mueve a izquierda y derecha por el suelo y gira al tocar pared. | DE = entidad | - | A, B, HL |
 | manager_entidad.asm | ia_murcielago | Murcielago: se mueve como el escorpion pero en el aire, cambiando de frame cada `MURCIELAGO_ESPERA_FRAME` updates. | DE = entidad | - | A, B, HL |
 | manager_entidad.asm | ia_pinchos | Pinchos: suben y bajan en ciclo (VX cuenta frames, VY la fase). | DE = entidad | - | A, B, HL |
-| manager_entidad.asm | ia_momia / ia_estalactita / ia_serpiente | Por hacer (solo `ret`). | DE = entidad | - | - |
+| manager_entidad.asm | ia_momia | Momia: anda muy despacio en una sola direccion (un paso cada `MOMIA_ESPERA_FRAME` updates, cambiando de frame) y desaparece al salir de la pantalla. | DE = entidad | - | A, B, HL |
+| manager_entidad.asm | ia_estalactita | Estalactita: espera en el techo y cae cuando el jugador pasa por debajo (dentro del radio de su `VX`). | DE = entidad | - | A, B, HL |
+| manager_entidad.asm | ia_dardo | Dardo: espera los segundos de su `VY` y despues sale disparado en horizontal (`VY` = `EN_VUELO`). | DE = entidad | - | A, BC, HL |
+| manager_entidad.asm | ia_escudo | Escudo: si su `VX` no es 0, cuenta segundos y desaparece al acabar. | DE = entidad | - | A, HL |
+| manager_entidad.asm | ia_serpiente | Por hacer (solo `ret`). | DE = entidad | - | - |
+| manager_entidad.asm | ia_mov_izq_der | Mueve la entidad en horizontal segun su `VX` y le da la vuelta al llegar al borde. | DE = entidad | - | A, B, HL |
+| manager_entidad.asm | buscar_memoria_entidad_libre | Busca en `entity_array` una entidad libre (sin `CMP_ALIVE`). | - | DE = entidad libre; C = 1 si no queda ninguna | A, B, DE |
 | manager_entidad.asm | entidad_comprobar_salida_horizontal | Limita una X nueva al interior de la pantalla, sin pisar las paredes laterales. | A = X nueva (OAM) | A = X limitada; C = 1 si se salia | A |
 | manager_entidad.asm | entidad_comprobar_salida_vertical | Limita una Y nueva al interior de la pantalla, sin pisar techo ni suelo. | A = Y nueva (OAM) | A = Y limitada; C = 1 si se salia | A |
 | manager_entidad.asm | entidad_cambiar_dir_movimiento_horizontal | Invierte la direccion izquierda/derecha de la entidad (VX y espejo del sprite). | HL = entidad | - | A, DE |
 | manager_entidad.asm | entidad_cambiar_dir_movimiento_vertical | Invierte la direccion arriba/abajo de la entidad (VY y espejo del sprite). | HL = entidad | - | A, DE |
 | sprite_helper.asm | sprite_espejo_x | Voltea el sprite de la entidad en el eje X. | HL = entidad | - | A, DE |
 | sprite_helper.asm | sprite_espejo_y | Voltea el sprite de la entidad en el eje Y. | HL = entidad | - | A, DE |
-| system_input.asm | sys_input_update | Lee el joypad y actualiza `joypad_pressed` (botones pulsados ahora, 1 = pulsado). Se llama una vez por frame en el bucle principal. | - | - | A, BC, HL |
+| system_input.asm | sys_input_update | Lee el joypad y actualiza `joypad_pressed` (botones pulsados ahora, 1 = pulsado) y `joypad_held` (pulsados tambien el frame anterior). Se llama una vez por frame en el bucle principal. | - | - | A, BC, HL |
+| system_input.asm | press_update | Lee los dos grupos de botones del joypad y deja en `joypad_pressed` los que estan pulsados. La usa `sys_input_update`. | - | - | A, BC, HL |
 | system_prerender.asm | system_jugador_update | Lee el input del jugador: direccion (izquierda/derecha) y peticion de salto con A recien pulsado (`jugador_solicita_salto`). No mueve al jugador. | - | - | A, BC |
 | system_prerender.asm | system_prerender_pos_jugador | Copia `jugador_x` / `jugador_y` a la entidad del jugador, en coordenadas OAM. | - | - | A, HL |
 | system_fisicas.asm | system_fisicas_update | Fisicas del jugador: velocidad horizontal segun la direccion, inicio del salto (con `SfxSalto`), gravedad con limite de caida y movimiento vertical. | - | - | A, B, DE, HL |
@@ -286,24 +343,61 @@ Utilizar " <br> " para salto de linea en la tabla
 | hud.asm | camera_axis | Calcula la posicion de la camara en un eje y la limita al rango permitido. | A = posicion, B = offset, C = maximo | A = posicion de camara | A, BC |
 | hud.asm | get_camera_pos | Devuelve la posicion de la camara segun la del jugador. | - | B = camara Y, C = camara X | A, BC |
 | hud.asm | hud_show | Coloca la ventana del HUD y la activa. | - | - | A |
-| hud.asm | init_hud | Enciende el HUD: lo limpia, escribe LEVEL + numero de nivel y dibuja los corazones. | - | - | A, BC, HL |
+| hud.asm | init_hud | Enciende el HUD: lo limpia, escribe LEVEL + numero de nivel y dibuja el reloj y los corazones. | - | - | A, BC, HL |
 | hud.asm | hud_draw_hearts | Dibuja `VIDAS_JUGADOR` corazones: llenos los que quedan (`jugador_vidas`) y vacios el resto. | - | - | A, BC, HL |
 | system_sonido.asm | sys_sound_init | Enciende el APU con volumen maximo y los 4 canales en los dos altavoces. Se llama una vez en `init_game`. | - | - | A |
 | system_sonido.asm | sys_sound_play_sfx | Reproduce un efecto de `data/sfx.asm`: copia sus valores a los registros del canal. | HL = efecto (`SfxSalto`, ...) | - | A, B, DE, HL |
 | system_musica.asm | sys_music_play | Empieza a sonar una cancion de `data/musica.asm` por el canal 2. | HL = cancion (`musica_titulo`, ...) | - | A |
 | system_musica.asm | sys_music_stop | Para la musica y silencia el canal 2. Se llama en `init_game` (la RAM no empieza a 0). | - | - | A |
 | system_musica.asm | sys_music_update | Avanza la musica un frame: al acabar una nota toca la siguiente; al final de la cancion vuelve a empezar o para. Se llama una vez por frame en el bucle principal. | - | - | A, DE, HL |
-| system_pantalla.asm | sys_pantalla_dibujar | Dibuja una pantalla completa de 20x18 tiles desde la ROM al tilemap (`$9800`), con la pantalla apagada. Al encender, la ventana (HUD) queda apagada. | HL = pantalla en ROM (20x18 bytes, fila a fila) | - | A, BC, DE, HL |
+| system_pantalla.asm | sys_pantalla_dibujar | Dibuja una pantalla completa con la pantalla apagada: copia sus tiles a `TILE_DATA_START` y su mapa de 20x18 al tilemap (`$9800`). Al encender, la ventana (HUD) queda apagada. Los tiles del juego se pierden: `scene_ingame_init` los vuelve a cargar. | HL = pantalla en ROM (`DW tiles`, `DW bytes de tiles`, mapa de 20x18 fila a fila) | - | A, BC, DE, HL |
 | manager_escena.asm | manager_escena_cambiar | Cambia de escena: guarda su update en `escena_update` y ejecuta su init. Una escena es un bloque `DW init` / `DW update`. | HL = escena (`scene_menu`, `scene_ingame`, ...) | - | Todos (ejecuta el init) |
 | manager_escena.asm | manager_escena_update | Ejecuta el update de la escena actual. Se llama una vez por frame desde el bucle principal. | - | - | Todos (ejecuta el update) |
 | scene_menu.asm | scene_menu_init | Titulo: vacia la OAM sombra, pone `musica_titulo` y dibuja `pantalla_titulo`. Si hay partida (`hay_partida`) deja RESUME elegido y pone la barra; si no, tapa el menu con START centrado (`pantalla_titulo_start`). | - | - | A, BC, DE, HL |
-| scene_menu.asm | menu_dibujar_barra | Pone 9 sprites grises detras del fondo encima de la opcion no elegida (la apaga). | - | - | A, BC, D, HL |
+| scene_menu.asm | menu_dibujar_barra | Pone la barra gris (9 sprites detras del fondo) en la fila de la opcion elegida. Escribe en `shadow_oam`. | - | - | A, BC, D, HL |
 | scene_menu.asm | scene_menu_update | Titulo, cada frame: arriba/abajo (solo si hay partida) cambia `menu_opcion`, mueve la barra y suena `SfxMenuMover`. Con START recien pulsado: si es RESTART pone `nivel_actual` = 1, suena `SfxMenuOk`, quita los sprites y va a `scene_ingame`. | - | - | A, BC, D, HL (+ lo que modifique scene_ingame_init) |
-| scene_ingame.asm | scene_ingame_init | Partida: carga el mapa de `nivel_actual`, crea el jugador y los enemigos del nivel (parados hasta la primera pulsacion), pone `musica_partida` y enciende el HUD. `nivel_actual` lo pone quien empieza la partida (titulo o nivel completado). | - | - | A, BC, DE, HL |
-| scene_ingame.asm | scene_ingame_update | Partida, cada frame: input del jugador, fisicas, scroll, colisiones, posicion del jugador, IA de los enemigos (desde la primera pulsacion) y preparar los sprites. | - | - | A, BC, DE, HL |
+| scene_ingame.asm | scene_ingame_init | Partida: vuelve a cargar los tiles del juego, prepara el reloj, carga el mapa de `nivel_actual`, crea el jugador y los enemigos del nivel (parados hasta la primera pulsacion), pone `musica_partida` y enciende el HUD. En el nivel 1 muestra las instrucciones. `nivel_actual` lo pone quien empieza la partida (titulo o nivel completado). | - | - | A, BC, DE, HL |
+| scene_ingame.asm | scene_ingame_update | Partida, cada frame: si el reloj llega a 0 pasa a `scene_nivel`; con SELECT entra en pausa. Si no: input del jugador, fisicas, scroll, colisiones, enemigos que aparecen segun el reloj, IA de los enemigos (desde la primera pulsacion), golpes con enemigos y preparar los sprites. | - | - | A, BC, DE, HL |
 | manager_escena.asm | manager_escena_temporizada_init | Init comun de las pantallas que salen solas: vacia la OAM sombra, guarda la escena siguiente, pone `escena_contador` = `DURACION_PANTALLA` y dibuja la pantalla. | HL = pantalla en ROM, DE = escena siguiente | - | A, BC, DE, HL |
 | manager_escena.asm | manager_escena_temporizada_update | Update comun de las pantallas que salen solas: resta 1 a `escena_contador` y al llegar a 0 cambia a `escena_siguiente`. | - | - | Todos (al acabar ejecuta el init de la siguiente) |
 | scene_gameover.asm | scene_gameover_init | Game over: pantalla GAME OVER durante `DURACION_PANTALLA` frames, despues al titulo. Para usarla: `ld hl, scene_gameover` / `call manager_escena_cambiar`. | - | - | A, BC, DE, HL |
 | scene_nivel.asm | scene_nivel_init | Nivel completado: si era el ultimo nivel va a la victoria; si no, muestra GREAT + numero, suena `SfxNivel`, incrementa `nivel_actual` y despues va a la partida. Para usarla: `ld hl, scene_nivel` / `call manager_escena_cambiar`. | `nivel_actual` = nivel superado | - | A, BC, DE, HL |
 | scene_victoria.asm | scene_victoria_init | Victoria: pantalla SURVIVED con `musica_victoria` (suena una vez), despues al titulo. | - | - | A, BC, DE, HL |
+| scene_pause.asm | scene_pause_init | Pausa: para el reloj (guardando su estado) y escribe PAUSE arriba a la izquierda, guardando los tiles que tapa. | - | - | A, B, DE, HL |
+| scene_pause.asm | scene_pause_update | Pausa, cada frame: con START recien pulsado devuelve los tiles, restaura el reloj y vuelve al update de la partida (sin pasar por su init). | - | - | A, B, DE, HL |
+| scene_pause.asm | saltar_nivel | Truco: si en pausa se pulsa `CLAVE_TRAMPA_SALTAR_NIVEL`, pone el reloj a 0 y el nivel cuenta como superado. | - | - | A |
+| system_colisiones.asm | map_tile_address | Devuelve la direccion del tile del mapa del nivel actual que hay en un punto. | D = Y en px, E = X en px | HL = direccion del tile | A, BC, HL |
+| system_colisiones.asm | map_is_solid_at | Comprueba si en un punto hay plataforma o pared. | D = Y en px, E = X en px | Z = libre, NZ = solido | A, BC, HL |
+| system_colisiones.asm | game_handle_collisions | Comprueba los golpes del jugador con todas las entidades (`game_check_collision_player` para cada una). | - | - | A, B, DE, HL |
+| system_colisiones.asm | game_check_collision_player | Si la entidad toca al jugador: si es el escudo lo coge (`SfxEscudo`); si es un enemigo y el jugador no es invencible, gasta el escudo o una vida (`SfxDanio`, o `SfxMuerte` si era la ultima). | DE = entidad | - | A, B, DE, HL |
+| system_colisiones.asm | is_invincible | Dice si el jugador sigue invencible despues de un golpe (menos de `TIEMPO_INVENCIBLE` segundos). | - | C = 1 si es invencible | A, BC |
+| system_comprar_fin_partida.asm | comprobar_jugador_vivo | Si `jugador_vidas` llega a 0, va a `scene_gameover` y repone las vidas. Se llama cada frame en el bucle principal. | - | - | A, HL (+ lo que modifique scene_gameover_init) |
+| system_prerender.asm | jugador_sprite_update | Actualiza el sprite del jugador: parpadeo mientras es invencible, espejo segun la direccion y frame de animacion (andar o saltar). | - | - | A, BC, HL |
+| system_prerender.asm | system_jugador_pos_update | Mueve al jugador 1 px a izquierda o derecha (comprobando la pared) y actualiza su sprite. | - | - | A, BC, DE, HL |
+| system_reloj.asm | system_actualizar_reloj | Si el reloj esta encendido, cuenta un frame y, al pasar un segundo, resta 1 a `reloj_fin_nivel` (sin bajar de 0) y redibuja el reloj del HUD. Se llama cada frame en el bucle principal. | - | - | A, BC, HL |
+| system_reloj.asm | system_actualiza_frame_actual | Avanza `frame_actual` (0-59). | - | Z = 1 si ha pasado un segundo | A |
+| system_reloj.asm | activar_reloj / desactivar_reloj | Enciende / para el reloj (`reloj_activo`). | - | - | A |
+| system_reloj.asm | resetear_reloj | Pone el reloj del nivel a `INICIO_RELOJ`. | - | - | A |
+| utils.asm | init_reloj | Prepara el reloj al empezar un nivel: `frame_actual` a 0, reloj a `INICIO_RELOJ` y parado. | - | - | A |
+| system_spawn.asm | spawn_enemigo_no_fijo | Al empezar cada segundo, crea los enemigos de la lista del nivel cuyo segundo coincide con el reloj. | - | - | A, BC, DE, HL |
+| system_spawn.asm | spawn_enemigo | Crea una entidad con los datos de un enemigo de la lista (tipo, tile, posicion, velocidades y atributos). | HL = enemigo en la lista | - | A, BC, DE, HL |
+| system_spawn.asm | siguiente_enemigo_update | Avanza `next_segundo_spwan` al siguiente enemigo de la lista (7 bytes). | - | - | A, BC, HL |
+| controles.asm | controles_mostrar | Escribe las instrucciones (PRESS A TO JUMP / ← OR → TO TURN) en el nivel 1. | - | - | A, B, DE, HL |
+| controles.asm | controles_borrar | Borra las instrucciones al empezar a jugar. Solo en el nivel 1. | - | - | A, B, HL |
+| hud.asm | hud_draw_clock | Dibuja en el HUD los segundos que quedan (`reloj_fin_nivel`) con dos digitos. | - | - | A, BC, HL |
 |  |   |  |  |  |  | <!-- NO MODIFICAR ESTA FILA, USAR PARA COPIAR Y PEGAR ARRIBA-->
+
+
+## Datos
+Etiquetas de datos en ROM (graficos, niveles, pantallas y sonido).
+
+| Etiqueta | Archivo | ¿Que es? |
+| -------- | ------- | -------- |
+| `tile_data` ... `tile_data_end` | `data/gfx.asm` | Tiles del juego que se cargan en la VRAM (`system_render_load_tiles`). Dentro: `fuente_data` (letras), `numeros_data` (0-9) y `decoracion_data`. |
+| `mapa_nivel_N` | `data/nivelN.asm` | Mapa del nivel N (20x16 tiles). `mapa_nivel_T` es el de pruebas. |
+| `mapa_nivel_N_posicion_inicial_jugador` | `data/nivelN.asm` | X, Y iniciales del jugador en el nivel N (en pixeles). |
+| `mapa_nivel_N_enemigos` ... `_enemigos_fin` | `data/nivelN.asm` | Enemigos fijos del nivel (acaban en `KIND_FIN_ENEMIGOS_FIJOS`) y despues la lista de los que aparecen segun el reloj (acaba en `LIST_END`). |
+| `pantalla_titulo` / `pantalla_nivel` / `pantalla_gameover` / `pantalla_victoria` | `data/pantalla_*.asm` | Pantallas completas para `sys_pantalla_dibujar`: `DW tiles`, `DW bytes`, mapa de 20x18. Sus tiles van entre `pantalla_*_tiles` y `pantalla_*_tiles_fin`. |
+| `pantalla_titulo_start` | `data/pantalla_titulo.asm` | 2 filas de 8 tiles con START centrado, para tapar RESUME / RESTART cuando no hay partida. |
+| `musica_titulo` / `musica_partida` / `musica_victoria` | `data/musica.asm` | Canciones para `sys_music_play`. |
+| `SfxSalto`, `SfxAterrizar`, `SfxEscudo`, `SfxMuerte`, `SfxDanio`, `SfxNivel`, `SfxMenuOk`, `SfxMenuMover` | `data/sfx.asm` | Efectos de sonido para `sys_sound_play_sfx`. |

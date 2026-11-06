@@ -24,9 +24,13 @@ v1_plataformero/
 		data/
 			gfx.asm                  ; Tiles y datos graficos constantes en ROM (incluye la fuente)
 			gfx/                     ; Tiles en formato .2bpp (INCBIN desde gfx.asm)
-			nivel1.asm               ; Nivel 1: mapa, spawn del jugador y enemigos
-			nivel2.asm               ; Nivel 2: mapa, spawn del jugador y enemigos
-			pantallas.asm            ; Pantallas de titulo, game over, nivel completado y victoria
+			nivel1.asm ... nivel9.asm ; Niveles 1-9: mapa, spawn del jugador, enemigos fijos y enemigos segun el reloj
+			nivel_test.asm           ; Nivel de pruebas (explica que significa cada campo de los enemigos)
+			pantallas.asm            ; Constantes de las pantallas (donde va el numero del nivel, el menu del titulo...)
+			pantalla_titulo.asm      ; Pantalla de titulo: sus tiles y su mapa (tambien START centrado)
+			pantalla_nivel.asm       ; Pantalla de nivel completado (GREAT + numero)
+			pantalla_gameover.asm    ; Pantalla de game over
+			pantalla_victoria.asm    ; Pantalla de victoria
 			sfx.asm                  ; Efectos de sonido en ROM
 			musica.asm               ; Canciones en ROM (titulo, partida, victoria)
 		managers/
@@ -34,22 +38,27 @@ v1_plataformero/
 			manager_escena.asm       ; Cambio de escenas y pantallas temporizadas
 			manager_nivel.asm        ; Seleccion de datos del nivel actual
 		scenes/
-			scene_menu.asm           ; Titulo (START empieza la partida)
+			scene_menu.asm           ; Titulo: START solo, o RESUME / RESTART si se perdio a mitad de partida
 			scene_ingame.asm         ; Partida
+			scene_pause.asm          ; Pausa (SELECT en la partida, START para seguir)
 			scene_gameover.asm       ; Fin de partida (sale sola al titulo)
 			scene_nivel.asm          ; Nivel completado (sale sola al nivel siguiente o a la victoria)
 			scene_victoria.asm       ; Victoria (sale sola al titulo)
 		systems/
-			system_colisiones.asm   ; Deteccion y resolucion de colisiones
+			system_colisiones.asm   ; Colisiones con el mapa y golpes con enemigos y escudo
+			system_comprar_fin_partida.asm ; Ir a game over al quedarse sin vidas
 			system_fisicas.asm      ; Gravedad, velocidad y movimiento
 			system_input.asm        ; Lectura del joypad
 			system_pantalla.asm     ; Dibujar una pantalla completa desde la ROM
 			system_prerender.asm    ; Preparacion de sprites en shadow_oam
 			system_render.asm       ; Copias a VRAM/OAM durante VBlank y scroll
+			system_reloj.asm        ; Reloj del nivel (30 s hacia atras)
+			system_spawn.asm        ; Enemigos que aparecen segun el reloj
 			system_sonido.asm       ; Encendido del APU y reproduccion de efectos
 			system_musica.asm       ; Reproduccion de la musica por el canal 2
 		ui/
-			hud.asm                  ; HUD en partida (nivel y vidas)
+			hud.asm                  ; HUD en partida (nivel, reloj y vidas)
+			controles.asm            ; Instrucciones del nivel 1 (PRESS A TO JUMP...)
 ```
 
 El `Makefile` ya busca los archivos `.asm` dentro de `src`, incluidos los de subcarpetas. Si una carpeta nueva no se enlaza como esperamos, se comprueba primero que el archivo tenga extension `.asm` y que este dentro de `src`.
@@ -107,7 +116,29 @@ El mapa y los tiles son estaticos: se cargan al inicializar el juego/nivel, no c
 > ret
 > ```
 
-Lo que es comun a todas las escenas (leer el joypad, avanzar la musica y copiar los sprites a la OAM) se llama desde el bucle principal de `main.asm`, no desde cada escena.
+Lo que es comun a todas las escenas se llama desde el bucle principal de `main.asm`, no desde cada escena. En cada frame, por orden:
+
+1. `sys_input_update`: leer el joypad.
+2. `system_actualizar_reloj`: contar el tiempo del nivel (solo si el reloj esta encendido).
+3. `manager_escena_update`: el update de la escena actual.
+4. `sys_music_update`: avanzar la musica.
+5. `system_render_update`: copiar `shadow_oam` a la OAM en VBlank.
+6. `comprobar_jugador_vivo`: si no quedan vidas, ir a game over.
+
+## Escenas
+
+Cada escena es un bloque en ROM `DW init` / `DW update`. Para cambiar: `ld hl, scene_X` / `jp manager_escena_cambiar` (o `call` si despues hay que seguir haciendo cosas).
+
+```text
+titulo --START--> partida --reloj a 0--> nivel completado (GREAT n, 3 s) --> partida (nivel siguiente)
+                     |                        '--si era el ultimo--> victoria (3 s) --> titulo (START)
+                     |--SELECT--> pausa --START--> partida
+                     '--sin vidas--> game over (3 s) --> titulo (RESUME / RESTART)
+```
+
+- Las pantallas de 3 s (nivel completado, game over, victoria) usan `manager_escena_temporizada_init` / `_update`.
+- Las pantallas cargan sus propios tiles encima de los del juego: `scene_ingame_init` vuelve a cargar los del juego lo primero.
+- `hay_partida` = 1 despues de perder: el titulo ofrece RESUME (sigue en `nivel_actual`) y RESTART (nivel 1).
 
 
 
@@ -132,3 +163,6 @@ make clean
 > - [ ] Las entidades inactivas no son procesadas (`CMP = 0` o `ALIVE` desactivado).
 > - [ ] Las funciones a las que se llamadas con `call` tienen `ret` o `jp`.
 > - [ ] Hacer pruebas directamente en el juego de lo que se ha implementado.
+> - [ ] Si se ha cambiado el nivel de inicio para probar (`ld a, 1` de RESTART en `scene_menu.asm`), volver a dejarlo en 1.
+> - [ ] Subir solo el codigo: `git add src` (no `git add .`, que subiria los documentos `@*.md`).
+> - [ ] `git pull` antes de `git push`.
