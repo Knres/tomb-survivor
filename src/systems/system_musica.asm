@@ -3,116 +3,93 @@ SECTION "Sistema musica", ROM0
 ;; La musica va siempre por el canal 2 (los efectos usan CH1 y CH4).
 ;; Formato de las canciones en data/musica.asm.
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Para la musica y silencia el canal 2.
+;; I: -
+;; O: -
+;; M: A
 sys_music_stop::
-    ;; para la musica y silencia el canal 2
-    ;; I: -
-    ;; O: -
-    ;; M: A
+	ld a, 0
+	ld [musica_contador], a
+	ld [rNR22], a
+	ret
 
-    ;; contador a 0 significa que no hay musica sonando
-    xor a
-    ld [musica_contador], a
-
-    ;; volumen 0 apaga el canal
-    ld [rNR22], a
-    ret
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Empieza a sonar una cancion. Con el contador a 1, el siguiente update toca la primera nota.
+;; I: HL = cancion
+;; O: -
+;; M: A
 sys_music_play::
-    ;; empieza a sonar una cancion
-    ;; I: HL = cancion
-    ;; O: -
-    ;; M: A
+	ld a, l
+	ld [musica_inicio], a
+	ld [musica_ptr], a
+	ld a, h
+	ld [musica_inicio + 1], a
+	ld [musica_ptr + 1], a
+	ld a, 1
+	ld [musica_contador], a
+	ret
 
-    ;; se guarda el inicio para poder volver a empezar al llegar al final
-    ld a, l
-    ld [musica_inicio], a
-    ld a, h
-    ld [musica_inicio + 1], a
-
-    ld a, l
-    ld [musica_ptr], a
-    ld a, h
-    ld [musica_ptr + 1], a
-
-    ;; con 1, en el siguiente update llega a 0 y suena la primera nota
-    ld a, 1
-    ld [musica_contador], a
-    ret
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Avanza la musica un frame. Llamar una vez por frame.
+;; Cuando se acaba la nota actual, toca la siguiente (o un silencio).
+;; Al final de la cancion: tono 0 = vuelve a empezar, tono 1 = para.
+;; I: -
+;; O: -
+;; M: A, DE, HL
 sys_music_update::
-    ;; avanza la musica un frame, llamar una vez por frame
-    ;; I: -
-    ;; O: -
-    ;; M: A, DE, HL
+	ld a, [musica_contador]
+	cp 0
+	ret z
+	dec a
+	ld [musica_contador], a
+	ret nz
+	.sigue:
+		ld a, [musica_ptr]
+		ld l, a
+		ld a, [musica_ptr + 1]
+		ld h, a
 
-    ;; si no hay musica no se hace nada
-    ld a, [musica_contador]
-    or a
-    ret z
+		ld a, [hl+]
+		ld e, a
+		ld a, [hl+]
+		ld d, a
+		ld a, [hl+]
+		
+		cp 0
+		jr z, .fin
+		
+		ld [musica_contador], a
+		ld a, l
+		ld [musica_ptr], a
+		ld a, h
+		ld [musica_ptr + 1], a
+		ld a, d
+		cp 0
+		jr z, .cero
+		
+		ld a, $80
+		ldh [rNR21], a
+		ld a, MUSICA_VOLUMEN
+		ldh [rNR22], a
+		ld a, e
+		ldh [rNR23], a
+		ld a, d
+		or $80
+		ldh [rNR24], a
+		ret
 
-    ;; mientras le queden frames, la nota actual sigue sonando
-    dec a
-    ld [musica_contador], a
-    ret nz
+	.fin:
+		ld a, e
+		cp 0
+		jp nz, sys_music_stop
 
-    .siguiente_nota:
-        ;; HL = direccion de la nota que toca
-        ld hl, musica_ptr
-        ld a, [hl+]
-        ld h, [hl]
-        ld l, a
-
-        ;; DE = tono, A = duracion
-        ld a, [hl+]
-        ld e, a
-        ld a, [hl+]
-        ld d, a
-        ld a, [hl+]
-
-        ;; duracion 0 es el final de la cancion
-        or a
-        jr z, .volver
-
-        ld [musica_contador], a
-
-        ;; HL ya apunta a la nota siguiente, se guarda para el proximo cambio
-        ld a, l
-        ld [musica_ptr], a
-        ld a, h
-        ld [musica_ptr + 1], a
-
-        ;; tono 0 es un silencio
-        ld a, d
-        or e
-        jr z, .silencio
-
-        ;; onda redonda, volumen y tono; el bit 7 de NR24 hace que suene
-        ld a, $80
-        ld [rNR21], a
-        ld a, MUSICA_VOLUMEN
-        ld [rNR22], a
-        ld a, e
-        ld [rNR23], a
-        ld a, d
-        or $80
-        ld [rNR24], a
-        ret
-
-    .silencio:
-        xor a
-        ld [rNR22], a
-        ret
-
-    ;; al final, tono 1 = parar y tono 0 = volver a empezar
-    .volver:
-        ld a, e
-        or a
-        jp nz, sys_music_stop
-
-        ld a, [musica_inicio]
-        ld [musica_ptr], a
-        ld a, [musica_inicio + 1]
-        ld [musica_ptr + 1], a
-
-        ;; se toca ya la primera nota, si no el contador se queda a 0 y la musica se pararia
-        jr .siguiente_nota
+		ld a, [musica_inicio]
+		ld [musica_ptr], a
+		ld a, [musica_inicio + 1]
+		ld [musica_ptr + 1], a
+		jr .sigue
+	.cero:
+		ld a, 0
+		ldh [rNR22], a
+		ret

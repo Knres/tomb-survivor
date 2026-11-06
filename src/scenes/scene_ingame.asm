@@ -13,7 +13,7 @@ scene_ingame::
 ;; M: A, BC, DE, HL
 scene_ingame_init::
     ;; las pantallas (titulo, nivel...) cargan sus propios tiles: volver a cargar los del juego
-    call system_render_load_tiles
+	call system_render_load_tiles
     ld a, LCD_CONFIG & %11111110
     ldh [rLCDC], a
     call init_reloj
@@ -49,13 +49,12 @@ jp init_hud
 ;; O: -
 ;; M: A, BC, DE, HL
 scene_ingame_update::
+	ld a, [reloj_fin_nivel]
+	cp 0
+	jr nz, .en_juego
 
-    ld a, [reloj_fin_nivel]
-    and  a
-    jr nz, .en_juego
-
-    ld hl, scene_nivel
-    jp manager_escena_cambiar
+	ld hl, scene_nivel
+	jp manager_escena_cambiar
 
     .en_juego
     ;; Select --> Pausar juego

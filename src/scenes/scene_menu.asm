@@ -12,19 +12,18 @@ scene_menu::
 ;; O: -
 ;; M: A, BC, DE, HL
 scene_menu_init::
-    ld   hl, shadow_oam
-    xor  a
-    ld   b, SHADOW_OAM_SIZE
-    call memset8
+	ld hl, shadow_oam
+	ld a, 0
+	ld b, SHADOW_OAM_SIZE
+	call memset8
 
-    ld a, 1
-    ld [menu_start_anterior], a
-
-    ld hl, musica_titulo
-    call sys_music_play
-
-    ld   hl, pantalla_titulo
-    call   sys_pantalla_dibujar
+	ld a, 1
+	ld [menu_start_anterior], a
+	ld hl, musica_titulo
+	call sys_music_play
+	
+	ld hl, pantalla_titulo
+	call sys_pantalla_dibujar
 
     ld a, $FF
     ld [menu_dpad_anterior], a
@@ -38,18 +37,21 @@ scene_menu_init::
 
     ;; Sin partida solo se puede empezar: se tapa RESUME/RESTART
     ;; con START centrado y no se pone barra.
-    .no_partida:
-        call wait_vblank
-        ld hl, pantalla_titulo_start
-        ld de, POS_RECUADRO_MENU
-        ld b, 8
-        call memcpy8
-        ld de, POS_RECUADRO_MENU + 32
-        ld b, 8
-        call memcpy8
-        ld a, OPCION_RESTART
-        ld [menu_opcion], a
-        ret
+.no_partida:
+	call wait_vblank
+	ld hl, pantalla_titulo_start
+	ld de, POS_RECUADRO_MENU
+	
+	ld b, 8
+	call memcpy8
+	
+	ld de, POS_RECUADRO_MENU + 32
+	ld b, 8
+	call memcpy8
+
+	ld a, OPCION_RESTART
+	ld [menu_opcion], a
+	ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Pone la barra gris (sprites detras del fondo) en la fila de la opcion elegida.
@@ -148,11 +150,13 @@ scene_menu_update::
     call sys_sound_play_sfx
 
     ;; Se quitan los sprites de la barra: en la partida el tile 2 es otro dibujo
-    ld hl, shadow_oam
-    xor a
-    ld b, SHADOW_OAM_SIZE
-    call memset8
-    call system_render_update   ;; y se copia ya a la OAM: si no, se ven mientras carga el nivel
+	ld hl, shadow_oam
+	ld a, 0
+	ld b, SHADOW_OAM_SIZE
+	call memset8
+	
+	;; y se copia ya a la OAM: si no, se ven mientras carga el nivel
+	call system_render_update
 
     ld hl, scene_ingame
     jp manager_escena_cambiar
