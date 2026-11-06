@@ -275,6 +275,9 @@ game_check_collision_player::
     cp KIND_DARDO
     jr z, .is_enemy
 
+    cp KIND_SERPIENTE
+    jr z, .is_enemy
+    
     cp KIND_ESCUDO
     jr z, .pickup_shield
 

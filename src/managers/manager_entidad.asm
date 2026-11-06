@@ -286,6 +286,9 @@ ia_enemigo_update::
 	cp KIND_ESCUDO
 	jp z, ia_escudo
 
+	cp KIND_SERPIENTE
+	jp z, ia_serpiente
+
 	;; cp
 	;; jp z,
 ret
@@ -358,6 +361,34 @@ ia_escorpion::
 
 	.mover
 	call ia_mov_izq_der
+ret
+
+ia_mov_arriba_abajo::
+    ;; Para moverse por lasparedes en vertical
+    ;; I: DE = direccion base de la entidad
+
+    ld hl, E_VY
+    add hl, de
+    ld a, [hl]
+    ld b, a			;; b = velocidad vertical
+
+    ld hl, E_Y
+    add hl, de
+    ld a, [hl]
+    add a, b			;; y = y + vy
+
+    call entidad_comprobar_salida_vertical
+    ld [hl], a
+
+    jr nc, .no_sale
+
+        push de
+        ld h, d
+        ld l, e
+        call entidad_cambiar_dir_movimiento_vertical
+        pop de
+
+    .no_sale
 ret
 
 ia_murcielago::
@@ -725,8 +756,42 @@ ia_estalactita::
 ret
 
 ia_serpiente::
-	;; Serpiente. En paredes, se moveran de arriba a abajo,
-	;; por el momento seran 
+    ;; Ifgual que la escorpion per se mueve verticalmente por las paredes
+    ;; VY = velocidad vertical
+    ;; VX = contador para cambiar de frame
+
+    ld hl, E_VX
+    add hl, de
+    ld a, [hl]
+
+    and a
+    jr z, .cambiar_frame
+
+    dec [hl]
+    jr nz, .mover
+
+.cambiar_frame:
+    ld a, ESCORPION_ESPERA_FRAME
+    ld [hl], a
+
+    ld hl, E_TILE
+    add hl, de
+    ld a, [hl]
+
+    cp TILE_SERPIENTE_1
+    jr z, .frame_2
+
+        ld a, TILE_SERPIENTE_1
+        jr .guardar_frame
+
+.frame_2:
+    ld a, TILE_SERPIENTE_2
+
+.guardar_frame:
+    ld [hl], a
+
+.mover:
+    call ia_mov_arriba_abajo
 ret
 
 entidad_comprobar_salida_horizontal::
