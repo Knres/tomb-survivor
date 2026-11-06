@@ -11,10 +11,12 @@ scene_gameover::
 ;; O: -
 ;; M: A, BC, DE, HL
 scene_gameover_init::
-    ld a, 1
-    ld [hay_partida], a
-    
-    call sys_music_stop
-    ld   hl, pantalla_gameover
-    ld   de, scene_menu
-    jp   manager_escena_temporizada_init
+		;; Se ha perdido a mitad de partida: el titulo ofrecera RESUME
+		ld a, 1
+		ld [hay_partida], a
+
+		call sys_music_stop
+        
+		ld hl, pantalla_gameover
+		ld de, scene_menu
+		jp manager_escena_temporizada_init

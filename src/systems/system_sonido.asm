@@ -1,28 +1,40 @@
 SECTION "System sonido", ROM0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Enciende el APU con volumen máximo y todos los canales en los dos altavoces.
-;; INPUT: -
-;; RETURNS: -
-;; MODIFICA: A
-sys_sound_init::
-    ld   a, $80              ;; \ APU encendido
-    ld   [rNR52], a          ;; /
-    ld   a, $77              ;; \ Volumen maestro máximo (izq y der)
-    ld   [rNR50], a          ;; /
-    ld   a, $FF              ;; \ Los 4 canales a los dos altavoces
-    ld   [rNR51], a          ;; /
-    ret
+;; Enciende el chip de sonido, volumen general al maximo y los 4 canales en los dos altavoces.
+;; I: -
+;; O: -
+;; M: A
+sys_sound_init:: 
+	ld a, $80
+	ld [rNR52], a
+	
+	ld a, $77
+	ld [rNR50], a
+
+	ld a, $FF
+	ld[rNR51], a
+	ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Reproduce un efecto: copia sus bytes a los registros del canal.
-;; INPUT: HL = dirección del efecto (SfxSalto, SfxMuerte, ...)
-;; RETURNS: -
-;; MODIFICA: A, B, DE, HL
+;; Reproduce un efecto: copia sus valores a los registros del canal.
+;; Formato del efecto: byte bajo del primer registro, n de bytes, valores (ver sfx.asm).
+;; I: HL = efecto (SfxSalto, SfxDanio, ...)
+;; O: -
+;; M: A, B, DE, HL
 sys_sound_play_sfx::
-    ld   a, [hl+]            ;; \ DE = $FF00 + byte bajo del primer registro
-    ld   e, a                ;; |
-    ld   d, $FF              ;; /
-    ld   a, [hl+]            ;; \ B = nº de bytes a copiar
-    ld   b, a                ;; /  (HL -> primer valor)
-    jp   memcpy8             ;; Copia a los registros y vuelve
+	ld a, [hl+]
+	ld e, a
+	ld d, $FF
+	ld a, [hl+]
+	ld b, a
+	cp 0
+	jr z, .fin
+	.copiar:
+	ld a, [hl+]
+	ld [de], a
+	inc de
+	dec b
+	jr nz, .copiar
+	.fin:
+	ret

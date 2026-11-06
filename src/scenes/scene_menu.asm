@@ -52,39 +52,40 @@ scene_menu_init::
         ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Pone la barra gris encima de la opcion que NO esta elegida.
-;; Son sprites detras del fondo: solo se ven donde el fondo es blanco,
-;; asi que las letras siguen encima y las esquinas del recuadro la redondean.
+;; Pone la barra gris (sprites detras del fondo) en la fila de la opcion elegida.
 ;; Se escribe en shadow_oam: system_render_update la copia a la OAM en VBlank.
 ;; I: -
 ;; O: -
 ;; M: A, BC, D, HL
-menu_dibujar_barra:
-    ld b, MENU_BARRA_Y_RESTART          ;; RESUME elegido -> se apaga RESTART
-    ld a, [menu_opcion]
-    cp OPCION_RESUME
-    jr z, .poner
-    ld b, MENU_BARRA_Y_RESUME           ;; RESTART elegido -> se apaga RESUME
-
-    .poner:
-    ld hl, shadow_oam
-    ld c, MENU_BARRA_X
-    ld d, MENU_BARRA_SPRITES
-    .sprite:
-        ld a, b
-        ld [hl+], a                     ;; Y
-        ld a, c
-        ld [hl+], a                     ;; X
-        ld a, PANT_TITULO_TILE_BARRA
-        ld [hl+], a                     ;; tile
-        ld a, ATTR_PRIORIDAD
-        ld [hl+], a                     ;; detras del fondo
-        ld a, c
-        add a, 8
-        ld c, a                         ;; siguiente sprite, 8 px a la derecha
-        dec d
-    jr nz, .sprite
-    ret
+menu_dibujar_barra::
+	ld a, [menu_opcion]
+	cp OPCION_RESUME
+	jr z, .si
+	ld b, MENU_BARRA_Y_RESTART
+	jr .poner
+	
+.si:
+	ld b, MENU_BARRA_Y_RESUME
+	
+.poner:
+	ld hl, shadow_oam
+	ld c, MENU_BARRA_X
+	ld d, MENU_BARRA_SPRITES
+.Sprite
+	ld a, b
+	ld [hl+], a
+	ld a, c
+	ld [hl+], a
+	ld a, PANT_TITULO_TILE_BARRA
+	ld [hl+], a
+	ld a, ATTR_PRIORIDAD
+	ld [hl+], a
+	ld a, c
+	add a, 8
+	ld c, a
+	dec d
+jr nz, .Sprite
+ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cada frame en el titulo: arriba/abajo cambia de opcion (si hay partida)
@@ -139,7 +140,7 @@ scene_menu_update::
     ld a, [menu_opcion]
     cp OPCION_RESTART
     jr nz,.empezar
-    ld a, 7
+    ld a, 1
     ld [nivel_actual], a
 
     .empezar:
@@ -151,6 +152,7 @@ scene_menu_update::
     xor a
     ld b, SHADOW_OAM_SIZE
     call memset8
+    call system_render_update   ;; y se copia ya a la OAM: si no, se ven mientras carga el nivel
 
     ld hl, scene_ingame
     jp manager_escena_cambiar

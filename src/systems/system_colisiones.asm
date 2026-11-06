@@ -291,6 +291,8 @@ game_check_collision_player::
     add hl, de
     res CMP_ALIVE_BIT, [hl]
     call hud_draw_hearts
+    ld hl, SfxEscudo
+    call sys_sound_play_sfx
     ret
 
 .is_enemy:
@@ -312,6 +314,8 @@ game_check_collision_player::
     xor a
     ld [escudo_jugador], a
     call hud_draw_hearts
+    ld hl, SfxDanio
+    call sys_sound_play_sfx
     ret
 
 .lower_health
@@ -321,6 +325,14 @@ game_check_collision_player::
 
     dec a
     ld [jugador_vidas], a
+
+    ld hl, SfxDanio
+    jr nz, .sonar_golpe
+    ld hl, SfxMuerte
+
+    .sonar_golpe:
+    call sys_sound_play_sfx
+
     call hud_draw_hearts
     ret
 
