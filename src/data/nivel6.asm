@@ -34,11 +34,15 @@ mapa_nivel_6_enemigos::
 		DB KIND_PINCHOS,     14*8, 15*8,  55,   0, ATTR_FLIP_X
 		DB KIND_PINCHOS,      8*8, 12*8,  45,   0, ATTR_FLIP_X
 		DB KIND_PINCHOS,     13*8,  9*8,  25,   0, ATTR_FLIP_X
-		DB KIND_PINCHOS,     11*8,  6*8,  25,   0, ATTR_FLIP_X
-
+;		DB KIND_PINCHOS,     11*8,  6*8,  25,   0, ATTR_FLIP_X
+		DB KIND_SERPIENTE,	 18*8, 8*8,    0,  -1, 0
+		DB KIND_SERPIENTE,	 1*8,  8*8,    0,   1, ATTR_FLIP_X | ATTR_FLIP_Y
 		DB KIND_ESCORPION,    6*8, 14*8,  -1,   0, 0
-		DB KIND_MOMIA,       10*8, 14*8,   1,  20, 0
-		DB KIND_MURCIELAGO,  10*8,  4*8,   1,  30, ATTR_FLIP_X
+		DB KIND_MOMIA,       10*8, 14*8,   6,  20, 0
+		DB KIND_MURCIELAGO,  10*8,  5*8,   2,  30, ATTR_FLIP_X
+		DB KIND_MURCIELAGO,  4*8,  11*8,  -2,  30, 0
+		DB KIND_MURCIELAGO,  7*8,  8*8,   2,  30, ATTR_FLIP_X
+		DB KIND_MURCIELAGO,  2*8,  4*8,   -2,  30, 0
 
 		;; ↓ END NO QUITAR
 	DB KIND_FIN_ENEMIGOS_FIJOS
@@ -57,13 +61,19 @@ mapa_nivel_6_enemigos::
 		DB 18, 			 KIND_DARDO,	   18*8, 10*8,   -3,   3, ATTR_FLIP_X
 		DB 18, 			 KIND_DARDO,	   18*8, 11*8,   -3,   3, ATTR_FLIP_X
 		DB 18, 			 KIND_DARDO,	   18*8, 12*8,   -3,   3, ATTR_FLIP_X
+		DB 18, 			 KIND_DARDO,	   18*8, 5*8,   -3,   3, ATTR_FLIP_X
  
 		DB 17,           KIND_ESTALACTITA,  4*8,  0*8,   16,   0, ATTR_FLIP_Y
 		DB 16,           KIND_ESTALACTITA,  5*8,  0*8,   16,   0, ATTR_FLIP_Y
-		
+		DB 16,            KIND_ESTALACTITA, 14*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 16,            KIND_ESTALACTITA,  16*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 16,            KIND_ESTALACTITA, 15*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 16,            KIND_ESTALACTITA,  13*8,  0*8,  16,  0, ATTR_FLIP_Y
+		DB 16, 			 KIND_DARDO,	   18*8, 5*8,   -3,   3, ATTR_FLIP_X
 		DB 10, 			 KIND_DARDO,	   18*8,  7*8,   -3,   3, ATTR_FLIP_X
 		DB 10, 			 KIND_DARDO,	   18*8,  8*8,   -3,   3, ATTR_FLIP_X
 		DB 10, 			 KIND_DARDO,	   18*8,  9*8,   -3,   3, ATTR_FLIP_X
+		DB 10, 			 KIND_DARDO,	   18*8, 5*8,   -3,   3, ATTR_FLIP_X
  
 		;; ↓ END NO QUITAR
 	DB LIST_END 
