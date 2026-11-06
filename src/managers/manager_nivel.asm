@@ -39,7 +39,6 @@ get_mapa_nivel_actual::
 	cp 8
 	jr z, .nivel_8
 	
-	jr .nivel_9
 
 	.nivel_invalido
 	ld a, 1
@@ -68,9 +67,6 @@ get_mapa_nivel_actual::
 	ret
 	.nivel_8
 		ld hl, mapa_nivel_8
-	ret
-	.nivel_9
-		ld hl, mapa_nivel_9
 	ret
 
 get_pos_inicial_jugador_nivel_actual::
@@ -110,7 +106,6 @@ get_pos_inicial_jugador_nivel_actual::
 	cp 8
 	jr z, .nivel_8
 	
-	jr .nivel_9
 
 	.nivel_invalido
 	ld a, 1
@@ -148,9 +143,6 @@ get_pos_inicial_jugador_nivel_actual::
 		ld hl, mapa_nivel_8_posicion_inicial_jugador
 	ret
 	
-	.nivel_9
-		ld hl, mapa_nivel_9_posicion_inicial_jugador
-	;;ret
 ret
 
 get_enemigos_nivel_actual::
@@ -190,7 +182,6 @@ get_enemigos_nivel_actual::
 	cp 8
 	jr z, .nivel_8
 	
-	jr .nivel_9
 
 	.nivel_invalido
 	ld a, 1
@@ -228,7 +219,4 @@ get_enemigos_nivel_actual::
 		ld hl, mapa_nivel_8_enemigos
 	ret
 	
-	.nivel_9
-		ld hl, mapa_nivel_9_enemigos
-	;;ret
 ret

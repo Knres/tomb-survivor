@@ -333,7 +333,7 @@ EXPORT DEF EN_VUELO = $F0
 
 
 EXPORT DEF DURACION_PANTALLA = 180
-EXPORT DEF NUM_NIVELES = 9
+EXPORT DEF NUM_NIVELES = 8
 
 ;; Notas para la musica (tono del canal 2). C=do D=re E=mi F=fa G=sol A=la B=si, S=sostenido
 EXPORT DEF NOTA_SILENCIO = 0
